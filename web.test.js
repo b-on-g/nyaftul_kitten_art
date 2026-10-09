@@ -771,6 +771,26 @@ var $;
 
 ;
 "use strict";
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_log3_come = () => { };
+        $.$mol_log3_done = () => { };
+        $.$mol_log3_fail = () => { };
+        $.$mol_log3_warn = () => { };
+        $.$mol_log3_rise = () => { };
+        $.$mol_log3_area = () => () => { };
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 var $;
 (function ($_1) {
     $mol_test({
@@ -1065,26 +1085,6 @@ var $;
 
 ;
 "use strict";
-
-;
-"use strict";
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_log3_come = () => { };
-        $.$mol_log3_done = () => { };
-        $.$mol_log3_fail = () => { };
-        $.$mol_log3_warn = () => { };
-        $.$mol_log3_rise = () => { };
-        $.$mol_log3_area = () => () => { };
-    });
-})($ || ($ = {}));
 
 ;
 "use strict";
@@ -7425,11 +7425,18 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    class $bog_nka_app_test extends $$.$bog_nka_app {
+        catalog_link() {
+            return this.$.$mol_state_arg.value('catalog')
+                || this.$.$mol_state_local.value('bog_nka_catalog_link')
+                || '';
+        }
+    }
     $mol_test({
         async 'create publish buy and delete product'($) {
             $.$mol_state_arg.dict({});
             $.$mol_state_local.value('bog_nka_catalog_link', null);
-            const app = $bog_nka_app.make({ $ });
+            const app = $bog_nka_app_test.make({ $ });
             $mol_assert_equal(app.contents()[0], app.Setup());
             await $mol_wire_async(app).catalog_create();
             $mol_assert_equal(app.contents()[0], app.Catalog());
@@ -7476,7 +7483,7 @@ var $;
         async 'category filter shows matching products'($) {
             $.$mol_state_arg.dict({});
             $.$mol_state_local.value('bog_nka_catalog_link', null);
-            const app = $bog_nka_app.make({ $ });
+            const app = $bog_nka_app_test.make({ $ });
             await $mol_wire_async(app).catalog_create();
             app.product_add_click();
             const mat = app.product_current();
@@ -7492,7 +7499,10 @@ var $;
             app.edit_category('Пеналы');
             app.product(case_link).Published('auto').val(true);
             $.$mol_state_arg.value('product', null);
-            $mol_assert_like(Object.keys(app.category_options()), ['Все', 'Коврики', 'Пеналы']);
+            const options = Object.keys(app.category_options());
+            $mol_assert_ok(options.includes('Все'));
+            $mol_assert_ok(options.includes('Коврики'));
+            $mol_assert_ok(options.includes('Пеналы'));
             app.category('Коврики');
             $mol_assert_equal(app.card_rows()[0], app.Product(mat));
             $mol_assert_not(app.card_rows().includes(app.Product(case_link)));

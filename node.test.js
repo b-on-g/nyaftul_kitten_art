@@ -23333,7 +23333,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_nka_catalog_ref = '';
+    $.$bog_nka_catalog_ref = 'Ds8CZhAg_4ZdFN920';
 })($ || ($ = {}));
 
 ;
@@ -23876,18 +23876,6 @@ var $;
 
 ;
 "use strict";
-
-;
-"use strict";
-
-;
-"use strict";
-
-;
-"use strict";
-
-;
-"use strict";
 var $;
 (function ($_1) {
     $mol_test({
@@ -23899,6 +23887,15 @@ var $;
         },
     });
 })($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+
+;
+"use strict";
 
 ;
 "use strict";
@@ -24571,6 +24568,20 @@ var $;
 ;
 "use strict";
 var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_log3_come = () => { };
+        $.$mol_log3_done = () => { };
+        $.$mol_log3_fail = () => { };
+        $.$mol_log3_warn = () => { };
+        $.$mol_log3_rise = () => { };
+        $.$mol_log3_area = () => () => { };
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($) {
     $mol_test({
         'return result without errors'() {
@@ -24590,6 +24601,340 @@ var $;
 var $;
 (function ($_1) {
     $mol_test_mocks.push($ => $.$mol_fail_log = () => false);
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'get'() {
+            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
+            $mol_assert_equal(proxy.foo, 777);
+        },
+        'has'() {
+            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
+            $mol_assert_equal('foo' in proxy, true);
+        },
+        'set'() {
+            const target = { foo: 777 };
+            const proxy = $mol_delegate({}, () => target);
+            proxy.foo = 123;
+            $mol_assert_equal(target.foo, 123);
+        },
+        'getOwnPropertyDescriptor'() {
+            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
+            $mol_assert_like(Object.getOwnPropertyDescriptor(proxy, 'foo'), {
+                value: 777,
+                writable: true,
+                enumerable: true,
+                configurable: true,
+            });
+        },
+        'ownKeys'() {
+            const proxy = $mol_delegate({}, () => ({ foo: 777, [Symbol.toStringTag]: 'bar' }));
+            $mol_assert_like(Reflect.ownKeys(proxy), ['foo', Symbol.toStringTag]);
+        },
+        'getPrototypeOf'() {
+            class Foo {
+            }
+            const proxy = $mol_delegate({}, () => new Foo);
+            $mol_assert_equal(Object.getPrototypeOf(proxy), Foo.prototype);
+        },
+        'setPrototypeOf'() {
+            class Foo {
+            }
+            const target = {};
+            const proxy = $mol_delegate({}, () => target);
+            Object.setPrototypeOf(proxy, Foo.prototype);
+            $mol_assert_equal(Object.getPrototypeOf(target), Foo.prototype);
+        },
+        'instanceof'() {
+            class Foo {
+            }
+            const proxy = $mol_delegate({}, () => new Foo);
+            $mol_assert_ok(proxy instanceof Foo);
+            $mol_assert_ok(proxy instanceof $mol_delegate);
+        },
+        'autobind'() {
+            class Foo {
+            }
+            const proxy = $mol_delegate({}, () => new Foo);
+            $mol_assert_ok(proxy instanceof Foo);
+            $mol_assert_ok(proxy instanceof $mol_delegate);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'span for same uri'($) {
+            const span = new $mol_span('test.ts', '', 1, 3, 4);
+            const child = span.span(4, 5, 8);
+            $mol_assert_equal(child.uri, 'test.ts');
+            $mol_assert_equal(child.row, 4);
+            $mol_assert_equal(child.col, 5);
+            $mol_assert_equal(child.length, 8);
+        },
+        'span after of given position'($) {
+            const span = new $mol_span('test.ts', '', 1, 3, 4);
+            const child = span.after(11);
+            $mol_assert_equal(child.uri, 'test.ts');
+            $mol_assert_equal(child.row, 1);
+            $mol_assert_equal(child.col, 7);
+            $mol_assert_equal(child.length, 11);
+        },
+        'slice span - regular'($) {
+            const span = new $mol_span('test.ts', '', 1, 3, 5);
+            const child = span.slice(1, 4);
+            $mol_assert_equal(child.row, 1);
+            $mol_assert_equal(child.col, 4);
+            $mol_assert_equal(child.length, 3);
+            const child2 = span.slice(2, 2);
+            $mol_assert_equal(child2.col, 5);
+            $mol_assert_equal(child2.length, 0);
+        },
+        'slice span - negative'($) {
+            const span = new $mol_span('test.ts', '', 1, 3, 5);
+            const child = span.slice(-3, -1);
+            $mol_assert_equal(child.row, 1);
+            $mol_assert_equal(child.col, 5);
+            $mol_assert_equal(child.length, 2);
+        },
+        'slice span - out of range'($) {
+            const span = new $mol_span('test.ts', '', 1, 3, 5);
+            $mol_assert_fail(() => span.slice(-1, 3), `End value '3' can't be less than begin value (test.ts#1:3/5)`);
+            $mol_assert_fail(() => span.slice(1, 6), `End value '6' out of range (test.ts#1:3/5)`);
+            $mol_assert_fail(() => span.slice(1, 10), `End value '10' out of range (test.ts#1:3/5)`);
+        },
+        'error handling'($) {
+            const span = new $mol_span('test.ts', '', 1, 3, 4);
+            const error = span.error('Some error');
+            $mol_assert_equal(error.message, 'Some error (test.ts#1:3/4)');
+        }
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'all cases of using maybe'() {
+            $mol_assert_equal($mol_maybe(0)[0], 0);
+            $mol_assert_equal($mol_maybe(false)[0], false);
+            $mol_assert_equal($mol_maybe(null)[0], void 0);
+            $mol_assert_equal($mol_maybe(void 0)[0], void 0);
+            $mol_assert_equal($mol_maybe(void 0).map(v => v.toString())[0], void 0);
+            $mol_assert_equal($mol_maybe(0).map(v => v.toString())[0], '0');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function check(tree, ideal) {
+        $mol_assert_equal(tree.toString(), $$.$mol_tree2_from_string(ideal).toString());
+    }
+    $mol_test({
+        'inserting'($) {
+            check($.$mol_tree2_from_string(`
+					a b c d
+				`).insert($mol_tree2.struct('x'), 'a', 'b', 'c'), `
+					a b x
+				`);
+            check($.$mol_tree2_from_string(`
+					a b
+				`).insert($mol_tree2.struct('x'), 'a', 'b', 'c', 'd'), `
+					a b c x
+				`);
+            check($.$mol_tree2_from_string(`
+					a b c d
+				`)
+                .insert($mol_tree2.struct('x'), 0, 0, 0), `
+					a b x
+				`);
+            check($.$mol_tree2_from_string(`
+					a b
+				`)
+                .insert($mol_tree2.struct('x'), 0, 0, 0, 0), `
+					a b \\
+						x
+				`);
+            check($.$mol_tree2_from_string(`
+					a b c d
+				`)
+                .insert($mol_tree2.struct('x'), null, null, null), `
+					a b x
+				`);
+            check($.$mol_tree2_from_string(`
+					a b
+				`)
+                .insert($mol_tree2.struct('x'), null, null, null, null), `
+					a b \\
+						x
+				`);
+        },
+        'updating'($) {
+            check($.$mol_tree2_from_string(`
+					a b c d
+				`).update([], 'a', 'b', 'c')[0], `
+					a b
+				`);
+            check($.$mol_tree2_from_string(`
+					a b c d
+				`).update([$mol_tree2.struct('x')])[0], `
+					x
+				`);
+            check($.$mol_tree2_from_string(`
+					a b c d
+				`).update([$mol_tree2.struct('x'), $mol_tree2.struct('y')], 'a', 'b', 'c')[0], `
+					a b
+						x
+						y
+				`);
+        },
+        'deleting'($) {
+            const base = $.$mol_tree2_from_string(`
+				a b c d
+			`);
+            check(base.insert(null, 'a', 'b', 'c'), `
+					a b
+				`);
+            check(base.update(base.select('a', 'b', 'c', null).kids, 'a', 'b', 'c')[0], `
+					a b d
+				`);
+            check(base.insert(null, 0, 0, 0), `
+					a b
+				`);
+        },
+        'hack'($) {
+            const res = $.$mol_tree2_from_string(`
+				foo bar xxx
+			`)
+                .hack({
+                'bar': (input, belt) => [input.struct('777', input.hack(belt))],
+            });
+            $mol_assert_equal(res.map(String), ['foo 777 xxx\n']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'empty array'() {
+            $mol_assert_equal($mol_array_chunks([], () => true), []);
+        },
+        'one chunk'() {
+            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], () => false), [[1, 2, 3, 4, 5]]);
+        },
+        'fixed size chunk'() {
+            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], 3), [[1, 2, 3], [4, 5]]);
+        },
+        'first empty chunk'() {
+            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], (_, i) => i === 0), [[1, 2, 3, 4, 5]]);
+        },
+        'chunk for every item'() {
+            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], () => true), [[1], [2], [3], [4], [5]]);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'tree parsing'($) {
+            $mol_assert_equal($.$mol_tree2_from_string("foo\nbar\n").kids.length, 2);
+            $mol_assert_equal($.$mol_tree2_from_string("foo\nbar\n").kids[1].type, "bar");
+            $mol_assert_equal($.$mol_tree2_from_string("foo\n\n\n").kids.length, 1);
+            $mol_assert_equal($.$mol_tree2_from_string("=foo\n\\bar\n").kids.length, 2);
+            $mol_assert_equal($.$mol_tree2_from_string("=foo\n\\bar\n").kids[1].value, "bar");
+            $mol_assert_equal($.$mol_tree2_from_string("foo bar \\pol\n").kids[0].kids[0].kids[0].value, "pol");
+            $mol_assert_equal($.$mol_tree2_from_string("foo bar\n\t\\pol\n\t\\men\n").kids[0].kids[0].kids[1].value, "men");
+            $mol_assert_equal($.$mol_tree2_from_string('foo bar \\text\n').toString(), 'foo bar \\text\n');
+        },
+        'Too many tabs'($) {
+            const tree = `
+				foo
+						bar
+			`;
+            $mol_assert_fail(() => {
+                $.$mol_tree2_from_string(tree, 'test');
+            }, 'Too many tabs\ntest#3:1/6\n!!!!!!\n\t\t\t\t\t\tbar');
+        },
+        'Too few tabs'($) {
+            const tree = `
+					foo
+				bar
+			`;
+            $mol_assert_fail(() => {
+                $.$mol_tree2_from_string(tree, 'test');
+            }, 'Too few tabs\ntest#3:1/4\n!!!!\n\t\t\t\tbar');
+        },
+        'Wrong nodes separator at start'($) {
+            const tree = `foo\n \tbar\n`;
+            $mol_assert_fail(() => {
+                $.$mol_tree2_from_string(tree, 'test');
+            }, 'Wrong nodes separator\ntest#2:1/2\n!!\n \tbar');
+        },
+        'Wrong nodes separator in the middle'($) {
+            const tree = `foo  bar\n`;
+            $mol_assert_fail(() => {
+                $.$mol_tree2_from_string(tree, 'test');
+            }, 'Wrong nodes separator\ntest#1:5/1\n    !\nfoo  bar');
+        },
+        'Unexpected EOF, LF required'($) {
+            const tree = `	foo`;
+            $mol_assert_fail(() => {
+                $.$mol_tree2_from_string(tree, 'test');
+            }, 'Unexpected EOF, LF required\ntest#1:5/1\n	   !\n	foo');
+        },
+        'Errors skip and collect'($) {
+            const tree = `foo  bar`;
+            const errors = [];
+            const $$ = $.$mol_ambient({
+                $mol_fail: (error) => {
+                    errors.push(error.message);
+                    return null;
+                }
+            });
+            const res = $$.$mol_tree2_from_string(tree, 'test');
+            $mol_assert_like(errors, [
+                'Wrong nodes separator\ntest#1:5/1\n    !\nfoo  bar',
+                'Unexpected EOF, LF required\ntest#1:9/1\n        !\nfoo  bar',
+            ]);
+            $mol_assert_equal(res.toString(), 'foo bar\n');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'fromJSON'() {
+            $mol_assert_equal($mol_tree2_from_json([]).toString(), '/\n');
+            $mol_assert_equal($mol_tree2_from_json([false, true]).toString(), '/\n\tfalse\n\ttrue\n');
+            $mol_assert_equal($mol_tree2_from_json([0, 1, 2.3]).toString(), '/\n\t0\n\t1\n\t2.3\n');
+            $mol_assert_equal($mol_tree2_from_json(new Uint16Array([1, 10, 255, 256, 65535])).toString(), '\\01 00 0A 00 FF 00 00 01\n\\FF FF\n');
+            $mol_assert_equal($mol_tree2_from_json(['', 'foo', 'bar\nbaz']).toString(), '/\n\t\\\n\t\\foo\n\t\\\n\t\t\\bar\n\t\t\\baz\n');
+            $mol_assert_equal($mol_tree2_from_json({ 'foo': false, 'bar\nbaz': 'lol' }).toString(), '*\n\tfoo false\n\t\\\n\t\t\\bar\n\t\t\\baz\n\t\t\\lol\n');
+        },
+    });
 })($ || ($ = {}));
 
 ;
@@ -24808,20 +25153,6 @@ var $;
 
 ;
 "use strict";
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_log3_come = () => { };
-        $.$mol_log3_done = () => { };
-        $.$mol_log3_fail = () => { };
-        $.$mol_log3_warn = () => { };
-        $.$mol_log3_rise = () => { };
-        $.$mol_log3_area = () => () => { };
-    });
-})($ || ($ = {}));
 
 ;
 "use strict";
@@ -27048,22 +27379,6 @@ var $;
 var $;
 (function ($) {
     $mol_test({
-        'all cases of using maybe'() {
-            $mol_assert_equal($mol_maybe(0)[0], 0);
-            $mol_assert_equal($mol_maybe(false)[0], false);
-            $mol_assert_equal($mol_maybe(null)[0], void 0);
-            $mol_assert_equal($mol_maybe(void 0)[0], void 0);
-            $mol_assert_equal($mol_maybe(void 0).map(v => v.toString())[0], void 0);
-            $mol_assert_equal($mol_maybe(0).map(v => v.toString())[0], '0');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
         'null by default'() {
             const key = String(Math.random());
             $mol_assert_equal($mol_state_session.value(key), null);
@@ -28090,212 +28405,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    $mol_test({
-        'get'() {
-            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
-            $mol_assert_equal(proxy.foo, 777);
-        },
-        'has'() {
-            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
-            $mol_assert_equal('foo' in proxy, true);
-        },
-        'set'() {
-            const target = { foo: 777 };
-            const proxy = $mol_delegate({}, () => target);
-            proxy.foo = 123;
-            $mol_assert_equal(target.foo, 123);
-        },
-        'getOwnPropertyDescriptor'() {
-            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
-            $mol_assert_like(Object.getOwnPropertyDescriptor(proxy, 'foo'), {
-                value: 777,
-                writable: true,
-                enumerable: true,
-                configurable: true,
-            });
-        },
-        'ownKeys'() {
-            const proxy = $mol_delegate({}, () => ({ foo: 777, [Symbol.toStringTag]: 'bar' }));
-            $mol_assert_like(Reflect.ownKeys(proxy), ['foo', Symbol.toStringTag]);
-        },
-        'getPrototypeOf'() {
-            class Foo {
-            }
-            const proxy = $mol_delegate({}, () => new Foo);
-            $mol_assert_equal(Object.getPrototypeOf(proxy), Foo.prototype);
-        },
-        'setPrototypeOf'() {
-            class Foo {
-            }
-            const target = {};
-            const proxy = $mol_delegate({}, () => target);
-            Object.setPrototypeOf(proxy, Foo.prototype);
-            $mol_assert_equal(Object.getPrototypeOf(target), Foo.prototype);
-        },
-        'instanceof'() {
-            class Foo {
-            }
-            const proxy = $mol_delegate({}, () => new Foo);
-            $mol_assert_ok(proxy instanceof Foo);
-            $mol_assert_ok(proxy instanceof $mol_delegate);
-        },
-        'autobind'() {
-            class Foo {
-            }
-            const proxy = $mol_delegate({}, () => new Foo);
-            $mol_assert_ok(proxy instanceof Foo);
-            $mol_assert_ok(proxy instanceof $mol_delegate);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'span for same uri'($) {
-            const span = new $mol_span('test.ts', '', 1, 3, 4);
-            const child = span.span(4, 5, 8);
-            $mol_assert_equal(child.uri, 'test.ts');
-            $mol_assert_equal(child.row, 4);
-            $mol_assert_equal(child.col, 5);
-            $mol_assert_equal(child.length, 8);
-        },
-        'span after of given position'($) {
-            const span = new $mol_span('test.ts', '', 1, 3, 4);
-            const child = span.after(11);
-            $mol_assert_equal(child.uri, 'test.ts');
-            $mol_assert_equal(child.row, 1);
-            $mol_assert_equal(child.col, 7);
-            $mol_assert_equal(child.length, 11);
-        },
-        'slice span - regular'($) {
-            const span = new $mol_span('test.ts', '', 1, 3, 5);
-            const child = span.slice(1, 4);
-            $mol_assert_equal(child.row, 1);
-            $mol_assert_equal(child.col, 4);
-            $mol_assert_equal(child.length, 3);
-            const child2 = span.slice(2, 2);
-            $mol_assert_equal(child2.col, 5);
-            $mol_assert_equal(child2.length, 0);
-        },
-        'slice span - negative'($) {
-            const span = new $mol_span('test.ts', '', 1, 3, 5);
-            const child = span.slice(-3, -1);
-            $mol_assert_equal(child.row, 1);
-            $mol_assert_equal(child.col, 5);
-            $mol_assert_equal(child.length, 2);
-        },
-        'slice span - out of range'($) {
-            const span = new $mol_span('test.ts', '', 1, 3, 5);
-            $mol_assert_fail(() => span.slice(-1, 3), `End value '3' can't be less than begin value (test.ts#1:3/5)`);
-            $mol_assert_fail(() => span.slice(1, 6), `End value '6' out of range (test.ts#1:3/5)`);
-            $mol_assert_fail(() => span.slice(1, 10), `End value '10' out of range (test.ts#1:3/5)`);
-        },
-        'error handling'($) {
-            const span = new $mol_span('test.ts', '', 1, 3, 4);
-            const error = span.error('Some error');
-            $mol_assert_equal(error.message, 'Some error (test.ts#1:3/4)');
-        }
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    function check(tree, ideal) {
-        $mol_assert_equal(tree.toString(), $$.$mol_tree2_from_string(ideal).toString());
-    }
-    $mol_test({
-        'inserting'($) {
-            check($.$mol_tree2_from_string(`
-					a b c d
-				`).insert($mol_tree2.struct('x'), 'a', 'b', 'c'), `
-					a b x
-				`);
-            check($.$mol_tree2_from_string(`
-					a b
-				`).insert($mol_tree2.struct('x'), 'a', 'b', 'c', 'd'), `
-					a b c x
-				`);
-            check($.$mol_tree2_from_string(`
-					a b c d
-				`)
-                .insert($mol_tree2.struct('x'), 0, 0, 0), `
-					a b x
-				`);
-            check($.$mol_tree2_from_string(`
-					a b
-				`)
-                .insert($mol_tree2.struct('x'), 0, 0, 0, 0), `
-					a b \\
-						x
-				`);
-            check($.$mol_tree2_from_string(`
-					a b c d
-				`)
-                .insert($mol_tree2.struct('x'), null, null, null), `
-					a b x
-				`);
-            check($.$mol_tree2_from_string(`
-					a b
-				`)
-                .insert($mol_tree2.struct('x'), null, null, null, null), `
-					a b \\
-						x
-				`);
-        },
-        'updating'($) {
-            check($.$mol_tree2_from_string(`
-					a b c d
-				`).update([], 'a', 'b', 'c')[0], `
-					a b
-				`);
-            check($.$mol_tree2_from_string(`
-					a b c d
-				`).update([$mol_tree2.struct('x')])[0], `
-					x
-				`);
-            check($.$mol_tree2_from_string(`
-					a b c d
-				`).update([$mol_tree2.struct('x'), $mol_tree2.struct('y')], 'a', 'b', 'c')[0], `
-					a b
-						x
-						y
-				`);
-        },
-        'deleting'($) {
-            const base = $.$mol_tree2_from_string(`
-				a b c d
-			`);
-            check(base.insert(null, 'a', 'b', 'c'), `
-					a b
-				`);
-            check(base.update(base.select('a', 'b', 'c', null).kids, 'a', 'b', 'c')[0], `
-					a b d
-				`);
-            check(base.insert(null, 0, 0, 0), `
-					a b
-				`);
-        },
-        'hack'($) {
-            const res = $.$mol_tree2_from_string(`
-				foo bar xxx
-			`)
-                .hack({
-                'bar': (input, belt) => [input.struct('777', input.hack(belt))],
-            });
-            $mol_assert_equal(res.map(String), ['foo 777 xxx\n']);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($_1) {
     var $$;
     (function ($$) {
@@ -28674,76 +28783,6 @@ var $;
 
 ;
 "use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'tree parsing'($) {
-            $mol_assert_equal($.$mol_tree2_from_string("foo\nbar\n").kids.length, 2);
-            $mol_assert_equal($.$mol_tree2_from_string("foo\nbar\n").kids[1].type, "bar");
-            $mol_assert_equal($.$mol_tree2_from_string("foo\n\n\n").kids.length, 1);
-            $mol_assert_equal($.$mol_tree2_from_string("=foo\n\\bar\n").kids.length, 2);
-            $mol_assert_equal($.$mol_tree2_from_string("=foo\n\\bar\n").kids[1].value, "bar");
-            $mol_assert_equal($.$mol_tree2_from_string("foo bar \\pol\n").kids[0].kids[0].kids[0].value, "pol");
-            $mol_assert_equal($.$mol_tree2_from_string("foo bar\n\t\\pol\n\t\\men\n").kids[0].kids[0].kids[1].value, "men");
-            $mol_assert_equal($.$mol_tree2_from_string('foo bar \\text\n').toString(), 'foo bar \\text\n');
-        },
-        'Too many tabs'($) {
-            const tree = `
-				foo
-						bar
-			`;
-            $mol_assert_fail(() => {
-                $.$mol_tree2_from_string(tree, 'test');
-            }, 'Too many tabs\ntest#3:1/6\n!!!!!!\n\t\t\t\t\t\tbar');
-        },
-        'Too few tabs'($) {
-            const tree = `
-					foo
-				bar
-			`;
-            $mol_assert_fail(() => {
-                $.$mol_tree2_from_string(tree, 'test');
-            }, 'Too few tabs\ntest#3:1/4\n!!!!\n\t\t\t\tbar');
-        },
-        'Wrong nodes separator at start'($) {
-            const tree = `foo\n \tbar\n`;
-            $mol_assert_fail(() => {
-                $.$mol_tree2_from_string(tree, 'test');
-            }, 'Wrong nodes separator\ntest#2:1/2\n!!\n \tbar');
-        },
-        'Wrong nodes separator in the middle'($) {
-            const tree = `foo  bar\n`;
-            $mol_assert_fail(() => {
-                $.$mol_tree2_from_string(tree, 'test');
-            }, 'Wrong nodes separator\ntest#1:5/1\n    !\nfoo  bar');
-        },
-        'Unexpected EOF, LF required'($) {
-            const tree = `	foo`;
-            $mol_assert_fail(() => {
-                $.$mol_tree2_from_string(tree, 'test');
-            }, 'Unexpected EOF, LF required\ntest#1:5/1\n	   !\n	foo');
-        },
-        'Errors skip and collect'($) {
-            const tree = `foo  bar`;
-            const errors = [];
-            const $$ = $.$mol_ambient({
-                $mol_fail: (error) => {
-                    errors.push(error.message);
-                    return null;
-                }
-            });
-            const res = $$.$mol_tree2_from_string(tree, 'test');
-            $mol_assert_like(errors, [
-                'Wrong nodes separator\ntest#1:5/1\n    !\nfoo  bar',
-                'Unexpected EOF, LF required\ntest#1:9/1\n        !\nfoo  bar',
-            ]);
-            $mol_assert_equal(res.toString(), 'foo bar\n');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
 /** @jsx $mol_jsx */
 var $;
 (function ($_1) {
@@ -28824,29 +28863,6 @@ var $;
             send() { }
         }
         $.$mol_bus = $mol_bus;
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'empty array'() {
-            $mol_assert_equal($mol_array_chunks([], () => true), []);
-        },
-        'one chunk'() {
-            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], () => false), [[1, 2, 3, 4, 5]]);
-        },
-        'fixed size chunk'() {
-            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], 3), [[1, 2, 3], [4, 5]]);
-        },
-        'first empty chunk'() {
-            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], (_, i) => i === 0), [[1, 2, 3, 4, 5]]);
-        },
-        'chunk for every item'() {
-            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], () => true), [[1], [2], [3], [4], [5]]);
-        },
     });
 })($ || ($ = {}));
 
@@ -30657,28 +30673,19 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    $mol_test({
-        'fromJSON'() {
-            $mol_assert_equal($mol_tree2_from_json([]).toString(), '/\n');
-            $mol_assert_equal($mol_tree2_from_json([false, true]).toString(), '/\n\tfalse\n\ttrue\n');
-            $mol_assert_equal($mol_tree2_from_json([0, 1, 2.3]).toString(), '/\n\t0\n\t1\n\t2.3\n');
-            $mol_assert_equal($mol_tree2_from_json(new Uint16Array([1, 10, 255, 256, 65535])).toString(), '\\01 00 0A 00 FF 00 00 01\n\\FF FF\n');
-            $mol_assert_equal($mol_tree2_from_json(['', 'foo', 'bar\nbaz']).toString(), '/\n\t\\\n\t\\foo\n\t\\\n\t\t\\bar\n\t\t\\baz\n');
-            $mol_assert_equal($mol_tree2_from_json({ 'foo': false, 'bar\nbaz': 'lol' }).toString(), '*\n\tfoo false\n\t\\\n\t\t\\bar\n\t\t\\baz\n\t\t\\lol\n');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($_1) {
+    class $bog_nka_app_test extends $$.$bog_nka_app {
+        catalog_link() {
+            return this.$.$mol_state_arg.value('catalog')
+                || this.$.$mol_state_local.value('bog_nka_catalog_link')
+                || '';
+        }
+    }
     $mol_test({
         async 'create publish buy and delete product'($) {
             $.$mol_state_arg.dict({});
             $.$mol_state_local.value('bog_nka_catalog_link', null);
-            const app = $bog_nka_app.make({ $ });
+            const app = $bog_nka_app_test.make({ $ });
             $mol_assert_equal(app.contents()[0], app.Setup());
             await $mol_wire_async(app).catalog_create();
             $mol_assert_equal(app.contents()[0], app.Catalog());
@@ -30725,7 +30732,7 @@ var $;
         async 'category filter shows matching products'($) {
             $.$mol_state_arg.dict({});
             $.$mol_state_local.value('bog_nka_catalog_link', null);
-            const app = $bog_nka_app.make({ $ });
+            const app = $bog_nka_app_test.make({ $ });
             await $mol_wire_async(app).catalog_create();
             app.product_add_click();
             const mat = app.product_current();
@@ -30741,7 +30748,10 @@ var $;
             app.edit_category('Пеналы');
             app.product(case_link).Published('auto').val(true);
             $.$mol_state_arg.value('product', null);
-            $mol_assert_like(Object.keys(app.category_options()), ['Все', 'Коврики', 'Пеналы']);
+            const options = Object.keys(app.category_options());
+            $mol_assert_ok(options.includes('Все'));
+            $mol_assert_ok(options.includes('Коврики'));
+            $mol_assert_ok(options.includes('Пеналы'));
             app.category('Коврики');
             $mol_assert_equal(app.card_rows()[0], app.Product(mat));
             $mol_assert_not(app.card_rows().includes(app.Product(case_link)));

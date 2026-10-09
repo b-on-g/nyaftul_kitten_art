@@ -47082,7 +47082,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_nka_catalog_ref = "";
+    const $bog_nka_catalog_ref = "Ds8CZhAg_4ZdFN920";
 }
 
 declare namespace $ {
