@@ -33297,11 +33297,20 @@ var $;
                     return '';
                 return this.product_visible(link) ? link : '';
             }
+            category_names() {
+                const saved = this.product_links()
+                    .map(link => this.product(link.str).Category()?.val()?.trim() ?? '')
+                    .filter(Boolean);
+                return [...new Set(['Коврики', 'Пеналы', 'Открытки', 'Стикеры', 'Брелоки', 'Другое', ...saved])];
+            }
             category_options() {
                 const categories = this.product_links()
                     .filter(link => this.product_visible(link.str))
                     .map(link => this.product(link.str).Category()?.val()?.trim() ?? '');
                 return Object.fromEntries(['Все', ...new Set(categories.filter(Boolean).sort())].map(name => [name, name]));
+            }
+            category_edit_options() {
+                return Object.fromEntries(this.category_names().map(name => [name, name]));
             }
             card_rows() {
                 const cards = this.product_links()
@@ -33345,6 +33354,11 @@ var $;
             }
             sold_out_uri() {
                 return this.catalog()?.Sold_out()?.remote()?.uri() ?? '';
+            }
+            sold_out_controls() {
+                return this.sold_out_uri()
+                    ? [this.Sold_out_preview(), this.Sold_out_upload()]
+                    : [this.Sold_out_upload()];
             }
             sold_out_files(next) {
                 if (next?.length && this.can_edit())
@@ -33395,6 +33409,11 @@ var $;
             }
             photo_rows() {
                 return (this.product(this.product_current()).Photos()?.items() ?? []).map(link => this.Photo_box(link.str));
+            }
+            photo_edit_rows() {
+                const previews = (this.product(this.product_current()).Photos()?.items() ?? [])
+                    .map(link => this.Photo_preview(link.str));
+                return [this.Photos_upload(), ...previews];
             }
             photo_content(link) {
                 return this.can_edit()

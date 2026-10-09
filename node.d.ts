@@ -44499,7 +44499,11 @@ declare namespace $.$$ {
         can_edit(): boolean;
         product_visible(link: string): boolean;
         product_current(): string;
+        category_names(): string[];
         category_options(): {
+            [k: string]: string;
+        };
+        category_edit_options(): {
             [k: string]: string;
         };
         card_rows(): ($mol_button_minor | $.$mol_link)[];
@@ -44511,6 +44515,7 @@ declare namespace $.$$ {
         product_stock(link: string): "" | "Нет в наличии";
         cover_content(link: string): ($.$mol_image | $.$mol_text)[];
         sold_out_uri(): string;
+        sold_out_controls(): ($.$mol_image | $.$mol_button_open)[];
         sold_out_files(next?: readonly File[]): never[];
         sold_out_save(file: File): void;
         detail_title(): string;
@@ -44519,6 +44524,7 @@ declare namespace $.$$ {
         detail_rows(): $mol_view[];
         buy_uri(): string;
         photo_rows(): $mol_view[];
+        photo_edit_rows(): ($.$mol_image | $.$mol_button_open)[];
         photo_content(link: string): ($mol_button_minor | $.$mol_image)[];
         photo_uri(link: string): string;
         photo_files(next?: readonly File[]): never[];
