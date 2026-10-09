@@ -22511,7 +22511,12 @@ var $;
             coowner_save_click() {
                 if (!this.coowner_enabled())
                     return;
-                const pass = $giper_baza_auth_pass.from(this.coowner_key().trim());
+                $mol_wire_async(this).coowner_save(this.coowner_key().trim());
+            }
+            coowner_save(key) {
+                if (!this.can_edit())
+                    return;
+                const pass = $giper_baza_auth_pass.from(key);
                 this.catalog().land().give(pass, $giper_baza_rank_rule);
                 this.catalog().land().units_saving();
                 this.coowner_key('');

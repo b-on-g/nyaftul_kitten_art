@@ -49844,6 +49844,7 @@ declare namespace $.$$ {
         coowner_key(next?: string): string;
         coowner_enabled(): boolean;
         coowner_save_click(): void;
+        coowner_save(key: string): void;
         publish_enabled(): boolean;
         publish_click(): void;
         delete_pending(next?: boolean): boolean;
