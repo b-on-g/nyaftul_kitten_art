@@ -135,8 +135,6 @@
 	pack player git \https://github.com/giper-dev/player.git
 	pack search git \https://github.com/giper-dev/search.git
 	pack web git \https://github.com/giper-dev/web.git
-\/giper/baza/glob
-	deploy \giper/baza/glob/glob.baza
 \/hyoo
 	pack about git \https://github.com/hyoo-ru/about.hyoo.ru.git
 	pack artist git \https://github.com/hyoo-ru/artist.hyoo.ru.git
@@ -204,6 +202,8 @@
 	pack intern git \https://github.com/hyoo-ru/intern.hyoo.ru.git
 \/giper/baza/file
 	include \/mol/offline/install
+\/giper/baza/glob
+	deploy \giper/baza/glob/glob.baza
 \/giper/baza/app
 	deploy \/giper/baza/logo/logo.svg
 	deploy \/giper/baza/logo/logo-512.png

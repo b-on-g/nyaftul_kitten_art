@@ -631,6 +631,10 @@ $mol_icon_plus $mol_icon path \M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z
 
 $mol_row $mol_view
 
+$mol_icon_arrow_left $mol_icon path \M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z
+
+$mol_icon_close $mol_icon path \M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z
+
 $mol_icon_menu $mol_icon path \M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z
 
 $mol_icon_menu_down $mol_icon path \M7,10L12,15L17,10H7Z
@@ -847,6 +851,15 @@ $bog_nka_app $mol_page
 				name \Telegram владелицы
 				Content <= Telegram_input $mol_string
 					value? <=> edit_telegram? \
+			<= Coowner_field $mol_form_field
+				name \Ключ второго администратора
+				Content <= Coowner_input $mol_string
+					value? <=> coowner_key? \
+		buttons /
+			<= Coowner_save $mol_button_major
+				title \Выдать доступ
+				enabled <= coowner_enabled false
+				click? <=> coowner_save_click? null
 	Catalog $mol_list
 		rows /
 			<= Filter $mol_switch
@@ -860,9 +873,13 @@ $bog_nka_app $mol_page
 						sub /
 							<= Card* $mol_card
 								content /
-									<= Cover* $mol_image
-										uri <= cover_uri* \
-										title <= product_title* \
+									<= Cover_box* $mol_view
+										sub <= cover_content* /
+											<= Cover* $mol_image
+												uri <= cover_uri* \
+												title <= product_title* \
+											<= Sold_out* $mol_text
+												text \Нет в наличии
 									<= product_title* \
 									<= product_price* \
 									<= product_stock* \
@@ -879,9 +896,21 @@ $bog_nka_app $mol_page
 					product null
 			<= Gallery $mol_row
 				sub <= photo_rows /
-					<= Photo* $mol_image
-						uri <= photo_uri* \
-						title <= detail_title \
+					<= Photo_box* $mol_view
+						sub <= photo_content* /
+							<= Photo* $mol_image
+								uri <= photo_uri* \
+								title <= detail_title \
+							<= Photo_up* $mol_button_minor
+								hint \Сдвинуть фото влево
+								click? <=> photo_up_click*? null
+								sub /
+									<= Photo_up_icon* $mol_icon_arrow_left
+							<= Photo_delete* $mol_button_minor
+								hint \Удалить фото
+								click? <=> photo_delete_click*? null
+								sub /
+									<= Photo_delete_icon* $mol_icon_close
 			<= Detail_title $mol_text
 				text <= detail_title \
 			<= Detail_price $mol_text
@@ -920,12 +949,26 @@ $bog_nka_app $mol_page
 						name \Фотографии
 						Content <= Photos_upload $mol_button_open
 							accept \image/jpeg,image/png,image/webp
+							multiple true
 							files? <=> photo_files? /File
 				buttons /
 					<= Publish $mol_button_major
 						title \Опубликовать
 						enabled <= publish_enabled false
 						click? <=> publish_click? null
+					<= Delete $mol_button_minor
+						title \Удалить товар
+						click? <=> delete_click? null
+	Confirm_delete $mol_list
+		rows /
+			<= Delete_warning $mol_text
+				text \Удалить товар без возможности восстановления?
+			<= Delete_confirm $mol_button_major
+				title \Удалить
+				click? <=> delete_confirm_click? null
+			<= Delete_cancel $mol_button_minor
+				title \Отмена
+				click? <=> delete_cancel_click? null
 
 $mol_book2 $mol_scroll
 	menu_title \
@@ -1006,8 +1049,6 @@ $mol_nav $mol_plugin
 	event *
 		^
 		keydown? <=> event_key? null
-
-$mol_icon_close $mol_icon path \M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z
 
 $mol_search $mol_pop
 	query? \

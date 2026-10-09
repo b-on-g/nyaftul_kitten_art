@@ -10909,6 +10909,30 @@ var $;
 
 
 ;
+	($.$mol_icon_arrow_left) = class $mol_icon_arrow_left extends ($.$mol_icon) {
+		path(){
+			return "M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_close) = class $mol_icon_close extends ($.$mol_icon) {
+		path(){
+			return "M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_menu) = class $mol_icon_menu extends ($.$mol_icon) {
 		path(){
 			return "M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z";
@@ -12012,6 +12036,35 @@ var $;
 			(obj.Content) = () => ((this.Telegram_input()));
 			return obj;
 		}
+		coowner_key(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Coowner_input(){
+			const obj = new this.$.$mol_string();
+			(obj.value) = (next) => ((this.coowner_key(next)));
+			return obj;
+		}
+		Coowner_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ("Ключ второго администратора");
+			(obj.Content) = () => ((this.Coowner_input()));
+			return obj;
+		}
+		coowner_enabled(){
+			return false;
+		}
+		coowner_save_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Coowner_save(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Выдать доступ");
+			(obj.enabled) = () => ((this.coowner_enabled()));
+			(obj.click) = (next) => ((this.coowner_save_click(next)));
+			return obj;
+		}
 		category(next){
 			if(next !== undefined) return next;
 			return "Все";
@@ -12040,6 +12093,19 @@ var $;
 			(obj.title) = () => ((this.product_title(id)));
 			return obj;
 		}
+		Sold_out(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ("Нет в наличии");
+			return obj;
+		}
+		cover_content(id){
+			return [(this.Cover(id)), (this.Sold_out(id))];
+		}
+		Cover_box(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.cover_content(id)));
+			return obj;
+		}
 		product_price(id){
 			return "";
 		}
@@ -12049,7 +12115,7 @@ var $;
 		Card(id){
 			const obj = new this.$.$mol_card();
 			(obj.content) = () => ([
-				(this.Cover(id)), 
+				(this.Cover_box(id)), 
 				(this.product_title(id)), 
 				(this.product_price(id)), 
 				(this.product_stock(id))
@@ -12103,8 +12169,50 @@ var $;
 			(obj.title) = () => ((this.detail_title()));
 			return obj;
 		}
+		photo_up_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Photo_up_icon(id){
+			const obj = new this.$.$mol_icon_arrow_left();
+			return obj;
+		}
+		Photo_up(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Сдвинуть фото влево");
+			(obj.click) = (next) => ((this.photo_up_click(id, next)));
+			(obj.sub) = () => ([(this.Photo_up_icon(id))]);
+			return obj;
+		}
+		photo_delete_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Photo_delete_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Photo_delete(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Удалить фото");
+			(obj.click) = (next) => ((this.photo_delete_click(id, next)));
+			(obj.sub) = () => ([(this.Photo_delete_icon(id))]);
+			return obj;
+		}
+		photo_content(id){
+			return [
+				(this.Photo(id)), 
+				(this.Photo_up(id)), 
+				(this.Photo_delete(id))
+			];
+		}
+		Photo_box(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.photo_content(id)));
+			return obj;
+		}
 		photo_rows(){
-			return [(this.Photo(id))];
+			return [(this.Photo_box(id))];
 		}
 		Gallery(){
 			const obj = new this.$.$mol_row();
@@ -12229,6 +12337,7 @@ var $;
 		Photos_upload(){
 			const obj = new this.$.$mol_button_open();
 			(obj.accept) = () => ("image/jpeg,image/png,image/webp");
+			(obj.multiple) = () => (true);
 			(obj.files) = (next) => ((this.photo_files(next)));
 			return obj;
 		}
@@ -12252,6 +12361,16 @@ var $;
 			(obj.click) = (next) => ((this.publish_click(next)));
 			return obj;
 		}
+		delete_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Delete(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Удалить товар");
+			(obj.click) = (next) => ((this.delete_click(next)));
+			return obj;
+		}
 		Editor(){
 			const obj = new this.$.$mol_form();
 			(obj.body) = () => ([
@@ -12262,7 +12381,7 @@ var $;
 				(this.Available_field()), 
 				(this.Photos_field())
 			]);
-			(obj.buttons) = () => ([(this.Publish())]);
+			(obj.buttons) = () => ([(this.Publish()), (this.Delete())]);
 			return obj;
 		}
 		detail_rows(){
@@ -12276,6 +12395,31 @@ var $;
 				(this.Unavailable()), 
 				(this.Editor())
 			];
+		}
+		Delete_warning(){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ("Удалить товар без возможности восстановления?");
+			return obj;
+		}
+		delete_confirm_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Delete_confirm(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Удалить");
+			(obj.click) = (next) => ((this.delete_confirm_click(next)));
+			return obj;
+		}
+		delete_cancel_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Delete_cancel(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Отмена");
+			(obj.click) = (next) => ((this.delete_cancel_click(next)));
+			return obj;
 		}
 		Title(){
 			return null;
@@ -12296,7 +12440,8 @@ var $;
 		}
 		Settings(){
 			const obj = new this.$.$mol_form();
-			(obj.body) = () => ([(this.Telegram_field())]);
+			(obj.body) = () => ([(this.Telegram_field()), (this.Coowner_field())]);
+			(obj.buttons) = () => ([(this.Coowner_save())]);
 			return obj;
 		}
 		Catalog(){
@@ -12309,6 +12454,15 @@ var $;
 			(obj.rows) = () => ((this.detail_rows()));
 			return obj;
 		}
+		Confirm_delete(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([
+				(this.Delete_warning()), 
+				(this.Delete_confirm()), 
+				(this.Delete_cancel())
+			]);
+			return obj;
+		}
 	};
 	($mol_mem(($.$bog_nka_app.prototype), "settings_click"));
 	($mol_mem(($.$bog_nka_app.prototype), "Settings_icon"));
@@ -12319,9 +12473,16 @@ var $;
 	($mol_mem(($.$bog_nka_app.prototype), "edit_telegram"));
 	($mol_mem(($.$bog_nka_app.prototype), "Telegram_input"));
 	($mol_mem(($.$bog_nka_app.prototype), "Telegram_field"));
+	($mol_mem(($.$bog_nka_app.prototype), "coowner_key"));
+	($mol_mem(($.$bog_nka_app.prototype), "Coowner_input"));
+	($mol_mem(($.$bog_nka_app.prototype), "Coowner_field"));
+	($mol_mem(($.$bog_nka_app.prototype), "coowner_save_click"));
+	($mol_mem(($.$bog_nka_app.prototype), "Coowner_save"));
 	($mol_mem(($.$bog_nka_app.prototype), "category"));
 	($mol_mem(($.$bog_nka_app.prototype), "Filter"));
 	($mol_mem_key(($.$bog_nka_app.prototype), "Cover"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "Sold_out"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "Cover_box"));
 	($mol_mem_key(($.$bog_nka_app.prototype), "Card"));
 	($mol_mem_key(($.$bog_nka_app.prototype), "Product"));
 	($mol_mem(($.$bog_nka_app.prototype), "product_add_click"));
@@ -12330,6 +12491,13 @@ var $;
 	($mol_mem(($.$bog_nka_app.prototype), "Cards"));
 	($mol_mem(($.$bog_nka_app.prototype), "Back"));
 	($mol_mem_key(($.$bog_nka_app.prototype), "Photo"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "photo_up_click"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "Photo_up_icon"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "Photo_up"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "photo_delete_click"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "Photo_delete_icon"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "Photo_delete"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "Photo_box"));
 	($mol_mem(($.$bog_nka_app.prototype), "Gallery"));
 	($mol_mem(($.$bog_nka_app.prototype), "Detail_title"));
 	($mol_mem(($.$bog_nka_app.prototype), "Detail_price"));
@@ -12356,12 +12524,41 @@ var $;
 	($mol_mem(($.$bog_nka_app.prototype), "Photos_field"));
 	($mol_mem(($.$bog_nka_app.prototype), "publish_click"));
 	($mol_mem(($.$bog_nka_app.prototype), "Publish"));
+	($mol_mem(($.$bog_nka_app.prototype), "delete_click"));
+	($mol_mem(($.$bog_nka_app.prototype), "Delete"));
 	($mol_mem(($.$bog_nka_app.prototype), "Editor"));
+	($mol_mem(($.$bog_nka_app.prototype), "Delete_warning"));
+	($mol_mem(($.$bog_nka_app.prototype), "delete_confirm_click"));
+	($mol_mem(($.$bog_nka_app.prototype), "Delete_confirm"));
+	($mol_mem(($.$bog_nka_app.prototype), "delete_cancel_click"));
+	($mol_mem(($.$bog_nka_app.prototype), "Delete_cancel"));
 	($mol_mem(($.$bog_nka_app.prototype), "Setup"));
 	($mol_mem(($.$bog_nka_app.prototype), "Settings"));
 	($mol_mem(($.$bog_nka_app.prototype), "Catalog"));
 	($mol_mem(($.$bog_nka_app.prototype), "Detail"));
+	($mol_mem(($.$bog_nka_app.prototype), "Confirm_delete"));
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    let $giper_baza_slot_kind;
+    (function ($giper_baza_slot_kind) {
+        /** Free Unit Slot */
+        $giper_baza_slot_kind[$giper_baza_slot_kind["free"] = 0] = "free";
+        /** Land header for the following parts. */
+        $giper_baza_slot_kind[$giper_baza_slot_kind["land"] = 76] = "land";
+        /** Unit of data. */
+        $giper_baza_slot_kind[$giper_baza_slot_kind["sand"] = 252] = "sand";
+        /** Rights/Keys sharing. */
+        $giper_baza_slot_kind[$giper_baza_slot_kind["gift"] = 253] = "gift";
+        /** Sign for hash list. */
+        $giper_baza_slot_kind[$giper_baza_slot_kind["seal"] = 254] = "seal";
+        /** Public key. */
+        $giper_baza_slot_kind[$giper_baza_slot_kind["pass"] = 255] = "pass";
+    })($giper_baza_slot_kind = $.$giper_baza_slot_kind || ($.$giper_baza_slot_kind = {}));
+})($ || ($ = {}));
 
 ;
 "use strict";
@@ -12426,111 +12623,6 @@ var $;
         return $mol_base64_decode(str.replace(/æ/g, '+').replace(/Æ/g, '/'));
     }
     $.$mol_base64_ae_decode = $mol_base64_ae_decode;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    let sponge = new Uint32Array(80);
-    /** Fast small sync SHA-1 (20 bytes, 160 bits) */
-    function $mol_crypto2_hash(input) {
-        const data = input instanceof Uint8Array
-            ? input
-            : new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
-        const bits = data.byteLength << 3;
-        const kbits = bits >> 5;
-        const kword = 0x80 << (24 - bits & 0b11111);
-        const bytes = 16 + ((bits + 64) >>> 9 << 4);
-        const klens = bytes - 1;
-        const wlen = data.byteLength >> 2 << 2;
-        let tail = 0;
-        for (let i = wlen; i < data.length; ++i) {
-            tail |= data[i] << ((3 - i & 0b11) << 3);
-        }
-        // Initial
-        const hash = new Int32Array([1732584193, -271733879, -1732584194, 271733878, -1009589776]);
-        // Digest
-        for (let i = 0; i < bytes; i += 16) {
-            let h0 = hash[0];
-            let h1 = hash[1];
-            let h2 = hash[2];
-            let h3 = hash[3];
-            let h4 = hash[4];
-            for (let j = 0; j < 16; ++j) {
-                const k = i + j;
-                if (k === klens) {
-                    sponge[j] = bits;
-                }
-                else {
-                    const pos = k << 2;
-                    let word = pos === wlen ? tail :
-                        pos > wlen ? 0 :
-                            (data[pos] << 24 | data[pos + 1] << 16 | data[pos + 2] << 8 | data[pos + 3]);
-                    if (k === kbits)
-                        word |= kword;
-                    sponge[j] = word;
-                }
-                const next = ((h1 & h2 | ~h1 & h3) + 1518500249 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
-                h4 = h3;
-                h3 = h2;
-                h2 = (h1 << 30) | (h1 >>> 2);
-                h1 = h0;
-                h0 = next;
-            }
-            for (let j = 16; j < 20; ++j) {
-                const shuffle = sponge[j - 3] ^ sponge[j - 8] ^ sponge[j - 14] ^ sponge[j - 16];
-                sponge[j] = shuffle << 1 | shuffle >>> 31;
-                const next = ((h1 & h2 | ~h1 & h3) + 1518500249 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
-                h4 = h3;
-                h3 = h2;
-                h2 = (h1 << 30) | (h1 >>> 2);
-                h1 = h0;
-                h0 = next;
-            }
-            for (let j = 20; j < 40; ++j) {
-                const shuffle = sponge[j - 3] ^ sponge[j - 8] ^ sponge[j - 14] ^ sponge[j - 16];
-                sponge[j] = shuffle << 1 | shuffle >>> 31;
-                const next = ((h1 ^ h2 ^ h3) + 1859775393 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
-                h4 = h3;
-                h3 = h2;
-                h2 = (h1 << 30) | (h1 >>> 2);
-                h1 = h0;
-                h0 = next;
-            }
-            for (let j = 40; j < 60; ++j) {
-                const shuffle = sponge[j - 3] ^ sponge[j - 8] ^ sponge[j - 14] ^ sponge[j - 16];
-                sponge[j] = shuffle << 1 | shuffle >>> 31;
-                const next = ((h1 & h2 | h1 & h3 | h2 & h3) - 1894007588 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
-                h4 = h3;
-                h3 = h2;
-                h2 = (h1 << 30) | (h1 >>> 2);
-                h1 = h0;
-                h0 = next;
-            }
-            for (let j = 60; j < 80; ++j) {
-                const shuffle = sponge[j - 3] ^ sponge[j - 8] ^ sponge[j - 14] ^ sponge[j - 16];
-                sponge[j] = shuffle << 1 | shuffle >>> 31;
-                const next = ((h1 ^ h2 ^ h3) - 899497514 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
-                h4 = h3;
-                h3 = h2;
-                h2 = (h1 << 30) | (h1 >>> 2);
-                h1 = h0;
-                h0 = next;
-            }
-            hash[0] += h0;
-            hash[1] += h1;
-            hash[2] += h2;
-            hash[3] += h3;
-            hash[4] += h4;
-        }
-        for (let i = 0; i < 20; ++i) {
-            const word = hash[i];
-            hash[i] = word << 24 | word << 8 & 0xFF0000 | word >>> 8 & 0xFF00 | word >>> 24 & 0xFF; // BE -> LE
-        }
-        return new Uint8Array(hash.buffer);
-    }
-    $.$mol_crypto2_hash = $mol_crypto2_hash;
 })($ || ($ = {}));
 
 ;
@@ -12675,6 +12767,293 @@ var $;
         }
     }
     $.$mol_buffer = $mol_buffer;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_base64_url_encode(buffer) {
+        return buffer.toBase64({ alphabet: 'base64url', omitPadding: true });
+    }
+    $.$mol_base64_url_encode = $mol_base64_url_encode;
+    function $mol_base64_url_decode(str) {
+        return Uint8Array.fromBase64(str, { alphabet: 'base64url' });
+    }
+    $.$mol_base64_url_decode = $mol_base64_url_decode;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_base64_url_encode_node(str) {
+        if (!str)
+            return '';
+        const buf = Buffer.isBuffer(str) ? str : Buffer.from(str);
+        return buf.toString('base64url').replace(/=/g, '');
+    }
+    $.$mol_base64_url_encode_node = $mol_base64_url_encode_node;
+    if (!('toBase64' in Uint8Array.prototype)) {
+        $.$mol_base64_url_encode = $mol_base64_url_encode_node;
+    }
+    function $mol_base64_url_decode_node(str) {
+        // without Uint8Array breaks $mol_compare_deep
+        const buffer = Buffer.from(str, 'base64url');
+        return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+    }
+    $.$mol_base64_url_decode_node = $mol_base64_url_decode_node;
+    if (!('fromBase64' in Uint8Array)) {
+        $.$mol_base64_url_decode = $mol_base64_url_decode_node;
+    }
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Base class for crypto keys. */
+    class $mol_crypto2_key extends $mol_buffer {
+        static size_str = 43;
+        static size_bin = 32;
+        /** Kakes key from different params. */
+        static from(serial) {
+            if (typeof serial === 'string') {
+                serial = new Uint8Array(serial.match(/.{43}/g)
+                    ?.flatMap(chunk => [...$mol_base64_url_decode(chunk)])
+                    ?? $mol_fail(new Error('Str key too short', { cause: {
+                            min: 43,
+                            real: serial.length,
+                        } })));
+            }
+            return super.from(serial);
+        }
+        /** Array view of public part. */
+        asArray() {
+            const size = this.constructor.size_bin;
+            if (this.byteLength < size) {
+                return $mol_fail(new Error('Bin key too short', { cause: {
+                        min: size,
+                        real: this.byteLength,
+                    } }));
+            }
+            return new Uint8Array(this.buffer, this.byteOffset, size);
+        }
+        /** String representation of public part. */
+        toString() {
+            return $mol_base64_url_encode(this.asArray());
+        }
+    }
+    __decorate([
+        $mol_memo.method
+    ], $mol_crypto2_key.prototype, "toString", null);
+    $.$mol_crypto2_key = $mol_crypto2_key;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_crypto_native = $node.crypto.webcrypto;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Derived debuggable error with stack */
+    function $mol_crypto_restack(error) {
+        error = new Error(error instanceof Error ? error.message : String(error), { cause: error });
+        $mol_fail_hidden(error);
+    }
+    $.$mol_crypto_restack = $mol_crypto_restack;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Ed25519 public key for sign verifying. */
+    class $mol_crypto2_auditor extends $mol_crypto2_key {
+        /** Native WebAPI public key. */
+        async native() {
+            return $mol_crypto_native.subtle.importKey('jwk', {
+                crv: "Ed25519",
+                ext: true,
+                key_ops: ['verify'],
+                kty: "OKP",
+                x: this.toString(),
+            }, "Ed25519", Boolean('extractable'), ['verify']).catch($mol_crypto_restack);
+        }
+        /** Verifies signature of data. */
+        async verify(data, sign) {
+            return await $mol_crypto_native.subtle.verify("Ed25519", await this.native(), sign, data).catch($mol_crypto_restack);
+        }
+    }
+    __decorate([
+        $mol_memo.method
+    ], $mol_crypto2_auditor.prototype, "native", null);
+    $.$mol_crypto2_auditor = $mol_crypto2_auditor;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** x25519 public key for data encryption. */
+    class $mol_crypto2_socket extends $mol_crypto2_key {
+        /** Native WebAPI public key. */
+        async native() {
+            return await $mol_crypto_native.subtle.importKey('jwk', {
+                crv: 'X25519',
+                ext: true,
+                kty: 'OKP',
+                key_ops: [],
+                x: this.toString(),
+            }, "X25519", true, []).catch($mol_crypto_restack);
+        }
+    }
+    __decorate([
+        $mol_memo.method
+    ], $mol_crypto2_socket.prototype, "native", null);
+    $.$mol_crypto2_socket = $mol_crypto2_socket;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Compose public key for verifying and encryption, based on Curve25519. */
+    class $mol_crypto2_public extends $mol_crypto2_key {
+        static size_str = 86;
+        static size_bin = 64;
+        /** Return Auditor part. */
+        auditor() {
+            return $mol_crypto2_auditor.from(this.asArray().subarray(0, 32));
+        }
+        /** Return Socket part. */
+        socket() {
+            return $mol_crypto2_socket.from(this.asArray().subarray(32, 64));
+        }
+        toString() {
+            return this.auditor().toString() + this.socket().toString();
+        }
+    }
+    __decorate([
+        $mol_memo.method
+    ], $mol_crypto2_public.prototype, "auditor", null);
+    __decorate([
+        $mol_memo.method
+    ], $mol_crypto2_public.prototype, "socket", null);
+    __decorate([
+        $mol_memo.method
+    ], $mol_crypto2_public.prototype, "toString", null);
+    $.$mol_crypto2_public = $mol_crypto2_public;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    let sponge = new Uint32Array(80);
+    /** Fast small sync SHA-1 (20 bytes, 160 bits) */
+    function $mol_crypto2_hash(input) {
+        const data = input instanceof Uint8Array
+            ? input
+            : new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
+        const bits = data.byteLength << 3;
+        const kbits = bits >> 5;
+        const kword = 0x80 << (24 - bits & 0b11111);
+        const bytes = 16 + ((bits + 64) >>> 9 << 4);
+        const klens = bytes - 1;
+        const wlen = data.byteLength >> 2 << 2;
+        let tail = 0;
+        for (let i = wlen; i < data.length; ++i) {
+            tail |= data[i] << ((3 - i & 0b11) << 3);
+        }
+        // Initial
+        const hash = new Int32Array([1732584193, -271733879, -1732584194, 271733878, -1009589776]);
+        // Digest
+        for (let i = 0; i < bytes; i += 16) {
+            let h0 = hash[0];
+            let h1 = hash[1];
+            let h2 = hash[2];
+            let h3 = hash[3];
+            let h4 = hash[4];
+            for (let j = 0; j < 16; ++j) {
+                const k = i + j;
+                if (k === klens) {
+                    sponge[j] = bits;
+                }
+                else {
+                    const pos = k << 2;
+                    let word = pos === wlen ? tail :
+                        pos > wlen ? 0 :
+                            (data[pos] << 24 | data[pos + 1] << 16 | data[pos + 2] << 8 | data[pos + 3]);
+                    if (k === kbits)
+                        word |= kword;
+                    sponge[j] = word;
+                }
+                const next = ((h1 & h2 | ~h1 & h3) + 1518500249 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
+                h4 = h3;
+                h3 = h2;
+                h2 = (h1 << 30) | (h1 >>> 2);
+                h1 = h0;
+                h0 = next;
+            }
+            for (let j = 16; j < 20; ++j) {
+                const shuffle = sponge[j - 3] ^ sponge[j - 8] ^ sponge[j - 14] ^ sponge[j - 16];
+                sponge[j] = shuffle << 1 | shuffle >>> 31;
+                const next = ((h1 & h2 | ~h1 & h3) + 1518500249 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
+                h4 = h3;
+                h3 = h2;
+                h2 = (h1 << 30) | (h1 >>> 2);
+                h1 = h0;
+                h0 = next;
+            }
+            for (let j = 20; j < 40; ++j) {
+                const shuffle = sponge[j - 3] ^ sponge[j - 8] ^ sponge[j - 14] ^ sponge[j - 16];
+                sponge[j] = shuffle << 1 | shuffle >>> 31;
+                const next = ((h1 ^ h2 ^ h3) + 1859775393 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
+                h4 = h3;
+                h3 = h2;
+                h2 = (h1 << 30) | (h1 >>> 2);
+                h1 = h0;
+                h0 = next;
+            }
+            for (let j = 40; j < 60; ++j) {
+                const shuffle = sponge[j - 3] ^ sponge[j - 8] ^ sponge[j - 14] ^ sponge[j - 16];
+                sponge[j] = shuffle << 1 | shuffle >>> 31;
+                const next = ((h1 & h2 | h1 & h3 | h2 & h3) - 1894007588 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
+                h4 = h3;
+                h3 = h2;
+                h2 = (h1 << 30) | (h1 >>> 2);
+                h1 = h0;
+                h0 = next;
+            }
+            for (let j = 60; j < 80; ++j) {
+                const shuffle = sponge[j - 3] ^ sponge[j - 8] ^ sponge[j - 14] ^ sponge[j - 16];
+                sponge[j] = shuffle << 1 | shuffle >>> 31;
+                const next = ((h1 ^ h2 ^ h3) - 899497514 + h4 + (sponge[j] >>> 0) + ((h0 << 5) | (h0 >>> 27))) | 0;
+                h4 = h3;
+                h3 = h2;
+                h2 = (h1 << 30) | (h1 >>> 2);
+                h1 = h0;
+                h0 = next;
+            }
+            hash[0] += h0;
+            hash[1] += h1;
+            hash[2] += h2;
+            hash[3] += h3;
+            hash[4] += h4;
+        }
+        for (let i = 0; i < 20; ++i) {
+            const word = hash[i];
+            hash[i] = word << 24 | word << 8 & 0xFF0000 | word >>> 8 & 0xFF00 | word >>> 24 & 0xFF; // BE -> LE
+        }
+        return new Uint8Array(hash.buffer);
+    }
+    $.$mol_crypto2_hash = $mol_crypto2_hash;
 })($ || ($ = {}));
 
 ;
@@ -12957,188 +13336,6 @@ var $;
     }
     $.$giper_baza_link_base = $giper_baza_link_base;
     $.$giper_baza_link_schema = $mol_schema_maybe($mol_schema_instance($giper_baza_link));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_base64_url_encode(buffer) {
-        return buffer.toBase64({ alphabet: 'base64url', omitPadding: true });
-    }
-    $.$mol_base64_url_encode = $mol_base64_url_encode;
-    function $mol_base64_url_decode(str) {
-        return Uint8Array.fromBase64(str, { alphabet: 'base64url' });
-    }
-    $.$mol_base64_url_decode = $mol_base64_url_decode;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_base64_url_encode_node(str) {
-        if (!str)
-            return '';
-        const buf = Buffer.isBuffer(str) ? str : Buffer.from(str);
-        return buf.toString('base64url').replace(/=/g, '');
-    }
-    $.$mol_base64_url_encode_node = $mol_base64_url_encode_node;
-    if (!('toBase64' in Uint8Array.prototype)) {
-        $.$mol_base64_url_encode = $mol_base64_url_encode_node;
-    }
-    function $mol_base64_url_decode_node(str) {
-        // without Uint8Array breaks $mol_compare_deep
-        const buffer = Buffer.from(str, 'base64url');
-        return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-    }
-    $.$mol_base64_url_decode_node = $mol_base64_url_decode_node;
-    if (!('fromBase64' in Uint8Array)) {
-        $.$mol_base64_url_decode = $mol_base64_url_decode_node;
-    }
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Base class for crypto keys. */
-    class $mol_crypto2_key extends $mol_buffer {
-        static size_str = 43;
-        static size_bin = 32;
-        /** Kakes key from different params. */
-        static from(serial) {
-            if (typeof serial === 'string') {
-                serial = new Uint8Array(serial.match(/.{43}/g)
-                    ?.flatMap(chunk => [...$mol_base64_url_decode(chunk)])
-                    ?? $mol_fail(new Error('Str key too short', { cause: {
-                            min: 43,
-                            real: serial.length,
-                        } })));
-            }
-            return super.from(serial);
-        }
-        /** Array view of public part. */
-        asArray() {
-            const size = this.constructor.size_bin;
-            if (this.byteLength < size) {
-                return $mol_fail(new Error('Bin key too short', { cause: {
-                        min: size,
-                        real: this.byteLength,
-                    } }));
-            }
-            return new Uint8Array(this.buffer, this.byteOffset, size);
-        }
-        /** String representation of public part. */
-        toString() {
-            return $mol_base64_url_encode(this.asArray());
-        }
-    }
-    __decorate([
-        $mol_memo.method
-    ], $mol_crypto2_key.prototype, "toString", null);
-    $.$mol_crypto2_key = $mol_crypto2_key;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_crypto_native = $node.crypto.webcrypto;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Derived debuggable error with stack */
-    function $mol_crypto_restack(error) {
-        error = new Error(error instanceof Error ? error.message : String(error), { cause: error });
-        $mol_fail_hidden(error);
-    }
-    $.$mol_crypto_restack = $mol_crypto_restack;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Ed25519 public key for sign verifying. */
-    class $mol_crypto2_auditor extends $mol_crypto2_key {
-        /** Native WebAPI public key. */
-        async native() {
-            return $mol_crypto_native.subtle.importKey('jwk', {
-                crv: "Ed25519",
-                ext: true,
-                key_ops: ['verify'],
-                kty: "OKP",
-                x: this.toString(),
-            }, "Ed25519", Boolean('extractable'), ['verify']).catch($mol_crypto_restack);
-        }
-        /** Verifies signature of data. */
-        async verify(data, sign) {
-            return await $mol_crypto_native.subtle.verify("Ed25519", await this.native(), sign, data).catch($mol_crypto_restack);
-        }
-    }
-    __decorate([
-        $mol_memo.method
-    ], $mol_crypto2_auditor.prototype, "native", null);
-    $.$mol_crypto2_auditor = $mol_crypto2_auditor;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** x25519 public key for data encryption. */
-    class $mol_crypto2_socket extends $mol_crypto2_key {
-        /** Native WebAPI public key. */
-        async native() {
-            return await $mol_crypto_native.subtle.importKey('jwk', {
-                crv: 'X25519',
-                ext: true,
-                kty: 'OKP',
-                key_ops: [],
-                x: this.toString(),
-            }, "X25519", true, []).catch($mol_crypto_restack);
-        }
-    }
-    __decorate([
-        $mol_memo.method
-    ], $mol_crypto2_socket.prototype, "native", null);
-    $.$mol_crypto2_socket = $mol_crypto2_socket;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Compose public key for verifying and encryption, based on Curve25519. */
-    class $mol_crypto2_public extends $mol_crypto2_key {
-        static size_str = 86;
-        static size_bin = 64;
-        /** Return Auditor part. */
-        auditor() {
-            return $mol_crypto2_auditor.from(this.asArray().subarray(0, 32));
-        }
-        /** Return Socket part. */
-        socket() {
-            return $mol_crypto2_socket.from(this.asArray().subarray(32, 64));
-        }
-        toString() {
-            return this.auditor().toString() + this.socket().toString();
-        }
-    }
-    __decorate([
-        $mol_memo.method
-    ], $mol_crypto2_public.prototype, "auditor", null);
-    __decorate([
-        $mol_memo.method
-    ], $mol_crypto2_public.prototype, "socket", null);
-    __decorate([
-        $mol_memo.method
-    ], $mol_crypto2_public.prototype, "toString", null);
-    $.$mol_crypto2_public = $mol_crypto2_public;
 })($ || ($ = {}));
 
 ;
@@ -13532,6 +13729,187 @@ var $;
         $mol_action
     ], $giper_baza_auth, "grab", null);
     $.$giper_baza_auth = $giper_baza_auth;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * # Generic Graph model
+     * - Supports any type of Nodes and Edges.
+     * - All links are ordered, but this may be ignored.
+     * - Multigraph supported using arrays of Edges.
+     * - Hypergraph supported by reusing same Edge on set of links.
+     * - Ubergraph supported using Edges as Nodes to.
+     **/
+    class $mol_graph {
+        /** All registered Nodes */
+        nodes = new Set();
+        /** Edges for Nodes pairs (from-to-edge) */
+        edges_out = new Map();
+        /** Edges for Nodes pairs (to-from-edge) */
+        edges_in = new Map();
+        // LINKING NODES
+        /** Full connect two Nodes */
+        link(from, to, edge) {
+            this.link_out(from, to, edge);
+            this.link_in(to, from, edge);
+        }
+        /** Full disconnect two Nodes */
+        unlink(from, to) {
+            this.edges_in.get(to)?.delete(from);
+            this.edges_out.get(from)?.delete(to);
+        }
+        /** Forward connect two Nodes */
+        link_out(from, to, edge) {
+            let pair = this.edges_out.get(from);
+            if (!pair) {
+                pair = new Map();
+                this.edges_out.set(from, pair);
+                this.nodes.add(from);
+            }
+            pair.set(to, edge);
+            this.nodes.add(to);
+        }
+        /** Backward connect two Nodes */
+        link_in(to, from, edge) {
+            let pair = this.edges_in.get(to);
+            if (!pair) {
+                pair = new Map();
+                this.edges_in.set(to, pair);
+                this.nodes.add(to);
+            }
+            pair.set(from, edge);
+            this.nodes.add(to);
+        }
+        // GETTING EDGES
+        /** Return any Edge for two Nodes or null */
+        edge(from, to) {
+            return this.edge_out(from, to) ?? this.edge_in(to, from);
+        }
+        /** Return output Edge for two Nodes or null */
+        edge_out(from, to) {
+            return this.edges_out.get(from)?.get(to) ?? null;
+        }
+        /** Return input Edge for two Nodes or null */
+        edge_in(to, from) {
+            return this.edges_in.get(to)?.get(from) ?? null;
+        }
+        // MUTATIONS
+        /** Cut cycles at lowest priority of Edges */
+        acyclic(get_weight) {
+            const checked = [];
+            for (const start of this.nodes) {
+                const path = [];
+                const visit = (from) => {
+                    if (checked.includes(from))
+                        return Number.MAX_SAFE_INTEGER;
+                    const index = path.lastIndexOf(from);
+                    if (index > -1) {
+                        const cycle = path.slice(index);
+                        return cycle.reduce((weight, node, index) => Math.min(weight, get_weight(this.edge_out(node, cycle[(index + 1) % cycle.length]))), Number.MAX_SAFE_INTEGER);
+                    }
+                    path.push(from);
+                    dive: try {
+                        const deps = this.edges_out.get(from);
+                        if (!deps)
+                            break dive;
+                        for (const [to, edge] of deps) {
+                            if (to === from) {
+                                this.unlink(from, to);
+                                continue;
+                            }
+                            const weight_out = get_weight(edge);
+                            const min = visit(to);
+                            if (weight_out > min)
+                                return min;
+                            if (weight_out === min) {
+                                this.unlink(from, to);
+                                if (path.length > 1) {
+                                    const enter = path[path.length - 2];
+                                    this.link(enter, to, edge);
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        path.pop();
+                    }
+                    checked.push(from);
+                    return Number.MAX_SAFE_INTEGER;
+                };
+                visit(start);
+            }
+        }
+        // NODES SELECTION
+        /** Topoligical ordered set of all Nodes for acyclic graph */
+        get sorted() {
+            const sorted = new Set();
+            const visit = (node) => {
+                if (sorted.has(node))
+                    return;
+                const deps = this.edges_out.get(node);
+                if (deps) {
+                    for (const [dep] of deps)
+                        visit(dep);
+                }
+                sorted.add(node);
+            };
+            for (const node of this.nodes) {
+                visit(node);
+            }
+            return sorted;
+        }
+        /** All Nodes which don't have input Edges */
+        get roots() {
+            const roots = [];
+            for (const node of this.nodes) {
+                if (this.edges_in.get(node)?.size)
+                    continue;
+                roots.push(node);
+            }
+            return roots;
+        }
+        // DEPTH STATS
+        /**
+         * Nodes depth statistics for acyclic graph
+         * @example
+         * graph.depth_stat( Math.min )
+         * graph.depth_stat( Math.max )
+         **/
+        nodes_depth(select) {
+            const stat = new Map();
+            const visit = (node, depth = 0) => {
+                if (stat.has(node))
+                    stat.set(node, select(depth, stat.get(node)));
+                else
+                    stat.set(node, depth);
+                for (const kid of this.edges_out.get(node)?.keys() ?? [])
+                    visit(kid, depth + 1);
+            };
+            for (const root of this.roots)
+                visit(root);
+            return stat;
+        }
+        /**
+         * Depth's Nodes statistics for acyclic graph
+         * @example
+         * graph.depth_nodes( Math.min )
+         * graph.depth_nodes( Math.max )
+         **/
+        depth_nodes(select) {
+            const groups = [];
+            for (const [node, depth] of this.nodes_depth(select).entries()) {
+                if (groups[depth])
+                    groups[depth].push(node);
+                else
+                    groups[depth] = [node];
+            }
+            return groups;
+        }
+    }
+    $.$mol_graph = $mol_graph;
 })($ || ($ = {}));
 
 ;
@@ -14218,6 +14596,189 @@ var $;
 
 ;
 "use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for given runtype and returns tagged version of returned type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_tagged_demo
+     */
+    function $mol_data_tagged(config) {
+        return config;
+    }
+    $.$mol_data_tagged = $mol_data_tagged;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_data_setup(value, config) {
+        return Object.assign(value, {
+            config,
+            Value: null
+        });
+    }
+    $.$mol_data_setup = $mol_data_setup;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_func_is_class(func) {
+        return Object.getOwnPropertyDescriptor(func, 'prototype')?.writable === false;
+    }
+    $.$mol_func_is_class = $mol_func_is_class;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Combines list of unary functions/classes to one function.
+     *
+     * 	const reparse = $mol_data_pipe( JSON.stringify , JSON.parse )
+     **/
+    function $mol_data_pipe(...funcs) {
+        return $mol_data_setup(function (input) {
+            let value = input;
+            for (const func of funcs)
+                value = $mol_func_is_class(func) ? new func(value) : func.call(this, value);
+            return value;
+        }, { funcs });
+    }
+    $.$mol_data_pipe = $mol_data_pipe;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_data_error extends $mol_error_mix {
+    }
+    $.$mol_data_error = $mol_data_error;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for number and returns number type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_number_demo
+     */
+    $.$mol_data_number = (val) => {
+        if (typeof val === 'number')
+            return val;
+        return $mol_fail(new $mol_data_error(`${val} is not a number`));
+    };
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for integer and returns number type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_integer_demo
+     */
+    function $mol_data_integer(val) {
+        const val2 = $mol_data_number(val);
+        if (Math.floor(val2) === val2)
+            return val2;
+        return $mol_fail(new $mol_data_error(`${val} is not an integer`));
+    }
+    $.$mol_data_integer = $mol_data_integer;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$giper_baza_rank = $mol_data_tagged({
+        $giper_baza_rank: $mol_data_pipe($mol_data_integer, (rank) => {
+            if (rank >= $.$giper_baza_rank_deny && rank <= $.$giper_baza_rank_rule)
+                return rank;
+            $mol_fail(new $mol_data_error(`${rank} is out of Ran range`));
+        }),
+    }).$giper_baza_rank;
+    /** Makes Rank from Tier and Fame names. */
+    function $giper_baza_rank_make(tier, fame) {
+        return ($giper_baza_rank_tier[tier] | $giper_baza_rank_rate[fame]);
+    }
+    $.$giper_baza_rank_make = $giper_baza_rank_make;
+    /** Access level: deny, read, post, pull, rule */
+    let $giper_baza_rank_tier;
+    (function ($giper_baza_rank_tier) {
+        /** Forbidden. There is no access, neither read nor write. */
+        $giper_baza_rank_tier[$giper_baza_rank_tier["deny"] = 0] = "deny";
+        /** Read only */
+        $giper_baza_rank_tier[$giper_baza_rank_tier["read"] = 16] = "read";
+        /** Post changes (Sand) */
+        $giper_baza_rank_tier[$giper_baza_rank_tier["post"] = 48] = "post";
+        /** Pull forks (Sand) */
+        $giper_baza_rank_tier[$giper_baza_rank_tier["pull"] = 112] = "pull";
+        /** Full control (Sand, Gift) */
+        $giper_baza_rank_tier[$giper_baza_rank_tier["rule"] = 240] = "rule";
+    })($giper_baza_rank_tier = $.$giper_baza_rank_tier || ($.$giper_baza_rank_tier = {}));
+    function $giper_baza_rank_tier_of(rank) {
+        return rank & 0b1111_0000;
+    }
+    $.$giper_baza_rank_tier_of = $giper_baza_rank_tier_of;
+    /** Work as bits count by Rate */
+    $.$giper_baza_rank_work_rates = [
+        0xF, 0xF, 0xF, 0xF, 0xF, 0xF, 0xF, 0xF,
+        0xE, 0xE, 0xE, 0xE, 0xD, 0xD, 0xD, 0xD,
+        0xC, 0xC, 0xB, 0xB, 0xA, 0xA, 0x9, 0x9,
+        0x8, 0x7, 0x6, 0x5, 0x4, 0x3, 0x2, 0x1,
+        0x0,
+    ];
+    /** Ease of making changes, depends on fame: evil, harm, even, nice, good */
+    let $giper_baza_rank_rate;
+    (function ($giper_baza_rank_rate) {
+        /** Days delay. */
+        $giper_baza_rank_rate[$giper_baza_rank_rate["late"] = 0] = "late";
+        /** Seconds delay. */
+        $giper_baza_rank_rate[$giper_baza_rank_rate["long"] = 12] = "long";
+        /** Half-second delay. */
+        $giper_baza_rank_rate[$giper_baza_rank_rate["slow"] = 13] = "slow";
+        /** Milli-seconds delay. */
+        $giper_baza_rank_rate[$giper_baza_rank_rate["fast"] = 14] = "fast";
+        /** Micro-seconds delay. */
+        $giper_baza_rank_rate[$giper_baza_rank_rate["just"] = 15] = "just";
+    })($giper_baza_rank_rate = $.$giper_baza_rank_rate || ($.$giper_baza_rank_rate = {}));
+    function $giper_baza_rank_rate_of(rank) {
+        return rank & 0b0000_1111;
+    }
+    $.$giper_baza_rank_rate_of = $giper_baza_rank_rate_of;
+    $.$giper_baza_rank_deny = $giper_baza_rank_make('deny', 'late');
+    $.$giper_baza_rank_read = $giper_baza_rank_make('read', 'late');
+    $.$giper_baza_rank_rule = $giper_baza_rank_make('rule', 'just');
+    function $giper_baza_rank_pull(rate) {
+        return $giper_baza_rank_make('pull', rate);
+    }
+    $.$giper_baza_rank_pull = $giper_baza_rank_pull;
+    function $giper_baza_rank_post(rate) {
+        return $giper_baza_rank_make('post', rate);
+    }
+    $.$giper_baza_rank_post = $giper_baza_rank_post;
+})($ || ($ = {}));
+
+;
+"use strict";
 var $;
 (function ($) {
     /** Moment from time. */
@@ -14476,21 +15037,23 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    let $giper_baza_slot_kind;
-    (function ($giper_baza_slot_kind) {
-        /** Free Unit Slot */
-        $giper_baza_slot_kind[$giper_baza_slot_kind["free"] = 0] = "free";
-        /** Land header for the following parts. */
-        $giper_baza_slot_kind[$giper_baza_slot_kind["land"] = 76] = "land";
-        /** Unit of data. */
-        $giper_baza_slot_kind[$giper_baza_slot_kind["sand"] = 252] = "sand";
-        /** Rights/Keys sharing. */
-        $giper_baza_slot_kind[$giper_baza_slot_kind["gift"] = 253] = "gift";
-        /** Sign for hash list. */
-        $giper_baza_slot_kind[$giper_baza_slot_kind["seal"] = 254] = "seal";
-        /** Public key. */
-        $giper_baza_slot_kind[$giper_baza_slot_kind["pass"] = 255] = "pass";
-    })($giper_baza_slot_kind = $.$giper_baza_slot_kind || ($.$giper_baza_slot_kind = {}));
+    /**
+     * 48-bit streamable array hash function
+     * Based on cyrb53: https://stackoverflow.com/a/52171480
+     */
+    function $mol_hash_numbers(buff, seed = 0) {
+        let h1 = 0xdeadbeef ^ seed;
+        let h2 = 0x41c6ce57 ^ seed;
+        for (let i = 0; i < buff.length; ++i) {
+            const item = buff[i];
+            h1 = Math.imul(h1 ^ item, 2654435761);
+            h2 = Math.imul(h2 ^ item, 1597334677);
+        }
+        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+        return 4294967296 * (((1 << 16) - 1) & h2) + (h1 >>> 0);
+    }
+    $.$mol_hash_numbers = $mol_hash_numbers;
 })($ || ($ = {}));
 
 ;
@@ -14498,571 +15061,309 @@ var $;
 var $;
 (function ($) {
     /**
-     * # Generic Graph model
-     * - Supports any type of Nodes and Edges.
-     * - All links are ordered, but this may be ignored.
-     * - Multigraph supported using arrays of Edges.
-     * - Hypergraph supported by reusing same Edge on set of links.
-     * - Ubergraph supported using Edges as Nodes to.
-     **/
-    class $mol_graph {
-        /** All registered Nodes */
-        nodes = new Set();
-        /** Edges for Nodes pairs (from-to-edge) */
-        edges_out = new Map();
-        /** Edges for Nodes pairs (to-from-edge) */
-        edges_in = new Map();
-        // LINKING NODES
-        /** Full connect two Nodes */
-        link(from, to, edge) {
-            this.link_out(from, to, edge);
-            this.link_in(to, from, edge);
+     * Simple memory allocator.
+     * Holds linked list of free blocks.
+     * Prefers blocks from the beginning.
+     * Near blocks are joined automatically.
+     */
+    class $mol_memory_pool extends Object {
+        _free;
+        constructor(size = Number.POSITIVE_INFINITY) {
+            super();
+            this._free = {
+                from: -1,
+                size: 0,
+                next: {
+                    from: 0,
+                    size,
+                    next: null,
+                }
+            };
         }
-        /** Full disconnect two Nodes */
-        unlink(from, to) {
-            this.edges_in.get(to)?.delete(from);
-            this.edges_out.get(from)?.delete(to);
-        }
-        /** Forward connect two Nodes */
-        link_out(from, to, edge) {
-            let pair = this.edges_out.get(from);
-            if (!pair) {
-                pair = new Map();
-                this.edges_out.set(from, pair);
-                this.nodes.add(from);
+        /** Returns offset of first free block with required size. */
+        acquire(size) {
+            let prev = this._free;
+            let next = prev.next;
+            let max = 0;
+            while (next.size < size) {
+                if (next.size > max)
+                    max = next.size;
+                prev = next;
+                next = next.next;
+                if (!next)
+                    $mol_fail(new Error(`No free space\nneed: ${size}\nhave: ${max}`));
             }
-            pair.set(to, edge);
-            this.nodes.add(to);
-        }
-        /** Backward connect two Nodes */
-        link_in(to, from, edge) {
-            let pair = this.edges_in.get(to);
-            if (!pair) {
-                pair = new Map();
-                this.edges_in.set(to, pair);
-                this.nodes.add(to);
+            const from = next.from;
+            if (next.size === size) {
+                prev.next = next.next;
             }
-            pair.set(from, edge);
-            this.nodes.add(to);
+            else {
+                next.from += size;
+                next.size -= size;
+            }
+            return from;
         }
-        // GETTING EDGES
-        /** Return any Edge for two Nodes or null */
-        edge(from, to) {
-            return this.edge_out(from, to) ?? this.edge_in(to, from);
+        /** Allows memory range to be acquired. */
+        release(from, size) {
+            let prev = this._free;
+            let next = prev.next;
+            while (next.from < from) {
+                prev = next;
+                next = next.next;
+                if (!next)
+                    $mol_fail(new Error('Release out of allocated', { cause: { last: prev, from, size } }));
+            }
+            if ((from + size > next.from) || (prev.from + prev.size > from)) {
+                $mol_fail(new Error('Double release', { cause: { prev, next, from, size } }));
+            }
+            const begin = prev.from + prev.size === from;
+            const end = from + size === next.from;
+            if (begin) {
+                if (end) {
+                    prev.size += size + next.size;
+                    prev.next = next.next;
+                }
+                else {
+                    prev.size += size;
+                }
+            }
+            else {
+                if (end) {
+                    next.from -= size;
+                    next.size += size;
+                }
+                else {
+                    prev.next = { from, size, next };
+                }
+            }
         }
-        /** Return output Edge for two Nodes or null */
-        edge_out(from, to) {
-            return this.edges_out.get(from)?.get(to) ?? null;
+        empty() {
+            const first = this._free.next;
+            return first.next === null && first.from === 0;
         }
-        /** Return input Edge for two Nodes or null */
-        edge_in(to, from) {
-            return this.edges_in.get(to)?.get(from) ?? null;
+        acquired() {
         }
-        // MUTATIONS
-        /** Cut cycles at lowest priority of Edges */
-        acyclic(get_weight) {
-            const checked = [];
-            for (const start of this.nodes) {
-                const path = [];
-                const visit = (from) => {
-                    if (checked.includes(from))
-                        return Number.MAX_SAFE_INTEGER;
-                    const index = path.lastIndexOf(from);
-                    if (index > -1) {
-                        const cycle = path.slice(index);
-                        return cycle.reduce((weight, node, index) => Math.min(weight, get_weight(this.edge_out(node, cycle[(index + 1) % cycle.length]))), Number.MAX_SAFE_INTEGER);
+    }
+    $.$mol_memory_pool = $mol_memory_pool;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$giper_baza_pack_four_code = $mol_charset_encode('LAND'); // 76 65 78 68
+    $.$giper_baza_pack_head_size = 4 /*BAZA*/ + 12 /*Lord*/ + 6 /*Area*/ + 2; /*Size*/
+    /**
+     * One Land info (Faces+Units) to Pack.
+     * Sync: +Faces -Units
+     * Diff: -Faces +Units
+     * Stop: -Faces -Units
+     */
+    class $giper_baza_pack_part extends $mol_object {
+        units;
+        faces;
+        constructor(units = [], faces = new $giper_baza_face_map) {
+            super();
+            this.units = units;
+            this.faces = faces;
+        }
+        static from(units, faces = new $giper_baza_face_map) {
+            return new this(units, faces);
+        }
+        *[Symbol.iterator]() {
+            return {
+                units: this.units,
+                faces: this.faces,
+            };
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $giper_baza_pack_part, "from", null);
+    $.$giper_baza_pack_part = $giper_baza_pack_part;
+    /** Universal binary package which contains some Faces/Units/Rocks */
+    class $giper_baza_pack extends $mol_buffer {
+        toBlob() {
+            return new Blob([this], { type: 'application/vnd.giper_baza_pack.v1' });
+        }
+        parts(offsets, pool) {
+            const parts = new Map;
+            let part = null;
+            const buf = this.asArray();
+            for (let offset = 0; offset < this.byteLength;) {
+                const kind = this.uint8(offset);
+                switch ($giper_baza_slot_kind[kind]) {
+                    case 'free': {
+                        pool?.release(offset, 8);
+                        offset += 8;
+                        continue;
                     }
-                    path.push(from);
-                    dive: try {
-                        const deps = this.edges_out.get(from);
-                        if (!deps)
-                            break dive;
-                        for (const [to, edge] of deps) {
-                            if (to === from) {
-                                this.unlink(from, to);
-                                continue;
-                            }
-                            const weight_out = get_weight(edge);
-                            const min = visit(to);
-                            if (weight_out > min)
-                                return min;
-                            if (weight_out === min) {
-                                this.unlink(from, to);
-                                if (path.length > 1) {
-                                    const enter = path[path.length - 2];
-                                    this.link(enter, to, edge);
-                                }
-                            }
+                    case 'land': {
+                        const link = $giper_baza_link.from_bin(new Uint8Array(buf.buffer, buf.byteOffset + offset + 4, 18));
+                        part = parts.get(link.str);
+                        if (!part)
+                            parts.set(link.str, part = new $giper_baza_pack_part);
+                        const size = this.uint16(offset + 22);
+                        offset += 24;
+                        // Faces
+                        for (let i = 0; i < size; ++i) {
+                            const peer = $giper_baza_link.from_bin(new Uint8Array(buf.buffer, buf.byteOffset + offset, 6));
+                            const tick = this.uint16(offset + 6);
+                            const time = this.uint32(offset + 8);
+                            const summ = this.uint32(offset + 12);
+                            part.faces.peer_time(peer.str, time, tick);
+                            part.faces.peer_summ(peer.str, summ);
+                            offset += $giper_baza_face.length();
                         }
+                        continue;
                     }
-                    finally {
-                        path.pop();
+                    case 'pass': {
+                        if (!part)
+                            $mol_fail(new Error('Land is undefined'));
+                        const pass = $giper_baza_auth_pass.from(buf.slice(offset, offset + 64));
+                        offsets?.set(pass.buffer, offset);
+                        part.units.push(pass);
+                        offset += pass.byteLength;
+                        continue;
                     }
-                    checked.push(from);
-                    return Number.MAX_SAFE_INTEGER;
-                };
-                visit(start);
-            }
-        }
-        // NODES SELECTION
-        /** Topoligical ordered set of all Nodes for acyclic graph */
-        get sorted() {
-            const sorted = new Set();
-            const visit = (node) => {
-                if (sorted.has(node))
-                    return;
-                const deps = this.edges_out.get(node);
-                if (deps) {
-                    for (const [dep] of deps)
-                        visit(dep);
+                    case 'seal': {
+                        if (!part)
+                            $mol_fail(new Error('Land is undefined'));
+                        const size = new $giper_baza_unit_seal(this.buffer, this.byteOffset + offset, this.byteLength - offset).size();
+                        const length = $giper_baza_unit_seal.length(size);
+                        const seal = $giper_baza_unit_seal.from(buf.slice(offset, offset + length));
+                        offsets?.set(seal.buffer, offset);
+                        part.units.push(seal);
+                        offset += seal.byteLength;
+                        continue;
+                    }
+                    case 'sand': {
+                        if (!part)
+                            $mol_fail(new Error('Land is undefined'));
+                        const size = new $giper_baza_unit_sand(this.buffer, this.byteOffset + offset, 40).size();
+                        const length_sand = $giper_baza_unit_sand.length(size);
+                        const length_ball = $giper_baza_unit_sand.length_ball(size);
+                        const sand = $giper_baza_unit_sand.from(buf.slice(offset, offset + length_sand));
+                        offsets?.set(sand.buffer, offset);
+                        offset += sand.byteLength;
+                        if (length_ball) {
+                            sand._ball = buf.slice(offset, offset + size);
+                            offset += length_ball;
+                        }
+                        ;
+                        part.units.push(sand);
+                        continue;
+                    }
+                    case 'gift': {
+                        if (!part)
+                            $mol_fail(new Error('Land is undefined'));
+                        const length = $giper_baza_unit_gift.length();
+                        const gift = $giper_baza_unit_gift.from(buf.slice(offset, offset + length));
+                        offsets?.set(gift.buffer, offset);
+                        part.units.push(gift);
+                        offset += gift.byteLength;
+                        continue;
+                    }
+                    default: return $mol_fail(new Error('Unknown Kind', { cause: { kind, offset } }));
                 }
-                sorted.add(node);
-            };
-            for (const node of this.nodes) {
-                visit(node);
             }
-            return sorted;
+            return [...parts];
         }
-        /** All Nodes which don't have input Edges */
-        get roots() {
-            const roots = [];
-            for (const node of this.nodes) {
-                if (this.edges_in.get(node)?.size)
-                    continue;
-                roots.push(node);
-            }
-            return roots;
-        }
-        // DEPTH STATS
-        /**
-         * Nodes depth statistics for acyclic graph
-         * @example
-         * graph.depth_stat( Math.min )
-         * graph.depth_stat( Math.max )
-         **/
-        nodes_depth(select) {
-            const stat = new Map();
-            const visit = (node, depth = 0) => {
-                if (stat.has(node))
-                    stat.set(node, select(depth, stat.get(node)));
-                else
-                    stat.set(node, depth);
-                for (const kid of this.edges_out.get(node)?.keys() ?? [])
-                    visit(kid, depth + 1);
-            };
-            for (const root of this.roots)
-                visit(root);
-            return stat;
-        }
-        /**
-         * Depth's Nodes statistics for acyclic graph
-         * @example
-         * graph.depth_nodes( Math.min )
-         * graph.depth_nodes( Math.max )
-         **/
-        depth_nodes(select) {
-            const groups = [];
-            for (const [node, depth] of this.nodes_depth(select).entries()) {
-                if (groups[depth])
-                    groups[depth].push(node);
-                else
-                    groups[depth] = [node];
-            }
-            return groups;
-        }
-    }
-    $.$mol_graph = $mol_graph;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for given runtype and returns tagged version of returned type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_tagged_demo
-     */
-    function $mol_data_tagged(config) {
-        return config;
-    }
-    $.$mol_data_tagged = $mol_data_tagged;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_data_setup(value, config) {
-        return Object.assign(value, {
-            config,
-            Value: null
-        });
-    }
-    $.$mol_data_setup = $mol_data_setup;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_func_is_class(func) {
-        return Object.getOwnPropertyDescriptor(func, 'prototype')?.writable === false;
-    }
-    $.$mol_func_is_class = $mol_func_is_class;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Combines list of unary functions/classes to one function.
-     *
-     * 	const reparse = $mol_data_pipe( JSON.stringify , JSON.parse )
-     **/
-    function $mol_data_pipe(...funcs) {
-        return $mol_data_setup(function (input) {
-            let value = input;
-            for (const func of funcs)
-                value = $mol_func_is_class(func) ? new func(value) : func.call(this, value);
-            return value;
-        }, { funcs });
-    }
-    $.$mol_data_pipe = $mol_data_pipe;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_data_error extends $mol_error_mix {
-    }
-    $.$mol_data_error = $mol_data_error;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for number and returns number type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_number_demo
-     */
-    $.$mol_data_number = (val) => {
-        if (typeof val === 'number')
-            return val;
-        return $mol_fail(new $mol_data_error(`${val} is not a number`));
-    };
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for integer and returns number type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_integer_demo
-     */
-    function $mol_data_integer(val) {
-        const val2 = $mol_data_number(val);
-        if (Math.floor(val2) === val2)
-            return val2;
-        return $mol_fail(new $mol_data_error(`${val} is not an integer`));
-    }
-    $.$mol_data_integer = $mol_data_integer;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$giper_baza_rank = $mol_data_tagged({
-        $giper_baza_rank: $mol_data_pipe($mol_data_integer, (rank) => {
-            if (rank >= $.$giper_baza_rank_deny && rank <= $.$giper_baza_rank_rule)
-                return rank;
-            $mol_fail(new $mol_data_error(`${rank} is out of Ran range`));
-        }),
-    }).$giper_baza_rank;
-    /** Makes Rank from Tier and Fame names. */
-    function $giper_baza_rank_make(tier, fame) {
-        return ($giper_baza_rank_tier[tier] | $giper_baza_rank_rate[fame]);
-    }
-    $.$giper_baza_rank_make = $giper_baza_rank_make;
-    /** Access level: deny, read, post, pull, rule */
-    let $giper_baza_rank_tier;
-    (function ($giper_baza_rank_tier) {
-        /** Forbidden. There is no access, neither read nor write. */
-        $giper_baza_rank_tier[$giper_baza_rank_tier["deny"] = 0] = "deny";
-        /** Read only */
-        $giper_baza_rank_tier[$giper_baza_rank_tier["read"] = 16] = "read";
-        /** Post changes (Sand) */
-        $giper_baza_rank_tier[$giper_baza_rank_tier["post"] = 48] = "post";
-        /** Pull forks (Sand) */
-        $giper_baza_rank_tier[$giper_baza_rank_tier["pull"] = 112] = "pull";
-        /** Full control (Sand, Gift) */
-        $giper_baza_rank_tier[$giper_baza_rank_tier["rule"] = 240] = "rule";
-    })($giper_baza_rank_tier = $.$giper_baza_rank_tier || ($.$giper_baza_rank_tier = {}));
-    function $giper_baza_rank_tier_of(rank) {
-        return rank & 0b1111_0000;
-    }
-    $.$giper_baza_rank_tier_of = $giper_baza_rank_tier_of;
-    /** Work as bits count by Rate */
-    $.$giper_baza_rank_work_rates = [
-        0xF, 0xF, 0xF, 0xF, 0xF, 0xF, 0xF, 0xF,
-        0xE, 0xE, 0xE, 0xE, 0xD, 0xD, 0xD, 0xD,
-        0xC, 0xC, 0xB, 0xB, 0xA, 0xA, 0x9, 0x9,
-        0x8, 0x7, 0x6, 0x5, 0x4, 0x3, 0x2, 0x1,
-        0x0,
-    ];
-    /** Ease of making changes, depends on fame: evil, harm, even, nice, good */
-    let $giper_baza_rank_rate;
-    (function ($giper_baza_rank_rate) {
-        /** Days delay. */
-        $giper_baza_rank_rate[$giper_baza_rank_rate["late"] = 0] = "late";
-        /** Seconds delay. */
-        $giper_baza_rank_rate[$giper_baza_rank_rate["long"] = 12] = "long";
-        /** Half-second delay. */
-        $giper_baza_rank_rate[$giper_baza_rank_rate["slow"] = 13] = "slow";
-        /** Milli-seconds delay. */
-        $giper_baza_rank_rate[$giper_baza_rank_rate["fast"] = 14] = "fast";
-        /** Micro-seconds delay. */
-        $giper_baza_rank_rate[$giper_baza_rank_rate["just"] = 15] = "just";
-    })($giper_baza_rank_rate = $.$giper_baza_rank_rate || ($.$giper_baza_rank_rate = {}));
-    function $giper_baza_rank_rate_of(rank) {
-        return rank & 0b0000_1111;
-    }
-    $.$giper_baza_rank_rate_of = $giper_baza_rank_rate_of;
-    $.$giper_baza_rank_deny = $giper_baza_rank_make('deny', 'late');
-    $.$giper_baza_rank_read = $giper_baza_rank_make('read', 'late');
-    $.$giper_baza_rank_rule = $giper_baza_rank_make('rule', 'just');
-    function $giper_baza_rank_pull(rate) {
-        return $giper_baza_rank_make('pull', rate);
-    }
-    $.$giper_baza_rank_pull = $giper_baza_rank_pull;
-    function $giper_baza_rank_post(rate) {
-        return $giper_baza_rank_make('post', rate);
-    }
-    $.$giper_baza_rank_post = $giper_baza_rank_post;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Kind of Unit */
-    let $giper_baza_unit_kind;
-    (function ($giper_baza_unit_kind) {
-        /** Unit of data. */
-        $giper_baza_unit_kind[$giper_baza_unit_kind["sand"] = $giper_baza_slot_kind.sand] = "sand";
-        /** Rights/Keys sharing. */
-        $giper_baza_unit_kind[$giper_baza_unit_kind["gift"] = $giper_baza_slot_kind.gift] = "gift";
-        /** Sign for hash list. */
-        $giper_baza_unit_kind[$giper_baza_unit_kind["seal"] = $giper_baza_slot_kind.seal] = "seal";
-        /** Public key. */
-        $giper_baza_unit_kind[$giper_baza_unit_kind["pass"] = $giper_baza_slot_kind.pass] = "pass";
-    })($giper_baza_unit_kind = $.$giper_baza_unit_kind || ($.$giper_baza_unit_kind = {}));
-    $.$giper_baza_unit_trusted = new WeakSet();
-    function $giper_baza_unit_trusted_grant(unit) {
-        if (unit instanceof $giper_baza_auth_pass)
-            return;
-        $.$giper_baza_unit_trusted.add(unit);
-    }
-    $.$giper_baza_unit_trusted_grant = $giper_baza_unit_trusted_grant;
-    function $giper_baza_unit_trusted_check(unit) {
-        if (unit instanceof $giper_baza_auth_pass)
-            return true;
-        return $.$giper_baza_unit_trusted.has(unit);
-    }
-    $.$giper_baza_unit_trusted_check = $giper_baza_unit_trusted_check;
-    /** Order units: lord / seal / gift / sand */
-    function $giper_baza_unit_sort(units) {
-        const nodes = new Map();
-        const graph = new $mol_graph();
-        for (const unit of units) {
-            if (unit instanceof $giper_baza_auth_pass) {
-                nodes.set(unit.lord().str, unit);
-            }
-            else {
-                if (unit instanceof $giper_baza_unit_sand && !unit.encoded())
-                    continue;
-                const self = unit.hash().str;
-                nodes.set(self, unit);
-            }
-        }
-        for (const unit of units) {
-            if (unit instanceof $giper_baza_auth_pass)
-                continue;
-            unit.choose({
-                gift: gift => {
-                    graph.link(gift, nodes.get(gift.lord().str) ?? null, 1); // gift => lord
-                    graph.link(gift, null, 0); // gift -> every
-                    if (gift.lord().str === gift.mate().str)
-                        return;
-                    graph.link(nodes.get(gift.mate().str) ?? null, gift, 1); // mate => gift
-                },
-                sand: sand => {
-                    graph.link(sand, nodes.get(sand.lord().str) ?? null, 1); // sand => lord
-                    graph.link(sand, null, 1); // sand => every
-                },
-                seal: seal => {
-                    graph.link(seal, nodes.get(seal.lord().str) ?? null, 0); // seal -> lord
-                    graph.link(seal, null, 0); // seal -> every
-                    for (const hash of seal.hash_list()) {
-                        graph.link(nodes.get(hash.str) ?? null, seal, 1); // unit => seal
-                    }
+        static length(parts) {
+            let size = 0;
+            for (const [land, { units, faces }] of parts) {
+                size += $.$giper_baza_pack_head_size;
+                size += faces.size * $giper_baza_face.length();
+                for (const unit of units) {
+                    size += unit.byteLength;
+                    if (unit instanceof $giper_baza_auth_pass)
+                        continue;
+                    unit.choose({
+                        gift: gift => { },
+                        seal: seal => { },
+                        sand: sand => size += $giper_baza_unit_sand.length_ball(sand.ball().byteLength),
+                    });
                 }
-            });
-        }
-        graph.acyclic(e => e);
-        return [...graph.sorted].filter(Boolean);
-    }
-    $.$giper_baza_unit_sort = $giper_baza_unit_sort;
-    /** Minimal independent stable part of information. */
-    class $giper_baza_unit_base extends $mol_buffer {
-        /**
-         * Compare Seals on timeline ( right - left )
-         * Priority: time > lord > tick
-         */
-        static compare(left, right) {
-            if (!left && !right)
-                return 0;
-            if (!left)
-                return +1;
-            if (!right)
-                return -1;
-            return (right.time() - left.time())
-                || $giper_baza_link_compare(left.lord(), right.lord())
-                || (right.tick() - left.tick());
-        }
-        static narrow(buf) {
-            const kind = $giper_baza_unit_kind[new $mol_buffer(buf).uint8(0)];
-            const Type = {
-                sand: $giper_baza_unit_sand,
-                gift: $giper_baza_unit_gift,
-                seal: $giper_baza_unit_seal,
-                pass: $giper_baza_auth_pass,
-            }[kind];
-            return new Type(buf);
-        }
-        constructor(buffer, byteOffset = 0, byteLength = buffer.byteLength) {
-            super(buffer, byteOffset, byteLength);
-        }
-        kind(next) {
-            const val = this.uint8(0, next && $giper_baza_unit_kind[next]);
-            const kind = $giper_baza_unit_kind[val];
-            if (kind)
-                return kind;
-            $mol_fail(new Error(`Unknown unit kind (${val})`));
-        }
-        choose(ways) {
-            return ways[this.kind()](this);
-        }
-        path() {
-            throw new Error('Unimplemented');
-        }
-        id6(offset, next) {
-            if (next === undefined) {
-                return $giper_baza_link.from_bin(new Uint8Array(this.buffer, this.byteOffset + offset, 6));
             }
-            else {
-                const bin = next.toBin();
-                if (bin.byteLength === 0)
-                    return next;
-                if (bin.byteLength !== 6)
-                    $mol_fail(new Error(`Wrong Link size (${next})`));
-                this.asArray().set(bin, this.byteOffset + offset);
-                return next;
+            return size;
+        }
+        static make(parts) {
+            let length = this.length(parts);
+            if (length === 0)
+                $mol_fail(new Error('Empty Pack'));
+            const buff = new Uint8Array(length);
+            const pack = new $giper_baza_pack(buff.buffer);
+            let offset = 0;
+            // fill Lands
+            for (const [id, { units, faces }] of parts) {
+                // Head
+                buff.set($.$giper_baza_pack_four_code, offset); // 4B
+                buff.set(new $giper_baza_link(id).toBin(), offset + 4); // Land = Lord + Area
+                pack.uint16(offset + 22, faces.size); // Vers
+                offset += 24;
+                // Peer + Tick + Time + Summ for every Face
+                for (const [peer, face] of faces) {
+                    buff.set(new $giper_baza_link(peer).toBin(), offset);
+                    pack.uint16(offset + 6, face.tick);
+                    pack.uint32(offset + 8, face.time);
+                    pack.uint32(offset + 12, face.summ);
+                    offset += $giper_baza_face.length();
+                }
+                // Units + Balls
+                for (const unit of units) {
+                    buff.set(unit.asArray(), offset);
+                    offset += unit.byteLength;
+                    if (unit instanceof $giper_baza_auth_pass)
+                        continue;
+                    unit.choose({
+                        gift: gift => { },
+                        seal: seal => { },
+                        sand: sand => {
+                            if (!sand.big())
+                                return;
+                            buff.set(sand.ball(), offset);
+                            offset += $giper_baza_unit_sand.length_ball(sand.size());
+                        },
+                    });
+                }
             }
-        }
-        id12(offset, next) {
-            if (next === undefined) {
-                return $giper_baza_link.from_bin(new Uint8Array(this.buffer, this.byteOffset + offset, 12));
-            }
-            else {
-                const bin = next.toBin();
-                if (bin.byteLength === 0)
-                    return next;
-                if (bin.byteLength !== 12)
-                    $mol_fail(new Error(`Wrong Link size (${next})`));
-                this.asArray().set(bin, this.byteOffset + offset);
-                return next;
-            }
-        }
-        /** Seconds from UNIX epoch */
-        time(next) {
-            return this.uint32(4, next);
-        }
-        moment() {
-            return new $mol_time_moment(Number(this.time() * 1000));
-        }
-        /** Step in transaction */
-        tick(next) {
-            return this.uint16(2, next);
-        }
-        /** Monotonic Real+Logic Time */
-        time_tick(next) {
-            if (!next)
-                return this.tick() + this.time() * 2 ** 16;
-            this.tick(next % 2 ** 16);
-            this.time(Math.floor(next / 2 ** 16));
-            return next;
-        }
-        _lord = null;
-        lord(next) {
-            if (next)
-                return this._lord = this.id12(8, next);
-            return this._lord ?? (this._lord = this.id12(8));
-        }
-        /** Unique number for encryption */
-        salt() {
-            return new Uint8Array(this.buffer, this.byteOffset + 2, 16); /* tick(2), time(4), lord(10) */
-        }
-        hash() {
-            return $giper_baza_link.hash_bin(this.asArray());
-        }
-        tier_min() {
-            return $giper_baza_rank_tier.rule;
-        }
-        encoded() {
-            return true;
-        }
-        _land = null;
-        _alive = false;
-        dump() {
-            return {};
-        }
-        [Symbol.for('nodejs.util.inspect.custom')]() {
-            return this.inspect();
-        }
-        inspect() {
-            const hash = $mol_term_color.cyan('#' + this.hash().str);
-            const lord = $mol_term_color.magenta('@' + this.lord().str);
-            const time = $mol_term_color.gray($giper_baza_time_dump(this.time(), this.tick()));
-            return `${lord} ${hash} ${time}`;
-        }
-        toJSON() {
-            return this.toString();
-        }
-        toString() {
-            const hash = '#' + this.hash().str;
-            const lord = '@' + this.lord().str;
-            const time = $giper_baza_time_dump(this.time(), this.tick());
-            return `${lord} ${hash} ${time}`;
+            return pack;
         }
     }
-    $.$giper_baza_unit_base = $giper_baza_unit_base;
+    __decorate([
+        $mol_action
+    ], $giper_baza_pack.prototype, "parts", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_pack, "make", null);
+    $.$giper_baza_pack = $giper_baza_pack;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Registry of Pawns as Deck entities. */
+    class $giper_baza_fund extends $mol_object {
+        item_make;
+        constructor(item_make) {
+            super();
+            this.item_make = item_make;
+        }
+        Head(head) {
+            return this.item_make(head);
+        }
+        Data() {
+            return this.Head($giper_baza_land_root.data);
+        }
+        Tine() {
+            return this.Head($giper_baza_land_root.tine);
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_fund.prototype, "Head", null);
+    $.$giper_baza_fund = $giper_baza_fund;
 })($ || ($ = {}));
 
 ;
@@ -16009,2591 +16310,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    /**
-     * 48-bit streamable array hash function
-     * Based on cyrb53: https://stackoverflow.com/a/52171480
-     */
-    function $mol_hash_numbers(buff, seed = 0) {
-        let h1 = 0xdeadbeef ^ seed;
-        let h2 = 0x41c6ce57 ^ seed;
-        for (let i = 0; i < buff.length; ++i) {
-            const item = buff[i];
-            h1 = Math.imul(h1 ^ item, 2654435761);
-            h2 = Math.imul(h2 ^ item, 1597334677);
-        }
-        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-        return 4294967296 * (((1 << 16) - 1) & h2) + (h1 >>> 0);
-    }
-    $.$mol_hash_numbers = $mol_hash_numbers;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Hint how interpret inner Units: term, solo, vals, keys */
-    let $giper_baza_unit_sand_tag;
-    (function ($giper_baza_unit_sand_tag) {
-        /** Itself value. Ignore */
-        $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag["term"] = 0] = "term";
-        /** Value in first sub node. Ignore all after first */
-        $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag["solo"] = 64] = "solo";
-        /** List of values */
-        $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag["vals"] = 128] = "vals";
-        /** List of keys */
-        $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag["keys"] = 192] = "keys";
-    })($giper_baza_unit_sand_tag = $.$giper_baza_unit_sand_tag || ($.$giper_baza_unit_sand_tag = {}));
-    /** Data. Actually it's edge between nodes in graph model. */
-    class $giper_baza_unit_sand extends $giper_baza_unit_base {
-        static size_equator = 63;
-        static size_max = 2 ** 16;
-        _vary = undefined;
-        _open = null;
-        static length(size) {
-            if (size > 2 ** 16)
-                throw new Error(`Size too large (${size})`);
-            return size > $giper_baza_unit_sand.size_equator ? 52 : Math.ceil((38 + size) / 8) * 8;
-        }
-        static length_ball(size) {
-            if (size > 2 ** 16)
-                throw new Error(`Size too large (${size})`);
-            return size > $giper_baza_unit_sand.size_equator ? Math.ceil((size - 4) / 8) * 8 + 4 : 0;
-        }
-        static make(size, tag = 'term') {
-            if (size >= 2 ** 16)
-                throw new Error(`Size too large (${size})`);
-            const sand = this.from(this.length(size));
-            sand.kind('sand');
-            if (size > $giper_baza_unit_sand.size_equator) {
-                sand.uint16(38, size % 2 ** 16);
-                size = 0;
-            }
-            sand.uint8(1, size | $giper_baza_unit_sand_tag[tag]);
-            return sand;
-        }
-        tag() {
-            return $giper_baza_unit_sand_tag[this.uint8(1) & 0b11_00_0000];
-        }
-        big() {
-            return this.size() > $giper_baza_unit_sand.size_equator;
-        }
-        size() {
-            let hint = this.uint8(1) & 0b111_111;
-            return hint || this.uint16(38) || 2 ** 16;
-        }
-        dead() {
-            if (this._vary === null)
-                return true;
-            if (this.size() > 1)
-                return false;
-            if (this.uint8(38) !== 78 /*N*/)
-                return false;
-            return true;
-        }
-        _self;
-        self(next) {
-            if (next === undefined && this._self !== undefined)
-                return this._self;
-            else
-                return this._self = this.id6(20, next);
-        }
-        _head;
-        head(next) {
-            if (next === undefined && this._head !== undefined)
-                return this._head;
-            else
-                return this._head = this.id6(26, next);
-        }
-        _lead;
-        lead(next) {
-            if (next === undefined && this._lead !== undefined)
-                return this._lead;
-            else
-                return this._lead = this.id6(32, next);
-        }
-        path() {
-            return `sand:${this.head().str || '__root__'}/${this.lord()}/${this.self().str || '__meta__'}`;
-        }
-        _shot;
-        shot(next) {
-            if (!this.big())
-                throw new Error('Access to Shot of small Sand is unavailable');
-            if (next)
-                return this._shot = this.id12(40, next);
-            else
-                return this._shot = this._shot ?? this.id12(40);
-        }
-        _data;
-        data(next) {
-            if (this.big())
-                throw new Error('Access to Data of large Sand is unavailable');
-            const data = this._data ?? new Uint8Array(this.buffer, this.byteOffset + 38, this.size());
-            if (next)
-                data.set(next);
-            return data;
-        }
-        _ball;
-        ball(next) {
-            if (next === undefined) {
-                if (this._ball)
-                    return this._ball;
-                if (this.big())
-                    return this._ball;
-                return this._ball = this.data();
-            }
-            else {
-                if (this.big()) {
-                    this.shot($giper_baza_link.hash_bin(next));
-                    return this._ball = next;
-                }
-                else {
-                    return this._ball = this.data(next);
-                }
-            }
-        }
-        encoded() {
-            return !this._open || !!this._ball;
-        }
-        hash() {
-            if (!this.encoded())
-                return $mol_fail(new Error('No Hash for incompleted Sand', { cause: { sand: this } }));
-            return super.hash();
-        }
-        idea_seed() {
-            return $mol_hash_numbers(new Uint8Array(this.buffer, this.byteOffset + 26, 12)); // head + lead
-        }
-        dump() {
-            return {
-                kind: this.kind(),
-                lord: this.lord(),
-                lead: this.lead(),
-                head: this.head(),
-                self: this.self(),
-                tag: this.tag(),
-                size: this.size(),
-                time: this.moment().toString('YYYY-MM-DD hh:mm:ss'),
-            };
-        }
-        tier_min() {
-            return (this.head().str === $giper_baza_land_root.tine.str)
-                ? $giper_baza_rank_tier.pull
-                : $giper_baza_rank_tier.post;
-        }
-        inspect() {
-            const lead = $mol_term_color.blue(this.lead().str || '__knot__');
-            const head = $mol_term_color.blue(this.head().str || '__root__');
-            const self = $mol_term_color.blue(this.self().str || '__meta__');
-            const tag = $mol_term_color.green({
-                term: 'T',
-                solo: 'S',
-                vals: 'V',
-                keys: 'K',
-            }[this.tag()]);
-            const vary = this._vary === undefined ? '' : $mol_term_color.yellow(String(this._vary));
-            return `${super.inspect()} ${tag} ${lead}\\${head}/${self} ${vary}`;
-        }
-        toString() {
-            const lead = this.lead().str || '__knot__';
-            const head = this.head().str || '__root__';
-            const self = this.self().str || '__meta__';
-            const tag = {
-                term: 'T',
-                solo: 'S',
-                vals: 'V',
-                keys: 'K',
-            }[this.tag()];
-            const vary = this._vary === undefined ? '' : String(this._vary);
-            return `${super.toString()} ${tag} ${lead}\\${head}/${self} ${vary}`;
-        }
-        [$mol_dev_format_head]() {
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' 👾', $mol_dev_format_auto(this.lord()), ' 📦 ', $mol_dev_format_shade($giper_baza_time_dump(this.time(), this.tick())), ' #', this.encoded() ? $mol_dev_format_auto(this.hash()) : $mol_dev_format_shade('___incompleted___'), ' ', this.lead().str || '__knot__', $mol_dev_format_shade('\\'), $mol_dev_format_accent(this.head().str || '__root__'), $mol_dev_format_shade('/'), this.self().str || '__meta__', ' ', {
-                term: '💼',
-                solo: '1️⃣',
-                vals: '🎹',
-                keys: '🔑',
-            }[this.tag()], ' ', $mol_dev_format_auto(this._vary));
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $giper_baza_unit_sand, "make", null);
-    $.$giper_baza_unit_sand = $giper_baza_unit_sand;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $giper_baza_unit_gift_sort(gifts) {
-        const dict = new Map();
-        const graph = new $mol_graph();
-        for (const gift of gifts) {
-            const key = gift.mate().str;
-            dict.set(key, gift);
-            graph.link(key, gift.lord().str);
-            graph.link(key, '');
-        }
-        graph.acyclic(() => 1);
-        const keys = [...graph.sorted];
-        return keys.map(key => dict.get(key)).filter(Boolean);
-    }
-    $.$giper_baza_unit_gift_sort = $giper_baza_unit_gift_sort;
-    /** Given Rank and Secret */
-    class $giper_baza_unit_gift extends $giper_baza_unit_base {
-        static length() {
-            return 48;
-        }
-        static make() {
-            const sand = this.from(this.length());
-            sand.kind('gift');
-            return sand;
-        }
-        rank(next) {
-            if (next !== undefined)
-                this.uint8(0, $giper_baza_unit_kind.gift);
-            const res = this.uint8(1, next);
-            if (res < $giper_baza_rank_deny || res > $giper_baza_rank_rule) {
-                $mol_fail(new RangeError(`Wrong rank ${res}`));
-            }
-            return res;
-        }
-        tier() {
-            return (this.rank() & $giper_baza_rank_tier.rule);
-        }
-        rate() {
-            return (this.rank() & $giper_baza_rank_rate.just);
-        }
-        mate(next) {
-            return this.id12(20, next);
-        }
-        path() {
-            return `gift:${this.mate().str || '______every______'}`;
-        }
-        _code;
-        code() {
-            return this._code ?? (this._code = new Uint8Array(this.buffer, this.byteOffset + 32, 16));
-        }
-        code_exists() {
-            return this.code().some(b => b);
-        }
-        dump() {
-            return {
-                kind: this.kind(),
-                lord: this.lord(),
-                mate: this.mate(),
-                tier: $giper_baza_rank_tier[this.tier()],
-                rate: this.rate(),
-                time: this.moment().toString('YYYY-MM-DD hh:mm:ss'),
-            };
-        }
-        tier_min() {
-            return $giper_baza_rank_tier.rule;
-        }
-        inspect() {
-            const mate = $mol_term_color.magenta('@' + (this.mate().str || '______every______'));
-            const read = $mol_term_color.green(this.code().some(v => v) ? 'X' : 'O');
-            const rank = $mol_term_color.cyan($giper_baza_rank_tier[this.tier()] + ':' + this.rate().toString(16).toUpperCase());
-            return `${super.inspect()} ${read} ${mate} ${rank}`;
-        }
-        toString() {
-            const mate = '@' + (this.mate().str || '______every______');
-            const read = this.code().some(v => v) ? 'X' : 'O';
-            const rank = $giper_baza_rank_tier[this.tier()] + ':' + this.rate().toString(16).toUpperCase();
-            return `${super.toString()} ${read} ${mate} ${rank}`;
-        }
-        [$mol_dev_format_head]() {
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' 👾', $mol_dev_format_auto(this.lord()), ' 🏅', ' ', $mol_dev_format_shade($giper_baza_time_dump(this.time(), this.tick())), ' #', $mol_dev_format_auto(this.hash()), ' 👾', $mol_dev_format_accent(this.mate().str || '______every______'), this.code().some(v => v) ? ' 🔐' : ' 👀', $giper_baza_rank_tier[this.tier()], ':', this.rate().toString(16).toUpperCase());
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $giper_baza_unit_gift, "make", null);
-    $.$giper_baza_unit_gift = $giper_baza_unit_gift;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$giper_baza_unit_seal_limit = 10;
-    /**  Sign for hash list */
-    class $giper_baza_unit_seal extends $giper_baza_unit_base {
-        static length(size) {
-            return Math.ceil((84 + size * 12) / 8) * 8;
-        }
-        static make(size, wide) {
-            const seal = this.from(this.length(size));
-            seal.kind('seal');
-            seal.meta({ size, wide });
-            return seal;
-        }
-        meta(next) {
-            return this.uint8(1, next && (next.size | (next.wide ? 0b1000_0000 : 0)));
-        }
-        size() {
-            return this.meta() & 0b1111;
-        }
-        wide() {
-            return Boolean(this.meta() & 0b1000_0000);
-        }
-        alive_items = new Set;
-        alive_full() {
-            return this.alive_items.size === $.$giper_baza_unit_seal_limit;
-        }
-        alive_list() {
-            const alive = this.alive_items;
-            return this.hash_list().filter(hash => alive.has(hash.str));
-        }
-        hash_item(index, next) {
-            return this.id12(20 + index * 12, next);
-        }
-        _hash_list;
-        hash_list(next) {
-            if (next) {
-                for (let i = 0; i < next.length; ++i) {
-                    this.hash_item(i, next[i]);
-                }
-                // this.size( next.length )
-                return this._hash_list = next;
-            }
-            else {
-                const list = [];
-                const count = this.size();
-                for (let i = 0; i < count; ++i) {
-                    list.push(this.hash_item(i));
-                }
-                return this._hash_list = list;
-            }
-        }
-        /** Hash for signing. */
-        shot() {
-            return $giper_baza_link.hash_bin(new Uint8Array(this.buffer, this.byteOffset, this.byteLength - 64));
-        }
-        sign(next) {
-            const buf = new Uint8Array(this.buffer, this.byteOffset + this.byteLength - 64, 64);
-            if (next)
-                buf.set(next);
-            return buf;
-        }
-        // @ $mol_memo.method
-        work() {
-            let int = new Uint32Array(this.hash().toBin().buffer)[0];
-            let count = 0;
-            while (int & 1) {
-                int >>>= 1;
-                ++count;
-            }
-            return count;
-        }
-        rate_min() {
-            return $giper_baza_rank_work_rates[this.work()];
-        }
-        tier_min() {
-            return $giper_baza_rank_tier.post;
-        }
-        rank_min() {
-            return this.tier_min() | this.rate_min();
-        }
-        path() {
-            return `seal:${this.lord()}/${this.hash().str}`;
-        }
-        inspect() {
-            const items = this.hash_list().map(hash => $mol_term_color.cyan('#' + hash.str)).join(', ');
-            const kind = $mol_term_color.green('%');
-            return `${super.inspect()} ${kind} ${items}`;
-        }
-        toString() {
-            const items = this.hash_list().map(hash => '#' + hash.str).join(', ');
-            return `${super.toString()} % ${items}`;
-        }
-        [$mol_dev_format_head]() {
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' 👾', $mol_dev_format_auto(this.lord()), ' ✍ ', $mol_dev_format_shade($giper_baza_time_dump(this.time(), this.tick())), ' #', $mol_dev_format_auto(this.hash()), ' ', $mol_dev_format_auto(this.hash_list()));
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_unit_seal.prototype, "sign", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_unit_seal, "make", null);
-    $.$giper_baza_unit_seal = $giper_baza_unit_seal;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Reactive Set */
-    class $mol_wire_set extends Set {
-        pub = new $mol_wire_pub;
-        // Accessors
-        has(value) {
-            this.pub.promote();
-            return super.has(value);
-        }
-        entries() {
-            this.pub.promote();
-            return super.entries();
-        }
-        keys() {
-            this.pub.promote();
-            return super.keys();
-        }
-        values() {
-            this.pub.promote();
-            return super.values();
-        }
-        forEach(task, self) {
-            this.pub.promote();
-            super.forEach(task, self);
-        }
-        [Symbol.iterator]() {
-            this.pub.promote();
-            return super[Symbol.iterator]();
-        }
-        get size() {
-            this.pub.promote();
-            return super.size;
-        }
-        // Mutators
-        add(value) {
-            if (super.has(value))
-                return this;
-            super.add(value);
-            this.pub.emit();
-            return this;
-        }
-        delete(value) {
-            const res = super.delete(value);
-            if (res)
-                this.pub.emit();
-            return res;
-        }
-        clear() {
-            if (!super.size)
-                return;
-            super.clear();
-            this.pub.emit();
-        }
-        // Extensions
-        item(val, next) {
-            if (next === undefined)
-                return this.has(val);
-            if (next)
-                this.add(val);
-            else
-                this.delete(val);
-            return next;
-        }
-    }
-    $.$mol_wire_set = $mol_wire_set;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Virtual Pawn that represents contained units as high-level data types. */
-    class $giper_baza_pawn extends $mol_object {
-        static tag = 'vals';
-        static meta = null;
-        /** Standalone part of Glob which syncs separately, have own rights, and contains Units */
-        land() {
-            return null;
-        }
-        /** Land local Pawn id */
-        head() {
-            return $giper_baza_link.hole;
-        }
-        /** Link to Land/Lord. */
-        land_link() {
-            return this.land()?.link() ?? this.$.$giper_baza_auth.current().pass().lord();
-        }
-        /** Link to Pawn/Land/Lord. */
-        link() {
-            return new $giper_baza_link('___' + this.head()).resolve(this.land_link());
-        }
-        toJSON() {
-            return this.link().str;
-        }
-        /** Returns another representation of this Pawn. */
-        cast(Pawn) {
-            return this.land().Pawn(Pawn).Head(this.head());
-        }
-        /** Ordered inner alive Pawn. */
-        pawns(Pawn) {
-            const land = this.land();
-            const map = {
-                term: () => land.Pawn(Pawn || $giper_baza_atom),
-                solo: () => land.Pawn(Pawn || $giper_baza_atom),
-                vals: () => land.Pawn(Pawn || $giper_baza_list),
-                keys: () => land.Pawn(Pawn || $giper_baza_dict),
-            };
-            return this.units().map(unit => map[unit.tag()]().Head(unit.self()));
-        }
-        /** All ordered alive Units */
-        units() {
-            return this.units_of($giper_baza_link.hole);
-        }
-        units_of(peer) {
-            const head = this.head();
-            const units = this.land().sand_ordered({ head, peer }).filter(unit => !unit.dead() && unit.self().str !== '');
-            this.land().sands_open(units);
-            return units;
-        }
-        meta(next) {
-            const prev = this.meta_of($giper_baza_link.hole);
-            if (!next)
-                return prev;
-            if (prev?.str === next?.str)
-                return prev;
-            const head = this.head();
-            this.land().post($giper_baza_link.hole, head, $giper_baza_link.hole, next);
-            return next;
-        }
-        meta_of(peer) {
-            const head = this.head();
-            const unit = this.land().sand_ordered({ head, peer }).find(unit => !unit.dead() && unit.self().str === '') ?? null;
-            if (unit)
-                this.land().sands_open([unit]);
-            return unit ? $giper_baza_link_schema.cast(this.land().sand_decode(unit)) : null;
-        }
-        filled() {
-            return this.units().length > 0;
-        }
-        /** Ability to make changes by current peer. */
-        can_change() {
-            return this.land().pass_rank(this.land().auth().pass()) >= $giper_baza_rank_post('late');
-        }
-        /** Time of last changed unit inside Pawn subtree */
-        last_change() {
-            const land = this.land();
-            let last = 0;
-            const visit = (sand) => {
-                if (sand.time() > last)
-                    last = sand.time();
-                if (sand.tag() === 'term')
-                    return;
-                land.Pawn($giper_baza_pawn).Head(sand.self()).units().forEach(visit);
-            };
-            this.units().forEach(visit);
-            return last ? $giper_baza_time_moment(last) : null;
-        }
-        /** All author Passes of Pawn subtree */
-        authors() {
-            const land = this.land();
-            const peers = new Set();
-            const visit = (sand) => {
-                peers.add(land.lord_pass(sand.lord()));
-                if (sand.tag() === 'term')
-                    return;
-                land.Pawn($giper_baza_pawn).Head(sand.self()).units_of(null).forEach(visit);
-            };
-            this.units_of(null).forEach(visit);
-            return [...peers];
-        }
-        ;
-        [$mol_dev_format_head]() {
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', this.head());
-        }
-    }
-    __decorate([
-        $mol_memo.method
-    ], $giper_baza_pawn.prototype, "link", null);
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_pawn.prototype, "cast", null);
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_pawn.prototype, "pawns", null);
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_pawn.prototype, "units_of", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_pawn.prototype, "meta", null);
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_pawn.prototype, "meta_of", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_pawn.prototype, "last_change", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_pawn.prototype, "authors", null);
-    $.$giper_baza_pawn = $giper_baza_pawn;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_reconcile({ prev, from, to, next, equal, drop, insert, update, replace, }) {
-        if (!update)
-            update = (next, prev, lead) => prev;
-        if (!replace)
-            replace = (next, prev, lead) => insert(next, drop(prev, lead));
-        if (to > prev.length)
-            to = prev.length; // $mol_fail( new RangeError( `To(${ to }) greater then length(${ prev.length })` ) )
-        if (from > to)
-            from = to; // $mol_fail( new RangeError( `From(${ to }) greater then to(${ to })` ) )
-        let p = from;
-        let n = 0;
-        let lead = p ? prev[p - 1] : null;
-        while (p < to || n < next.length) {
-            if (p < to && n < next.length && equal(next[n], prev[p])) {
-                lead = update(next[n], prev[p], lead);
-                ++p;
-                ++n;
-            }
-            else if (next.length - n > to - p) {
-                lead = insert(next[n], lead);
-                ++n;
-            }
-            else if (next.length - n < to - p) {
-                lead = drop(prev[p], lead);
-                ++p;
-            }
-            else {
-                lead = replace(next[n], prev[p], lead);
-                ++p;
-                ++n;
-            }
-        }
-    }
-    $.$mol_reconcile = $mol_reconcile;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_schema_boolean extends $mol_schema_any {
-        static guard(value) {
-            if (typeof value === 'boolean')
-                return value;
-            return $mol_fail(new TypeError('Wrong type', { cause: { value, schema: this } }));
-        }
-        static default = false;
-    }
-    $.$mol_schema_boolean = $mol_schema_boolean;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_schema_float extends $mol_schema_any {
-        static guard(value) {
-            if (typeof value === 'number')
-                return value;
-            return $mol_fail(new TypeError('Wrong type', { cause: { value, schema: this } }));
-        }
-        static default = Number.NaN;
-    }
-    $.$mol_schema_float = $mol_schema_float;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_schema_integer extends $mol_schema_float {
-        $mol_schema_integer = true;
-        static guard(value) {
-            const val = super.guard(value);
-            if (!Number.isFinite(val))
-                return $mol_fail(new TypeError('Non finite', { cause: { value, schema: this } }));
-            if (Math.trunc(val) !== val)
-                return $mol_fail(new TypeError('Non integer', { cause: { value, schema: this } }));
-            return val;
-        }
-        static default = 0;
-    }
-    $.$mol_schema_integer = $mol_schema_integer;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_schema_bigint extends $mol_schema_any {
-        static guard(value) {
-            if (typeof value === 'bigint')
-                return value;
-            return $mol_fail(new TypeError('Wrong type', { cause: { value, schema: this } }));
-        }
-        static cast(value) {
-            if (typeof value === 'number')
-                return BigInt($mol_schema_integer.cast(value));
-            return super.cast(value);
-        }
-        static default = 0n;
-    }
-    $.$mol_schema_bigint = $mol_schema_bigint;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_schema_string extends $mol_schema_any {
-        static guard(value) {
-            if (typeof value === 'string')
-                return value;
-            return $mol_fail(new TypeError('Wrong type', { cause: { value, schema: this } }));
-        }
-        static cast(value) {
-            return super.cast(value);
-        }
-        static default = '';
-    }
-    $.$mol_schema_string = $mol_schema_string;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_schema_dict = $mol_memo_key.func(function $mol_schema_dict(Pair) {
-        return class $mol_schema_dict_ extends $mol_schema_any {
-            static Pair = Pair;
-            static toString() {
-                if (this !== $mol_schema_dict_)
-                    return super.toString();
-                return '$mol_schema_dict<' + $mol_key(Pair) + '>';
-            }
-            static guard(value) {
-                if (Object.getPrototypeOf(Object.getPrototypeOf(value))) {
-                    return $mol_fail(new TypeError('Non dictionary', { cause: { value, schema: this } }));
-                }
-                for (const key in value) {
-                    try {
-                        Pair[0].guard(key);
-                    }
-                    catch (error) {
-                        return $mol_fail(new TypeError('Wrong key', { cause: { key, error, value, schema: this } }));
-                    }
-                    try {
-                        Pair[1].guard(value[key]);
-                    }
-                    catch (error) {
-                        return $mol_fail(new TypeError('Wrong val', { cause: { key, error, value, schema: this } }));
-                    }
-                }
-                return value;
-            }
-            static cast(value) {
-                if (Object.getPrototypeOf(Object.getPrototypeOf(value)))
-                    return this.default;
-                const res = {};
-                for (const key in value) {
-                    if (!Pair[0].check(key))
-                        continue;
-                    res[key] = Pair[1].cast(value[key]);
-                }
-                return res;
-            }
-            static default = {};
-        };
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_schema_list = $mol_memo_key.func(function $mol_schema_list(Item) {
-        return class $mol_schema_list_ extends $mol_schema_any {
-            static Item = Item;
-            static toString() {
-                if (this !== $mol_schema_list_)
-                    return super.toString();
-                return '$mol_schema_list<' + $mol_key(Item) + '>';
-            }
-            static guard(value) {
-                if (!Array.isArray(value))
-                    return $mol_fail(new TypeError('Non array', { cause: { value, schema: this } }));
-                for (const [index, item] of super.guard(value).entries()) {
-                    try {
-                        Item.guard(item);
-                    }
-                    catch (error) {
-                        return $mol_fail(new TypeError('Wrong item', { cause: { index, error, value, schema: this } }));
-                    }
-                }
-                return value;
-            }
-            static cast(value) {
-                if (!Array.isArray(value))
-                    return this.default;
-                return value.map(item => Item.cast(item));
-            }
-            static default = [];
-        };
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Reactive convergent list. */
-    class $giper_baza_list extends $giper_baza_pawn {
-        static tag = $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag.vals];
-        /** All Vary in the list. */
-        items_vary(next, tag = 'term') {
-            const units = this.units();
-            if (next === undefined)
-                return units.map(unit => this.land().sand_decode(unit));
-            this.splice(next, 0, units.length, tag);
-            return this.items_vary();
-        }
-        /** Replace sublist by new one with reconciliation. */
-        splice(next, from = this.units().length, to = from, tag = 'term') {
-            const land = this.land();
-            $mol_reconcile({
-                prev: this.units(),
-                from,
-                to,
-                next,
-                equal: (next, prev) => $mol_compare_deep(this.land().sand_decode(prev), next),
-                drop: (prev, lead) => this.land().post(lead?.self() ?? $giper_baza_link.hole, prev.head(), prev.self(), null),
-                insert: (next, lead) => this.land().post(lead?.self() ?? $giper_baza_link.hole, this.head(), land.self_make(), next, tag),
-                replace: (next, prev, lead) => this.land().post(lead?.self() ?? $giper_baza_link.hole, prev.head(), prev.self(), next, prev.tag()),
-            });
-        }
-        /** Unit by Vary. */
-        find(vary) {
-            for (const unit of this.units()) {
-                if ($mol_compare_deep(this.land().sand_decode(unit), vary))
-                    return unit;
-            }
-            return null;
-        }
-        /** Existence of Vary in the list. */
-        has(vary, next, tag = 'term') {
-            if (next === undefined)
-                return Boolean(this.find(vary));
-            if (next)
-                this.add(vary, tag);
-            else
-                this.cut(vary);
-            return next;
-        }
-        /** Add Vary a the beginning if it doesn't exists. */
-        add(vary, tag = 'term') {
-            if (this.has(vary))
-                return;
-            this.land().post($giper_baza_link.hole, this.head(), null, vary, tag);
-        }
-        /** Removes all Vary presence. */
-        cut(vary) {
-            const units = [...this.units()];
-            for (let i = 0; i < units.length; ++i) {
-                if (!$mol_compare_deep(this.land().sand_decode(units[i]), vary))
-                    continue;
-                this.land().post(units[i - 1]?.self() ?? $giper_baza_link.hole, units[i].head(), units[i].self(), null);
-                units.splice(i, 1);
-                --i;
-            }
-        }
-        /** Moves item from one Seat to another. */
-        move(from, to) {
-            this.land().sand_move(this.units()[from], this.head(), to);
-        }
-        /** Remove item by Seat. */
-        wipe(seat) {
-            this.land().sand_wipe(this.units()[seat]);
-        }
-        /** Add vary at the end and use maked Self as Pawn Head. */
-        pawn_make(Pawn, vary, tag = 'term') {
-            this.splice([vary], undefined, undefined, tag);
-            return this.land().Pawn(Pawn).Head(this.units().at(-1).self());
-        }
-        ;
-        [$mol_dev_format_head]() {
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', this.head(), ' ', $mol_dev_format_auto(this.items_vary()));
-        }
-        /** Mergeable list of atomic vary type factory */
-        static of(init) {
-            const Item = $mol_schema_instance(init);
-            class $giper_baza_list_of extends $giper_baza_list {
-                static Item = Item;
-                items(next) {
-                    if (next === undefined)
-                        return this.items_vary().map(item => Item.cast(item));
-                    for (const item of next)
-                        Item.guard(item);
-                    this.items_vary(next);
-                    return this.items();
-                }
-                static toString() {
-                    return this === $giper_baza_list_of ? '$giper_baza_list.of<' + Item + '>' : super.toString();
-                }
-            }
-            __decorate([
-                $mol_mem
-            ], $giper_baza_list_of.prototype, "items", null);
-            return $giper_baza_list_of;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_list.prototype, "items_vary", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_list.prototype, "splice", null);
-    __decorate([
-        $mol_memo_key.method
-    ], $giper_baza_list, "of", null);
-    $.$giper_baza_list = $giper_baza_list;
-    /** Mergeable list of atomic buffers */
-    class $giper_baza_list_bin extends $giper_baza_list.of(Uint8Array) {
-    }
-    $.$giper_baza_list_bin = $giper_baza_list_bin;
-    /** Mergeable list of atomic booleans */
-    class $giper_baza_list_bool extends $giper_baza_list.of($mol_schema_boolean) {
-    }
-    $.$giper_baza_list_bool = $giper_baza_list_bool;
-    /** Mergeable list of atomic big integers */
-    class $giper_baza_list_int extends $giper_baza_list.of($mol_schema_bigint) {
-    }
-    $.$giper_baza_list_int = $giper_baza_list_int;
-    /** Mergeable list of atomic floats */
-    class $giper_baza_list_real extends $giper_baza_list.of($mol_schema_float) {
-    }
-    $.$giper_baza_list_real = $giper_baza_list_real;
-    /** Mergeable list of atomic strings */
-    class $giper_baza_list_str extends $giper_baza_list.of($mol_schema_string) {
-    }
-    $.$giper_baza_list_str = $giper_baza_list_str;
-    /** Mergeable list of atomic time moments */
-    class $giper_baza_list_time extends $giper_baza_list.of($mol_time_moment) {
-    }
-    $.$giper_baza_list_time = $giper_baza_list_time;
-    /** Mergeable list of atomic time durations */
-    class $giper_baza_list_dur extends $giper_baza_list.of($mol_time_duration) {
-    }
-    $.$giper_baza_list_dur = $giper_baza_list_dur;
-    /** Mergeable list of atomic time intervals */
-    class $giper_baza_list_range extends $giper_baza_list.of($mol_time_interval) {
-    }
-    $.$giper_baza_list_range = $giper_baza_list_range;
-    /** Mergeable list of atomic dictionaries */
-    class $giper_baza_list_dict extends $giper_baza_list.of($mol_schema_dict([$mol_schema_string, $mol_schema_any])) {
-    }
-    $.$giper_baza_list_dict = $giper_baza_list_dict;
-    /** Mergeable list of atomic arrays */
-    class $giper_baza_list_list extends $giper_baza_list.of($mol_schema_list($mol_schema_any)) {
-    }
-    $.$giper_baza_list_list = $giper_baza_list_list;
-    /** Mergeable list of atomic DOM elements */
-    class $giper_baza_list_dom extends $giper_baza_list.of($mol_dom.Element ?? Object) {
-    }
-    $.$giper_baza_list_dom = $giper_baza_list_dom;
-    /** Mergeable list of atomic Trees */
-    class $giper_baza_list_tree extends $giper_baza_list.of($mol_tree2) {
-    }
-    $.$giper_baza_list_tree = $giper_baza_list_tree;
-    /** Mergeable list of atomic Links */
-    class $giper_baza_list_link extends $giper_baza_list.of($giper_baza_link) {
-        /** Mergeable List of atomic Links to some Pawn type */
-        static to(Value) {
-            class $giper_baza_list_link_to extends $giper_baza_list_link {
-                Value = $mol_memo.func(Value);
-                static toString() {
-                    return this === $giper_baza_list_link_to ? '$giper_baza_list_link_to[ []=> ' + Value() + ' ]' : super.toString();
-                }
-                /** List of linked Pawns */
-                remote_list(next) {
-                    const glob = this.$.$giper_baza_glob;
-                    const Pawn = Value();
-                    return this.items(next?.map(item => item.link()))
-                        .map(link => glob.Pawn(link, Pawn));
-                }
-                remote_add(item) {
-                    this.add(item.link());
-                }
-                /** Make new Pawn and place it at end. */
-                make(config) {
-                    const Pawn = Value();
-                    let pawn;
-                    if (config === null || typeof config === 'number') {
-                        const self = this.land().self_make(config || undefined);
-                        pawn = this.land().Pawn(Pawn).Head(self);
-                        this.splice([pawn.link()]);
-                    }
-                    else if (config instanceof $giper_baza_land) {
-                        const land = config.area_make();
-                        this.splice([land.link()]);
-                        pawn = land.Pawn(Pawn).Data();
-                    }
-                    else if (config) {
-                        const land = this.$.$giper_baza_glob.land_grab(config);
-                        this.splice([land.link()]);
-                        pawn = land.Pawn(Pawn).Data();
-                    }
-                    else {
-                        return $mol_fail(new Error('Wrong config'));
-                    }
-                    if (Pawn.meta)
-                        pawn.meta(Pawn.meta);
-                    return pawn;
-                }
-            }
-            __decorate([
-                $mol_mem
-            ], $giper_baza_list_link_to.prototype, "remote_list", null);
-            __decorate([
-                $mol_action
-            ], $giper_baza_list_link_to.prototype, "remote_add", null);
-            __decorate([
-                $mol_action
-            ], $giper_baza_list_link_to.prototype, "make", null);
-            return $giper_baza_list_link_to;
-        }
-    }
-    $.$giper_baza_list_link = $giper_baza_list_link;
-    /** @deprecated Use $giper_baza_list_link.to( Target ) */
-    function $giper_baza_list_link_to(Value) {
-        return $giper_baza_list_link.to(Value);
-    }
-    $.$giper_baza_list_link_to = $giper_baza_list_link_to;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Mergeable dictionary Pawn with any keys mapped to any embedded Pawn types */
-    class $giper_baza_dict extends $giper_baza_list {
-        static tag = $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag.keys];
-        /** List of Vary keys. */
-        keys() {
-            return this.items_vary();
-        }
-        /** Inner Pawn by key. */
-        dive(key, Pawn, auto) {
-            if (this.can_change() && auto !== undefined)
-                this.has(key, true, Pawn.tag);
-            const unit = this.find(key);
-            return unit ? this.land().Pawn(Pawn).Head(unit.self()) : null;
-        }
-        static schema = {};
-        /** Mergeable dictionary Pawn with defined keys mapped to different embedded Pawn types */
-        static with(schema, path = '') {
-            const prefix = path ? path + ':' : '';
-            const $giper_baza_dict_with = class $giper_baza_dict_with extends this {
-                // static get schema() { return { ... this.schema, ... schema } }
-                static path = path;
-                static toString() {
-                    if (this !== $giper_baza_dict_with)
-                        return super.toString();
-                    const params = Object.entries(schema).map(([name, type]) => `${name}: ${type}`);
-                    return '$giper_baza_dict.with<{' + params.join(', ') + '}>';
-                }
-            };
-            for (const Field in schema) {
-                Object.defineProperty($giper_baza_dict_with.prototype, Field, {
-                    value: function (auto) {
-                        return this.dive(prefix + Field, schema[Field], auto);
-                    }
-                });
-                // $mol_wire_field( Entity.prototype, Field as any )
-            }
-            return Object.assign($giper_baza_dict_with, { schema: { ...this.schema, ...schema } });
-        }
-        ;
-        [$mol_dev_format_head]() {
-            const keys = $mol_wire_probe(() => this.keys());
-            const pawns = $mol_wire_probe(() => this.pawns(null)) ?? [];
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', this.head(), ' ', $mol_dev_format_auto(keys?.map((key, index) => new Pair(key, pawns[index]))));
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_dict.prototype, "keys", null);
-    $.$giper_baza_dict = $giper_baza_dict;
-    class Pair {
-        key;
-        val;
-        constructor(key, val) {
-            this.key = key;
-            this.val = val;
-        }
-        ;
-        [$mol_dev_format_head]() {
-            return $mol_dev_format_tr({}, $mol_dev_format_td({}, $mol_dev_format_auto(this.key)), $mol_dev_format_td({}, ': '), $mol_dev_format_td({}, $mol_dev_format_auto(this.val)));
-        }
-    }
-    /** Mergeable dictionary with any keys mapped to any embedded Pawn types */
-    function $giper_baza_dict_to(Value) {
-        return class $giper_baza_dict_to extends $giper_baza_dict {
-            Value = Value;
-            key(key, auto) {
-                return this.dive(key, this.Value, auto);
-            }
-            static toString() {
-                return this === $giper_baza_dict_to ? '$giper_baza_dict_to<' + Value + '>' : super.toString();
-            }
-        };
-    }
-    $.$giper_baza_dict_to = $giper_baza_dict_to;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * 48-bit streamable string hash function
-     * Based on cyrb53: https://stackoverflow.com/a/52171480
-     */
-    function $mol_hash_string(str, seed = 0) {
-        let nums = new Array(str.length);
-        for (let i = 0; i < str.length; ++i)
-            nums[i] = str.charCodeAt(i);
-        return $mol_hash_numbers(nums);
-    }
-    $.$mol_hash_string = $mol_hash_string;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Atomic dynamic register */
-    class $giper_baza_atom extends $giper_baza_pawn {
-        static tag = $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag.solo];
-        pick_unit(peer) {
-            return this.units_of(peer).at(0);
-        }
-        vary(next) {
-            return this.vary_of($giper_baza_link.hole, next);
-        }
-        vary_of(peer, next) {
-            let unit_prev = this.pick_unit(peer);
-            let prev = unit_prev ? this.land().sand_decode(unit_prev) : null;
-            if (next === undefined)
-                return prev;
-            if ($mol_compare_deep(prev, next))
-                return next;
-            this.land().post($giper_baza_link.hole, unit_prev?.head() ?? this.head(), unit_prev?.self() ?? null, next);
-            return this.vary_of(peer);
-        }
-        selection(lord, next) {
-            const link = this.link().head().str;
-            const user = this.$.$giper_baza_glob.Land(lord).Data($giper_baza_flex_user);
-            if (next) {
-                user.caret([[link, next[0], 0], [link, next[1], 0]]);
-                return next;
-            }
-            else {
-                this.vary(); // track text to recalc selection on its change
-                const selection = user.caret();
-                if (!selection)
-                    return [0, 0];
-                if (selection[0][0] !== link)
-                    return [0, 0];
-                if (selection[1][0] !== link)
-                    return [0, 0];
-                return [selection[0][1], selection[0][1]];
-            }
-        }
-        ;
-        [$mol_dev_format_head]() {
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', this.head(), ' ', $mol_dev_format_auto(this.vary()));
-        }
-        /** Atom which typed by Schema/Class. */
-        static of(init) {
-            const Schema = $mol_schema_maybe($mol_schema_instance(init));
-            class $giper_baza_atom_of extends $giper_baza_atom {
-                static Schema = Schema;
-                /** Get/Set value of Pawn field */
-                val(next) {
-                    return this.val_of($giper_baza_link.hole, next);
-                }
-                val_of(peer, next) {
-                    if (next !== undefined)
-                        Schema.guard(next);
-                    const res = this.vary_of(peer, next);
-                    return next === undefined ? Schema.cast(res) : this.val_of(peer);
-                }
-                static toString() {
-                    return this === $giper_baza_atom_of ? '$giper_baza_atom.of<' + Schema + '>' : super.toString();
-                }
-            }
-            __decorate([
-                $mol_mem_key
-            ], $giper_baza_atom_of.prototype, "val_of", null);
-            return $giper_baza_atom_of;
-        }
-    }
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_atom.prototype, "vary_of", null);
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_atom.prototype, "selection", null);
-    __decorate([
-        $mol_memo_key.method
-    ], $giper_baza_atom, "of", null);
-    $.$giper_baza_atom = $giper_baza_atom;
-    /** @deprecated Use $giper_baza_atom */
-    $.$giper_baza_atom_vary = $giper_baza_atom;
-    /** Atomic buffer */
-    class $giper_baza_atom_blob extends $giper_baza_atom.of(Uint8Array) {
-    }
-    $.$giper_baza_atom_blob = $giper_baza_atom_blob;
-    /** Atomic boolean */
-    class $giper_baza_atom_bool extends $giper_baza_atom.of($mol_schema_boolean) {
-    }
-    $.$giper_baza_atom_bool = $giper_baza_atom_bool;
-    /** Atomic big integer */
-    class $giper_baza_atom_bint extends $giper_baza_atom.of($mol_schema_bigint) {
-    }
-    $.$giper_baza_atom_bint = $giper_baza_atom_bint;
-    /** Atomic float number */
-    class $giper_baza_atom_real extends $giper_baza_atom.of($mol_schema_float) {
-    }
-    $.$giper_baza_atom_real = $giper_baza_atom_real;
-    /** Atomic string */
-    class $giper_baza_atom_text extends $giper_baza_atom.of($mol_schema_string) {
-    }
-    $.$giper_baza_atom_text = $giper_baza_atom_text;
-    /** Atomic time moment */
-    class $giper_baza_atom_time extends $giper_baza_atom.of($mol_time_moment) {
-    }
-    $.$giper_baza_atom_time = $giper_baza_atom_time;
-    /** Atomic time duration */
-    class $giper_baza_atom_dura extends $giper_baza_atom.of($mol_time_duration) {
-    }
-    $.$giper_baza_atom_dura = $giper_baza_atom_dura;
-    /** Atomic time interval */
-    class $giper_baza_atom_span extends $giper_baza_atom.of($mol_time_interval) {
-    }
-    $.$giper_baza_atom_span = $giper_baza_atom_span;
-    /** Atomic dictionary */
-    class $giper_baza_atom_dict extends $giper_baza_atom.of($mol_schema_dict([$mol_schema_string, $mol_schema_any])) {
-    }
-    $.$giper_baza_atom_dict = $giper_baza_atom_dict;
-    /** Atomic array */
-    class $giper_baza_atom_list extends $giper_baza_atom.of($mol_schema_list($mol_schema_any)) {
-    }
-    $.$giper_baza_atom_list = $giper_baza_atom_list;
-    /** Atomic DOM element */
-    class $giper_baza_atom_elem extends $giper_baza_atom.of($mol_dom.Element ?? Object) {
-    }
-    $.$giper_baza_atom_elem = $giper_baza_atom_elem;
-    /** Atomic Tree */
-    class $giper_baza_atom_tree extends $giper_baza_atom.of($mol_tree2) {
-    }
-    $.$giper_baza_atom_tree = $giper_baza_atom_tree;
-    /** Atomic Link */
-    class $giper_baza_atom_link extends $giper_baza_atom.of($giper_baza_link) {
-        /** Atomic link to some Pawn type register */
-        static to(Value) {
-            class $giper_baza_atom_link_to extends $giper_baza_atom_link {
-                Value = $mol_memo.func(Value);
-                static toString() {
-                    return this === $giper_baza_atom_link_to ? '$giper_baza_atom_link.to[ []=> ' + Value() + ' ]' : super.toString();
-                }
-                /** Target Pawn */
-                remote(next) {
-                    return this.remote_of($giper_baza_link.hole, next);
-                }
-                remote_of(peer, next) {
-                    const link = this.val_of(peer, next?.link() ?? next);
-                    if (!link)
-                        return null;
-                    return this.$.$giper_baza_glob.Pawn(link, Value());
-                }
-                /** Target Pawn. Creates if not exists. */
-                ensure(config) {
-                    return this.ensure_of($giper_baza_link.hole, config);
-                }
-                ensure_of(peer, config) {
-                    if (!this.val_of(peer)) {
-                        if (config === null)
-                            this.ensure_here(peer);
-                        else if (config instanceof $giper_baza_land)
-                            this.ensure_area(peer, config);
-                        else if (config)
-                            this.ensure_lord(peer, config);
-                        else
-                            return null;
-                    }
-                    return this.remote_of(peer);
-                }
-                ensure_here(peer) {
-                    const Pawn = Value();
-                    const idea = $mol_hash_string(this.link().str);
-                    const head = this.land().self_make(idea);
-                    const pawn = this.land().Pawn(Pawn).Head(head);
-                    if (Pawn.meta)
-                        pawn.meta(Pawn.meta);
-                    this.remote_of(peer, pawn);
-                }
-                ensure_area(peer, land) {
-                    const Pawn = Value();
-                    const idea = $mol_hash_string(this.link().str);
-                    const area = land.area_make(idea);
-                    const pawn = area.Data(Pawn);
-                    if (Pawn.meta)
-                        pawn.meta(Pawn.meta);
-                    this.val_of(peer, pawn.link());
-                }
-                ensure_lord(peer, preset) {
-                    const Pawn = Value();
-                    const land = this.$.$giper_baza_glob.land_grab(preset);
-                    const pawn = land.Data(Pawn);
-                    if (Pawn.meta)
-                        pawn.meta(Pawn.meta);
-                    this.val_of(peer, pawn.link());
-                }
-                /** @deprecated Use ensure( preset ) */
-                remote_ensure(preset) {
-                    return this.ensure(preset);
-                }
-                /** @deprecated Use ensure( null ) */
-                local_ensure() {
-                    return this.ensure(null);
-                }
-            }
-            __decorate([
-                $mol_mem_key
-            ], $giper_baza_atom_link_to.prototype, "remote_of", null);
-            __decorate([
-                $mol_action
-            ], $giper_baza_atom_link_to.prototype, "ensure_here", null);
-            __decorate([
-                $mol_action
-            ], $giper_baza_atom_link_to.prototype, "ensure_area", null);
-            __decorate([
-                $mol_action
-            ], $giper_baza_atom_link_to.prototype, "ensure_lord", null);
-            return $giper_baza_atom_link_to;
-        }
-    }
-    __decorate([
-        $mol_memo_key.method
-    ], $giper_baza_atom_link, "to", null);
-    $.$giper_baza_atom_link = $giper_baza_atom_link;
-    /** @deprecated Use $giper_baza_atom_link.to( Target ) */
-    function $giper_baza_atom_link_to(Value) {
-        return $giper_baza_atom_link.to(Value);
-    }
-    $.$giper_baza_atom_link_to = $giper_baza_atom_link_to;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $giper_baza_stat_series extends $giper_baza_atom.of($mol_schema_list($mol_schema_float)) {
-        tick(key, val, count) {
-            let vals = this.values().slice();
-            while (vals.length < count)
-                vals.push(0);
-            vals[key] = val + this.initial();
-            vals = [...vals.slice(key + 1), ...vals.slice(0, key + 1)];
-            for (let i = 1; i < count; ++i)
-                if (vals[i] < vals[i - 1])
-                    vals[i] = vals[i - 1];
-            vals = [...vals.slice(-1 - key), ...vals.slice(0, -1 - key)];
-            this.values(vals);
-        }
-        _initial;
-        initial() {
-            return this._initial
-                ?? (this._initial = this.max());
-        }
-        max() {
-            let max = 0;
-            for (const val of this.values())
-                if (val > max)
-                    max = val;
-            return max;
-        }
-        values(next) {
-            if (next) {
-                let last = 0;
-                next = next.map(v => ([v, last] = [v - last, v])[0]);
-            }
-            let last = 0;
-            return (this.val(next) ?? []).map(v => last += v);
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $giper_baza_stat_series.prototype, "tick", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_stat_series.prototype, "initial", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_stat_series.prototype, "max", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_stat_series.prototype, "values", null);
-    $.$giper_baza_stat_series = $giper_baza_stat_series;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $giper_baza_stat_ranges extends $giper_baza_dict.with({
-        Seconds: $giper_baza_stat_series,
-        Minutes: $giper_baza_stat_series,
-        Hours: $giper_baza_stat_series,
-        Days: $giper_baza_stat_series,
-        Months: $giper_baza_stat_series,
-        // Years: $giper_baza_stat_series,
-    }) {
-        _last_instant = 0;
-        tick_instant(val) {
-            this.tick_integral(this._last_instant += val);
-        }
-        tick_integral(val) {
-            let now = new $mol_time_moment;
-            this.Seconds(null).tick(Math.floor(now.second), val, 60);
-            this.Minutes(null).tick(now.minute, val, 60);
-            this.Hours(null).tick(now.hour, val, 24);
-            this.Days(null).tick(now.day, val, 31);
-            this.Months(null).tick(now.month, val, 12);
-            // this.Years( null )!.tick( now.year!, val )
-        }
-        series() {
-            function pick(Series, length, range) {
-                const values = Series?.values() ?? [0];
-                let series = Array.from({ length }, (_, i) => values[i]);
-                let start = 0;
-                let max = 0;
-                for (let i = 0; i < series.length; ++i) {
-                    if (series[i] < max)
-                        continue;
-                    max = series[i];
-                    start = i + 1;
-                }
-                if (start)
-                    series = [...series.slice(start), ...series.slice(0, start - 1)];
-                let last = series[0];
-                series = series.slice(1).map(val => {
-                    try {
-                        if (last === 0 || val < last)
-                            return 0;
-                        return (val - last) / range;
-                    }
-                    finally {
-                        last = Math.max(val, last);
-                    }
-                });
-                return series;
-            }
-            const months = pick(this.Days(), 12, 60 * 60 * 24 * 31);
-            const days = pick(this.Days(), 31, 60 * 60 * 24);
-            const hours = pick(this.Hours(), 24, 60 * 60);
-            const minutes = pick(this.Minutes(), 60, 60);
-            const seconds = pick(this.Seconds(), 60, 1);
-            return [...months, ...days, ...hours, ...minutes, ...seconds].reverse();
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_stat_ranges.prototype, "series", null);
-    $.$giper_baza_stat_ranges = $giper_baza_stat_ranges;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_report_handler_all = new Set();
-    function handler(event, url, line, col, error) {
-        for (const handler of $.$mol_report_handler_all) {
-            try {
-                handler(event, url, line, col, error);
-            }
-            catch (e) { }
-        }
-    }
-    const handler_promise = (event) => handler('Unhandled Rejection', '', 0, 0, event.reason);
-    const handler_promise_node = (reason) => handler('Unhandled Rejection', '', 0, 0, reason);
-    if ('addEventListener' in globalThis) {
-        globalThis.addEventListener('error', handler);
-        globalThis.addEventListener('unhandledrejection', handler_promise);
-    }
-    if ('process' in globalThis) {
-        process.on('uncaughtExceptionMonitor', handler);
-        // process.on('unhandledRejection', handler_promise_node) // revents process halt
-    }
-    const console_error = console.error;
-    console.error = function console_error_custom(...args) {
-        const format = (val) => typeof val === 'string'
-            ? val.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
-            : JSON.stringify(val);
-        const secondary = args.slice(1);
-        const first = typeof args[0] === 'string'
-            ? args[0].replaceAll(/%(?:\.\d+)?[disfcoO]/g, spec => spec === '%c' ? (secondary.shift(), '') : secondary.shift())
-            : args[0];
-        secondary.unshift(first);
-        const result = secondary.map(format).join(' ');
-        handler(result);
-        console_error.apply(console, args);
-    };
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $giper_baza_log() {
-        return this.$mol_state_arg.value('giper_baza_log') !== null;
-    }
-    $.$giper_baza_log = $giper_baza_log;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $giper_baza_app_stat extends $giper_baza_dict.with({
-        Uptime: $giper_baza_atom_dura,
-        Masters: $giper_baza_atom.of($mol_schema_list($mol_schema_string)),
-        Slaves: $giper_baza_atom.of($mol_schema_list($mol_schema_string)),
-        /** User time in secs */
-        Cpu_user: $giper_baza_stat_ranges,
-        /** System time in secs */
-        Cpu_system: $giper_baza_stat_ranges,
-        /** Memory in MB */
-        Mem_used: $giper_baza_stat_ranges,
-        /** Memory in MB */
-        Mem_free: $giper_baza_stat_ranges,
-        /** FS used */
-        Fs_used: $giper_baza_stat_ranges,
-        /** FS free */
-        Fs_free: $giper_baza_stat_ranges,
-        /** FS read count */
-        Fs_reads: $giper_baza_stat_ranges,
-        /** FS write count */
-        Fs_writes: $giper_baza_stat_ranges,
-        /** Slave sockets count */
-        Port_slaves: $giper_baza_stat_ranges,
-        /** Masters sockets count */
-        Port_masters: $giper_baza_stat_ranges,
-        /** Alive (in-memory) lands count */
-        Land_alive: $giper_baza_stat_ranges,
-        /** Ghost (non-persist) lands count */
-        Land_ghost: $giper_baza_stat_ranges,
-        /** Unhandled errors */
-        Errors: $giper_baza_stat_ranges,
-    }) {
-        freshness() {
-            const last = this.last_change();
-            if (!last)
-                return null;
-            const range = new $mol_time_interval({
-                start: last,
-                end: new $mol_time_moment(this.$.$mol_state_time.now(1000)),
-            });
-            return range.duration.count('PT1s');
-        }
-        uptime(next) {
-            return this.Uptime(next)?.val(next) ?? new $mol_time_duration(0);
-        }
-        masters(next) {
-            return this.Masters(next)?.val(next) ?? [];
-        }
-        slaves(next) {
-            return this.Slaves(next)?.val(next) ?? [];
-        }
-        init() {
-            this.Errors(null).tick_instant(1); // restarts as errors
-            let handler = () => this.Errors(null).tick_instant(1);
-            $mol_report_handler_all.add(handler);
-            return { destructor: () => $mol_report_handler_all.delete(handler) };
-        }
-        tick() {
-            this.init();
-            if (this.$.$giper_baza_log()) {
-                this.$.$mol_log3_warn({
-                    place: this,
-                    message: 'Stat disabled due logging',
-                    hint: 'Disable $giper_baza_log to start monitoring'
-                });
-                return;
-            }
-            this.$.$mol_state_time.now(1000);
-            const yard = this.$.$giper_baza_glob.yard();
-            this.uptime(new $mol_time_duration({ second: Math.floor(process.uptime()) }).normal);
-            this.masters([...yard.masters()].map(port => port.address() + ' ' + port.origin()));
-            this.slaves([...yard.slaves].map(port => port.address() + ' ' + port.origin()));
-            const res = process.resourceUsage();
-            this.Cpu_user(null).tick_integral(Math.ceil(res.userCPUTime / 1e4)); // %
-            this.Cpu_system(null).tick_integral(Math.ceil(res.systemCPUTime / 1e4)); // %
-            this.Fs_reads(null).tick_integral(res.fsRead); // pct
-            this.Fs_writes(null).tick_integral(res.fsWrite); // pct
-            this.Mem_used(null).tick_instant(Math.ceil((res.maxRSS - res.sharedMemorySize) / 1024)); // MB
-            this.Mem_free(null).tick_instant(Math.floor($node.os.freemem() / 1024 / 1024)); // MB
-            this.Fs_used(null).tick_instant(Math.floor($mol_storage.used() / 1024 / 1024)); // MB
-            this.Fs_free(null).tick_instant(Math.floor($mol_storage.free() / 1024 / 1024)); // MB
-            const masters = yard.masters()?.length ?? 0;
-            this.Port_masters(null).tick_instant(masters); // pct
-            this.Port_slaves(null).tick_instant(yard.slaves.size); // pct
-            const lands_alive = yard.lands_alive();
-            const lands_persist = yard.lands_alive().filter(land => land.persisted());
-            this.Land_alive(null).tick_instant(lands_alive.length); // pct
-            this.Land_ghost(null).tick_instant(lands_alive.length - lands_persist.length); // pct
-            this.Errors(null).tick_instant(0); // pct
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_app_stat.prototype, "freshness", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_app_stat.prototype, "uptime", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_app_stat.prototype, "masters", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_app_stat.prototype, "slaves", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_app_stat.prototype, "init", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_app_stat.prototype, "tick", null);
-    $.$giper_baza_app_stat = $giper_baza_app_stat;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$giper_baza_flex_deck_link = new $giper_baza_link('6NUPZgrR_Itnhu9N1_WPsQDQWa');
-    /** Subj - named entity */
-    class $giper_baza_flex_subj extends $giper_baza_dict.with({
-        Name: $giper_baza_atom_text,
-        Icon: $giper_baza_atom_text,
-        Hint: $giper_baza_atom_text,
-    }, 'Subj') {
-        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_U2e5XejQ`);
-        name(next) {
-            return this.Name(next)?.val(next) ?? this.link().str;
-        }
-        icon(next) {
-            return this.Icon(next)?.val(next) ?? '💫';
-        }
-        hint(next) {
-            return this.Hint(next)?.val(next) ?? '';
-        }
-    }
-    $.$giper_baza_flex_subj = $giper_baza_flex_subj;
-    /** Atomic Link to any Subj */
-    class $giper_baza_flex_subj_link extends $giper_baza_atom_link.to(() => $giper_baza_flex_subj) {
-    }
-    $.$giper_baza_flex_subj_link = $giper_baza_flex_subj_link;
-    /** Meta - schema of entitiy */
-    class $giper_baza_flex_meta extends $giper_baza_flex_subj.with({
-        Pulls: $giper_baza_list_link.to(() => $giper_baza_flex_subj),
-        Props: $giper_baza_list_link.to(() => $giper_baza_flex_prop),
-    }, 'Meta') {
-        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_Atd6Ty7F`);
-        prop_new(key, type, kind, vars, base) {
-            const prop = this.Props(null).make($mol_hash_string(key));
-            prop.path(this.name() + ':' + key);
-            prop.name(key);
-            prop.type(type);
-            if (kind)
-                prop.kind(kind);
-            if (vars)
-                prop.enum(vars);
-            if (base !== undefined)
-                prop.base(base);
-            return prop;
-        }
-        prop_add(prop) {
-            this.Props(prop).add(prop.link());
-        }
-        prop_all() {
-            return [
-                ...this.pull_all().flatMap(meta => meta.prop_all()),
-                ...this.Props()?.remote_list() ?? [],
-            ];
-        }
-        pull_add(meta) {
-            this.Pulls(meta).add(meta.link());
-        }
-        pull_all() {
-            return (this.Pulls()?.remote_list() ?? []).map(subj => subj.cast($giper_baza_flex_meta));
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $giper_baza_flex_meta.prototype, "prop_new", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_flex_meta.prototype, "prop_add", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_flex_meta.prototype, "prop_all", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_flex_meta.prototype, "pull_add", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_flex_meta.prototype, "pull_all", null);
-    $.$giper_baza_flex_meta = $giper_baza_flex_meta;
-    /** Property - attribute of entity */
-    class $giper_baza_flex_prop extends $giper_baza_flex_subj.with({
-        /** Key to store value */
-        Path: $giper_baza_atom_text,
-        /** Type of value */
-        Type: $giper_baza_atom_text,
-        /** Target Meta */
-        Kind: $giper_baza_atom_link.to(() => $giper_baza_flex_meta),
-        /** Variants of values */
-        Enum: $giper_baza_atom_link.to(() => $giper_baza_list),
-        /** Base value */
-        Base: $giper_baza_atom,
-    }, 'Prop') {
-        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_DOnW7Ah9`);
-        path(next) {
-            return this.Path(next)?.val(next) ?? '';
-        }
-        type(next) {
-            return this.Type(next)?.val(next) ?? '';
-        }
-        base(next) {
-            return this.Base(next)?.vary(next) ?? null;
-        }
-        kind(next) {
-            return this.Kind(next)?.remote(next) ?? null;
-        }
-        enum(next) {
-            return this.Enum(next)?.remote(next) ?? null;
-        }
-    }
-    $.$giper_baza_flex_prop = $giper_baza_flex_prop;
-    /** Deck - set of schemes and types */
-    class $giper_baza_flex_deck extends $giper_baza_flex_subj.with({
-        Metas: $giper_baza_list_link.to(() => $giper_baza_flex_meta),
-        Types: $giper_baza_list_str,
-    }, 'Deck') {
-        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_3AvnmQ4q`);
-        meta_new(key, icon, hint) {
-            const meta = this.Metas(null).make($mol_hash_string(key));
-            meta.name(key);
-            meta.icon(icon);
-            meta.hint(hint);
-            return meta;
-        }
-        meta_for(Meta, icon, hint) {
-            const meta = this.meta_new(Meta.path, icon, hint);
-            Meta.meta = meta.link();
-            return meta;
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $giper_baza_flex_deck.prototype, "meta_new", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_flex_deck.prototype, "meta_for", null);
-    $.$giper_baza_flex_deck = $giper_baza_flex_deck;
-    /** Seed - global network config */
-    class $giper_baza_flex_seed extends $giper_baza_flex_subj.with({
-        Deck: $giper_baza_atom_link.to(() => $giper_baza_flex_deck),
-        Peers: $giper_baza_list_link.to(() => $giper_baza_flex_peer),
-    }, 'Seed') {
-        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_nrUK4ZIW`);
-        deck() {
-            return this.Deck(null).ensure(this.land());
-        }
-        peers(next) {
-            return this.Peers(next)?.remote_list(next) ?? [];
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_flex_seed.prototype, "deck", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_flex_seed.prototype, "peers", null);
-    $.$giper_baza_flex_seed = $giper_baza_flex_seed;
-    /** Peer - network peering info */
-    class $giper_baza_flex_peer extends $giper_baza_flex_subj.with({
-        Urls: $giper_baza_list_str,
-        Stat: $giper_baza_atom_link.to(() => $giper_baza_app_stat),
-    }, 'Peer') {
-        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_xEibvNCP`);
-        stat(auto) {
-            return this.Stat(auto)?.ensure(this.land()) ?? null;
-        }
-        urls(next) {
-            return (this.Urls(next)?.items(next) ?? []).filter($mol_guard_defined);
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_flex_peer.prototype, "stat", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_flex_peer.prototype, "urls", null);
-    $.$giper_baza_flex_peer = $giper_baza_flex_peer;
-    /** User - human profile */
-    class $giper_baza_flex_user extends $giper_baza_flex_subj.with({
-        Caret: $giper_baza_atom.of($mol_schema_list($mol_schema_any)),
-    }, 'User') {
-        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_csm0VtAK`);
-        caret(next) {
-            return this.Caret(next)?.val(next) ?? null;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_flex_user.prototype, "caret", null);
-    $.$giper_baza_flex_user = $giper_baza_flex_user;
-    /** Makes new Seed with Deck */
-    function $giper_baza_flex_init() {
-        const seed_land = this.$.$giper_baza_glob.land_grab();
-        const seed = seed_land.Data($giper_baza_flex_seed);
-        seed.name('Base Seed');
-        const deck = seed.deck();
-        deck.name('Base Deck');
-        deck.Types(null).items_vary(['vary', 'enum', 'bool', 'int', 'real', 'str', 'link', 'time', 'dict', 'text', 'list']);
-        const Meta = deck.meta_for($giper_baza_flex_meta, '✨', 'Meta schema of entities');
-        Meta.meta(Meta.link());
-        const Subj = deck.meta_for($giper_baza_flex_subj, '💎', 'Named entity');
-        const Seed = deck.meta_for($giper_baza_flex_seed, '🌱', 'Seed of network');
-        const Prop = deck.meta_for($giper_baza_flex_prop, '🔖', 'Property schema');
-        const Deck = deck.meta_for($giper_baza_flex_deck, '📚', 'Collection of Metas');
-        const Peer = deck.meta_for($giper_baza_flex_peer, '🔆', 'Peer of network');
-        const User = deck.meta_for($giper_baza_flex_user, '👤', 'Profile of user');
-        seed.meta(Seed.link());
-        deck.meta(Deck.link());
-        Meta.pull_add(Subj);
-        Seed.pull_add(Subj);
-        Prop.pull_add(Subj);
-        Deck.pull_add(Subj);
-        Peer.pull_add(Subj);
-        User.pull_add(Subj);
-        Subj.prop_new('Name', 'str', undefined, undefined, '');
-        Subj.prop_new('Icon', 'str', undefined, undefined, '💫');
-        Subj.prop_new('Hint', 'str', undefined, undefined, '');
-        Meta.prop_new('Pulls', 'list', Meta, deck.Metas());
-        Meta.prop_new('Props', 'list', Prop);
-        Seed.prop_new('Deck', 'link', Deck);
-        Seed.prop_new('Peers', 'list', Peer);
-        Prop.prop_new('Path', 'str');
-        Prop.prop_new('Type', 'enum', undefined, deck.Types(), 'vary');
-        Prop.prop_new('Kind', 'link', Meta, deck.Metas(), Subj.link());
-        Prop.prop_new('Enum', 'link', Subj);
-        Prop.prop_new('Base', 'vary', Subj);
-        Deck.prop_new('Metas', 'list', Meta);
-        Deck.prop_new('Types', 'list');
-        Peer.prop_new('Urls', 'list');
-        Peer.prop_new('Stat', 'link');
-        User.prop_new('Caret', 'list');
-        return seed;
-    }
-    $.$giper_baza_flex_init = $giper_baza_flex_init;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Simple memory allocator.
-     * Holds linked list of free blocks.
-     * Prefers blocks from the beginning.
-     * Near blocks are joined automatically.
-     */
-    class $mol_memory_pool extends Object {
-        _free;
-        constructor(size = Number.POSITIVE_INFINITY) {
-            super();
-            this._free = {
-                from: -1,
-                size: 0,
-                next: {
-                    from: 0,
-                    size,
-                    next: null,
-                }
-            };
-        }
-        /** Returns offset of first free block with required size. */
-        acquire(size) {
-            let prev = this._free;
-            let next = prev.next;
-            let max = 0;
-            while (next.size < size) {
-                if (next.size > max)
-                    max = next.size;
-                prev = next;
-                next = next.next;
-                if (!next)
-                    $mol_fail(new Error(`No free space\nneed: ${size}\nhave: ${max}`));
-            }
-            const from = next.from;
-            if (next.size === size) {
-                prev.next = next.next;
-            }
-            else {
-                next.from += size;
-                next.size -= size;
-            }
-            return from;
-        }
-        /** Allows memory range to be acquired. */
-        release(from, size) {
-            let prev = this._free;
-            let next = prev.next;
-            while (next.from < from) {
-                prev = next;
-                next = next.next;
-                if (!next)
-                    $mol_fail(new Error('Release out of allocated', { cause: { last: prev, from, size } }));
-            }
-            if ((from + size > next.from) || (prev.from + prev.size > from)) {
-                $mol_fail(new Error('Double release', { cause: { prev, next, from, size } }));
-            }
-            const begin = prev.from + prev.size === from;
-            const end = from + size === next.from;
-            if (begin) {
-                if (end) {
-                    prev.size += size + next.size;
-                    prev.next = next.next;
-                }
-                else {
-                    prev.size += size;
-                }
-            }
-            else {
-                if (end) {
-                    next.from -= size;
-                    next.size += size;
-                }
-                else {
-                    prev.next = { from, size, next };
-                }
-            }
-        }
-        empty() {
-            const first = this._free.next;
-            return first.next === null && first.from === 0;
-        }
-        acquired() {
-        }
-    }
-    $.$mol_memory_pool = $mol_memory_pool;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$giper_baza_pack_four_code = $mol_charset_encode('LAND'); // 76 65 78 68
-    $.$giper_baza_pack_head_size = 4 /*BAZA*/ + 12 /*Lord*/ + 6 /*Area*/ + 2; /*Size*/
-    /**
-     * One Land info (Faces+Units) to Pack.
-     * Sync: +Faces -Units
-     * Diff: -Faces +Units
-     * Stop: -Faces -Units
-     */
-    class $giper_baza_pack_part extends $mol_object {
-        units;
-        faces;
-        constructor(units = [], faces = new $giper_baza_face_map) {
-            super();
-            this.units = units;
-            this.faces = faces;
-        }
-        static from(units, faces = new $giper_baza_face_map) {
-            return new this(units, faces);
-        }
-        *[Symbol.iterator]() {
-            return {
-                units: this.units,
-                faces: this.faces,
-            };
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $giper_baza_pack_part, "from", null);
-    $.$giper_baza_pack_part = $giper_baza_pack_part;
-    /** Universal binary package which contains some Faces/Units/Rocks */
-    class $giper_baza_pack extends $mol_buffer {
-        toBlob() {
-            return new Blob([this], { type: 'application/vnd.giper_baza_pack.v1' });
-        }
-        parts(offsets, pool) {
-            const parts = new Map;
-            let part = null;
-            const buf = this.asArray();
-            for (let offset = 0; offset < this.byteLength;) {
-                const kind = this.uint8(offset);
-                switch ($giper_baza_slot_kind[kind]) {
-                    case 'free': {
-                        pool?.release(offset, 8);
-                        offset += 8;
-                        continue;
-                    }
-                    case 'land': {
-                        const link = $giper_baza_link.from_bin(new Uint8Array(buf.buffer, buf.byteOffset + offset + 4, 18));
-                        part = parts.get(link.str);
-                        if (!part)
-                            parts.set(link.str, part = new $giper_baza_pack_part);
-                        const size = this.uint16(offset + 22);
-                        offset += 24;
-                        // Faces
-                        for (let i = 0; i < size; ++i) {
-                            const peer = $giper_baza_link.from_bin(new Uint8Array(buf.buffer, buf.byteOffset + offset, 6));
-                            const tick = this.uint16(offset + 6);
-                            const time = this.uint32(offset + 8);
-                            const summ = this.uint32(offset + 12);
-                            part.faces.peer_time(peer.str, time, tick);
-                            part.faces.peer_summ(peer.str, summ);
-                            offset += $giper_baza_face.length();
-                        }
-                        continue;
-                    }
-                    case 'pass': {
-                        if (!part)
-                            $mol_fail(new Error('Land is undefined'));
-                        const pass = $giper_baza_auth_pass.from(buf.slice(offset, offset + 64));
-                        offsets?.set(pass.buffer, offset);
-                        part.units.push(pass);
-                        offset += pass.byteLength;
-                        continue;
-                    }
-                    case 'seal': {
-                        if (!part)
-                            $mol_fail(new Error('Land is undefined'));
-                        const size = new $giper_baza_unit_seal(this.buffer, this.byteOffset + offset, this.byteLength - offset).size();
-                        const length = $giper_baza_unit_seal.length(size);
-                        const seal = $giper_baza_unit_seal.from(buf.slice(offset, offset + length));
-                        offsets?.set(seal.buffer, offset);
-                        part.units.push(seal);
-                        offset += seal.byteLength;
-                        continue;
-                    }
-                    case 'sand': {
-                        if (!part)
-                            $mol_fail(new Error('Land is undefined'));
-                        const size = new $giper_baza_unit_sand(this.buffer, this.byteOffset + offset, 40).size();
-                        const length_sand = $giper_baza_unit_sand.length(size);
-                        const length_ball = $giper_baza_unit_sand.length_ball(size);
-                        const sand = $giper_baza_unit_sand.from(buf.slice(offset, offset + length_sand));
-                        offsets?.set(sand.buffer, offset);
-                        offset += sand.byteLength;
-                        if (length_ball) {
-                            sand._ball = buf.slice(offset, offset + size);
-                            offset += length_ball;
-                        }
-                        ;
-                        part.units.push(sand);
-                        continue;
-                    }
-                    case 'gift': {
-                        if (!part)
-                            $mol_fail(new Error('Land is undefined'));
-                        const length = $giper_baza_unit_gift.length();
-                        const gift = $giper_baza_unit_gift.from(buf.slice(offset, offset + length));
-                        offsets?.set(gift.buffer, offset);
-                        part.units.push(gift);
-                        offset += gift.byteLength;
-                        continue;
-                    }
-                    default: return $mol_fail(new Error('Unknown Kind', { cause: { kind, offset } }));
-                }
-            }
-            return [...parts];
-        }
-        static length(parts) {
-            let size = 0;
-            for (const [land, { units, faces }] of parts) {
-                size += $.$giper_baza_pack_head_size;
-                size += faces.size * $giper_baza_face.length();
-                for (const unit of units) {
-                    size += unit.byteLength;
-                    if (unit instanceof $giper_baza_auth_pass)
-                        continue;
-                    unit.choose({
-                        gift: gift => { },
-                        seal: seal => { },
-                        sand: sand => size += $giper_baza_unit_sand.length_ball(sand.ball().byteLength),
-                    });
-                }
-            }
-            return size;
-        }
-        static make(parts) {
-            let length = this.length(parts);
-            if (length === 0)
-                $mol_fail(new Error('Empty Pack'));
-            const buff = new Uint8Array(length);
-            const pack = new $giper_baza_pack(buff.buffer);
-            let offset = 0;
-            // fill Lands
-            for (const [id, { units, faces }] of parts) {
-                // Head
-                buff.set($.$giper_baza_pack_four_code, offset); // 4B
-                buff.set(new $giper_baza_link(id).toBin(), offset + 4); // Land = Lord + Area
-                pack.uint16(offset + 22, faces.size); // Vers
-                offset += 24;
-                // Peer + Tick + Time + Summ for every Face
-                for (const [peer, face] of faces) {
-                    buff.set(new $giper_baza_link(peer).toBin(), offset);
-                    pack.uint16(offset + 6, face.tick);
-                    pack.uint32(offset + 8, face.time);
-                    pack.uint32(offset + 12, face.summ);
-                    offset += $giper_baza_face.length();
-                }
-                // Units + Balls
-                for (const unit of units) {
-                    buff.set(unit.asArray(), offset);
-                    offset += unit.byteLength;
-                    if (unit instanceof $giper_baza_auth_pass)
-                        continue;
-                    unit.choose({
-                        gift: gift => { },
-                        seal: seal => { },
-                        sand: sand => {
-                            if (!sand.big())
-                                return;
-                            buff.set(sand.ball(), offset);
-                            offset += $giper_baza_unit_sand.length_ball(sand.size());
-                        },
-                    });
-                }
-            }
-            return pack;
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $giper_baza_pack.prototype, "parts", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_pack, "make", null);
-    $.$giper_baza_pack = $giper_baza_pack;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Whole global graph database which contains Lands. */
-    class $giper_baza_glob extends $mol_object {
-        static lands_touched = new $mol_wire_set();
-        /** Glob synchronizer. */
-        static yard() {
-            return new this.$.$giper_baza_yard;
-        }
-        /** Land where Lord is King. Contains only main info */
-        static home(Home) {
-            const home = this.Land(this.$.$giper_baza_auth.current().pass().lord()).Data(Home ?? this.$.$giper_baza_flex_subj);
-            if (Home?.meta && !home.meta())
-                home.meta(Home.meta);
-            return home;
-        }
-        static king_grab(preset = [[null, this.$.$giper_baza_rank_read]]) {
-            const mapping = new Map(preset);
-            const king = this.$.$giper_baza_auth.grab();
-            const colony = $mol_wire_sync(this.$.$giper_baza_land).make({ $: this.$ });
-            colony.auth = $mol_const(king);
-            colony.encrypted((mapping.get(null) ?? this.$.$giper_baza_rank_deny) === this.$.$giper_baza_rank_deny);
-            const self = this.$.$giper_baza_auth.current().pass();
-            colony.give(self, this.$.$giper_baza_rank_rule);
-            for (const [key, rank] of mapping)
-                colony.give(key, rank);
-            this.Land(colony.link()).units_steal(colony);
-            return king;
-        }
-        static land_grab(preset = [[null, this.$.$giper_baza_rank_read]]) {
-            return this.Land(this.king_grab(preset).pass().lord());
-        }
-        /** Standalone part of Glob which syncs separately, have own rights, and contains Units */
-        static Land(link) {
-            if (!link.str)
-                $mol_fail(new Error('Empty Land Link'));
-            this.lands_touched.add(link.str);
-            return this.$.$giper_baza_land.make({
-                link: $mol_const(link),
-            });
-        }
-        /** High level representation of stored data. */
-        static Pawn(link, Pawn) {
-            const land = this.Land(link.land());
-            return land.Pawn(Pawn).Head(link.head());
-        }
-        static Seed() {
-            const link = $giper_baza_flex_deck_link.lord();
-            const seed = this.Pawn(link, $giper_baza_flex_seed);
-            // if( !$mol_wire_sync( seed ).meta() )
-            this.boot();
-            return seed;
-        }
-        static boot() {
-            const file = $mol_file.relative('web.baza');
-            const pack = $mol_wire_sync($giper_baza_pack).from(file.buffer());
-            this.apply_pack(pack);
-        }
-        static apply_pack(pack) {
-            return this.apply_parts(pack.parts());
-        }
-        static apply_parts(parts) {
-            for (const [land_id, part] of parts) {
-                const land = this.Land(new this.$.$giper_baza_link(land_id));
-                land.diff_apply(part.units);
-            }
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_glob, "yard", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_glob, "king_grab", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_glob, "land_grab", null);
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_glob, "Land", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_glob, "Seed", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_glob, "boot", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_glob, "apply_pack", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_glob, "apply_parts", null);
-    $.$giper_baza_glob = $giper_baza_glob;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Registry of Pawns as Deck entities. */
-    class $giper_baza_fund extends $mol_object {
-        item_make;
-        constructor(item_make) {
-            super();
-            this.item_make = item_make;
-        }
-        Head(head) {
-            return this.item_make(head);
-        }
-        Data() {
-            return this.Head($giper_baza_land_root.data);
-        }
-        Tine() {
-            return this.Head($giper_baza_land_root.tine);
-        }
-    }
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_fund.prototype, "Head", null);
-    $.$giper_baza_fund = $giper_baza_fund;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $giper_baza_mine_temp extends $mol_object {
-        static land(land) {
-            return this.make({
-                land: $mol_const(land)
-            });
-        }
-        land() {
-            return $giper_baza_link.hole;
-        }
-        unit_deletes = 0;
-        unit_inserts = 0;
-        ball_inserts = 0;
-        ball_deletes = 0;
-        units_persisted = new WeakSet();
-        /** Updates Units in storage */
-        units_save(diff) { }
-        /** Loads Units from storage */
-        units_load() {
-            return [];
-        }
-        /** Loads Ball from storage */
-        ball_load(sand) {
-            return null;
-        }
-    }
-    __decorate([
-        $mol_mem_key
-    ], $giper_baza_mine_temp, "land", null);
-    $.$giper_baza_mine_temp = $giper_baza_mine_temp;
-    $.$giper_baza_mine = $giper_baza_mine_temp;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Atomic transaction. */
-    class $giper_baza_mine_fs_yym_act extends $mol_object2 {
-        yym;
-        constructor(yym) {
-            super();
-            this.yym = yym;
-        }
-        transaction;
-        offsets_del = new WeakMap;
-        offsets_ins = new WeakMap;
-        /** Stores data and returns offset in file. */
-        save(...data) {
-            let offset = this.offsets_ins.get(data[0].buffer);
-            if (offset === undefined) {
-                offset = this.yym.offsets().get(data[0].buffer);
-                if (offset)
-                    return offset;
-                let size = data.reduce((sum, buf) => sum + buf.byteLength, 0);
-                size = Math.ceil(size / 8) * 8;
-                offset = this.yym.pool().acquire(size);
-                this.offsets_ins.set(data[0].buffer, offset);
-                this.yym.offsets().set(data[0].buffer, offset);
-            }
-            this.transaction.write({
-                buffer: data,
-                position: offset,
-            });
-            return offset;
-        }
-        /** Marks slice of file as free. */
-        free(data, size = data.byteLength) {
-            size = Math.ceil(size / 8) * 8;
-            let offset = this.offsets_del.get(data.buffer);
-            if (offset === undefined) {
-                offset = this.yym.offsets().get(data.buffer);
-                if (!offset) {
-                    return $mol_fail(new Error('Try to free non saved', { cause: { data, size } }));
-                }
-                this.offsets_del.set(data.buffer, offset);
-                this.yym.pool().release(offset, size);
-                this.yym.offsets().delete(data.buffer);
-            }
-            this.transaction.write({
-                buffer: new Uint8Array(size),
-                position: offset,
-            });
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $giper_baza_mine_fs_yym_act.prototype, "save", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_mine_fs_yym_act.prototype, "free", null);
-    $.$giper_baza_mine_fs_yym_act = $giper_baza_mine_fs_yym_act;
-    /** Yin-Yan Mirrors Storage. */
-    class $giper_baza_mine_fs_yym extends $mol_object2 {
-        sides;
-        /** Memory allocator. */
-        pool(reset) {
-            $mol_wire_solid();
-            return new $mol_memory_pool;
-        }
-        /** Offsets of stored buffers. */
-        offsets(reset) {
-            $mol_wire_solid();
-            return new Map;
-        }
-        constructor(
-        /** Yin & Yan mirrors files. */
-        sides) {
-            super();
-            this.sides = sides;
-        }
-        destructor() {
-            if (!this.sides[1].exists())
-                return;
-            this.sides[1].open('write_only').flush();
-            this.sides[0].exists(false);
-            this.pool(null);
-            this.offsets(null);
-        }
-        /** Prepare mirrors to read. */
-        load_init() {
-            const version = (file) => file.modified()?.valueOf() ?? 0;
-            if (version(this.sides[0]) < version(this.sides[1]))
-                this.sides.reverse();
-        }
-        /** Load whole data. */
-        load() {
-            this.load_init();
-            try {
-                const tx = this.sides[0].open('read_only');
-                const data = tx.read();
-                tx.destructor();
-                this.pool().acquire(Math.ceil(data.byteLength / 8) * 8);
-                return data;
-            }
-            catch (error) {
-                if (error.code === 'ENOENT')
-                    return new Uint8Array();
-                return $mol_fail_hidden(error);
-            }
-        }
-        /** Safe writes to both mirrors. */
-        atomic(task) {
-            this.save_init();
-            const act = new $giper_baza_mine_fs_yym_act(this);
-            const tx1 = act.transaction = this.sides[1].open('create', 'write_only');
-            task(act);
-            tx1.flush();
-            tx1.destructor();
-            this.sides.reverse();
-            const tx2 = act.transaction = this.sides[1].open('create', 'write_only');
-            task(act);
-            tx2.destructor();
-        }
-        /** Prepares mirrors to write. */
-        save_init() {
-            $mol_wire_solid();
-            this.load_init();
-            if (this.sides[1].exists()) {
-                $mol_wire_sync(this.$).$mol_log3_rise({
-                    place: this,
-                    message: 'Reset mirror',
-                    file: this.sides[1].path(),
-                });
-            }
-            this.sides[0].clone(this.sides[1].path());
-        }
-        empty() {
-            this.load_init();
-            return this.pool().empty();
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_mine_fs_yym.prototype, "pool", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_mine_fs_yym.prototype, "offsets", null);
-    __decorate([
-        $mol_mem,
-        $mol_action
-    ], $giper_baza_mine_fs_yym.prototype, "load_init", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_mine_fs_yym.prototype, "save_init", null);
-    $.$giper_baza_mine_fs_yym = $giper_baza_mine_fs_yym;
-    class $giper_baza_mine_fs extends $giper_baza_mine_temp {
-        store() {
-            $mol_wire_solid();
-            const land = this.land();
-            const area = land.area();
-            const root = this.$.$mol_file.relative('.baza');
-            let dir = root.resolve(land.str.slice(0, 2));
-            if (area.str)
-                dir = dir.resolve(area.str.slice(-2));
-            dir.exists(true);
-            return new $giper_baza_mine_fs_yym([
-                dir.resolve(land.str + '.yin.baza'),
-                dir.resolve(land.str + '.yan.baza'),
-            ]);
-        }
-        store_init() {
-            if (!this.store().empty())
-                return;
-            const head = $giper_baza_pack.make([[this.land().str, new $giper_baza_pack_part]]);
-            this.store().atomic(side => side.save(head));
-        }
-        units_save(diff) {
-            this.store_init();
-            this.store().atomic(side => {
-                for (const unit of diff.del) {
-                    if (unit instanceof $giper_baza_unit_sand && unit.big()) {
-                        side.free(unit, unit.byteLength + unit.size());
-                    }
-                    else {
-                        side.free(unit);
-                    }
-                }
-                for (const unit of diff.ins) {
-                    if (unit instanceof $giper_baza_unit_sand && unit.big())
-                        side.save(unit, unit.ball());
-                    else
-                        side.save(unit);
-                }
-            });
-            for (const unit of diff.ins) {
-                this.units_persisted.add(unit);
-            }
-        }
-        units_load() {
-            this.store().pool(null);
-            const buf = this.store().load();
-            if (!buf.length)
-                return [];
-            const pack = $giper_baza_pack.from(buf);
-            const parts = new Map(pack.parts(this.store().offsets(), this.store().pool()));
-            if (parts.size > 1)
-                return $mol_fail(new Error('Wrong lands count', { cause: { count: parts.size } }));
-            for (const [land, part] of parts) {
-                if (land !== this.land().str)
-                    return $mol_fail(new Error('Unexpected land', { cause: { expected: this.land().str, existen: land } }));
-                for (const unit of part.units) {
-                    this.units_persisted.add(unit);
-                    // $giper_baza_unit_trusted_grant( unit )
-                }
-                return part.units;
-            }
-            return [];
-        }
-        destructor() {
-            this.store().destructor();
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $giper_baza_mine_fs.prototype, "store", null);
-    __decorate([
-        $mol_mem
-    ], $giper_baza_mine_fs.prototype, "store_init", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_mine_fs.prototype, "units_save", null);
-    __decorate([
-        $mol_action
-    ], $giper_baza_mine_fs.prototype, "units_load", null);
-    $.$giper_baza_mine_fs = $giper_baza_mine_fs;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$giper_baza_mine = $giper_baza_mine_fs;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     class $mol_bus extends $mol_object {
         name;
         handle;
@@ -18618,6 +16334,16 @@ var $;
         }
     }
     $.$mol_bus = $mol_bus;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $giper_baza_log() {
+        return this.$mol_state_arg.value('giper_baza_log') !== null;
+    }
+    $.$giper_baza_log = $giper_baza_log;
 })($ || ($ = {}));
 
 ;
@@ -19887,554 +17613,6 @@ var $;
 
 ;
 "use strict";
-// namespace $ {
-// 	$mol_report_bugsnag = '18acf016ed2a2a4cc4445daa9dd2dd3c'
-// }
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for some of given runtype or throws error.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_variant_demo
-     */
-    function $mol_data_variant(...sub) {
-        return $mol_data_setup((val) => {
-            const errors = [];
-            for (const type of sub) {
-                let hidden = $.$mol_fail_hidden;
-                try {
-                    $.$mol_fail = $.$mol_fail_hidden;
-                    return type(val);
-                }
-                catch (error) {
-                    $.$mol_fail = hidden;
-                    if (error instanceof $mol_data_error) {
-                        errors.push(error);
-                    }
-                    else {
-                        return $mol_fail_hidden(error);
-                    }
-                }
-            }
-            return $mol_fail(new $mol_data_error(`${val} is not any of variants`, {}, ...errors));
-        }, sub);
-    }
-    $.$mol_data_variant = $mol_data_variant;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for string and returns string type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_string_demo
-     */
-    $.$mol_data_string = (val) => {
-        if (typeof val === 'string')
-            return val;
-        return $mol_fail(new $mol_data_error(`${val} is not a string`));
-    };
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for undefined or passing given runtype.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_optional_demo
-     */
-    function $mol_data_optional(sub, fallback) {
-        return $mol_data_setup((val) => {
-            if (val === undefined) {
-                return fallback?.();
-            }
-            return sub(val);
-        }, { sub, fallback });
-    }
-    $.$mol_data_optional = $mol_data_optional;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for record of given fields with by its runtypes and returns expected type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_record_demo
-     */
-    function $mol_data_record(sub) {
-        return $mol_data_setup((val) => {
-            let res = {};
-            for (const field in sub) {
-                try {
-                    res[field] =
-                        sub[field](val[field]);
-                }
-                catch (error) {
-                    if (error instanceof Promise)
-                        return $mol_fail_hidden(error);
-                    error.message = `[${JSON.stringify(field)}] ${error.message}`;
-                    return $mol_fail(error);
-                }
-            }
-            return res;
-        }, sub);
-    }
-    $.$mol_data_record = $mol_data_record;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for array of given runtype and returns expected type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_array_demo
-     */
-    function $mol_data_array(sub) {
-        return $mol_data_setup((val) => {
-            if (!Array.isArray(val))
-                return $mol_fail(new $mol_data_error(`${val} is not an array`));
-            return val.map((item, index) => {
-                try {
-                    return sub(item);
-                }
-                catch (error) {
-                    if (error instanceof Promise)
-                        return $mol_fail_hidden(error);
-                    error.message = `[${index}] ${error.message}`;
-                    return $mol_fail(error);
-                }
-            });
-        }, sub);
-    }
-    $.$mol_data_array = $mol_data_array;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for boolean and returns boolean type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_boolean_demo
-     */
-    $.$mol_data_boolean = (val) => {
-        if (typeof val === 'boolean')
-            return val;
-        return $mol_fail(new $mol_data_error(`${val} is not a boolean`));
-    };
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    const syntax = new $mol_syntax2({
-        'filter': /!?=/,
-        'range_separator': /@/,
-        'fetch_open': /\(/,
-        'fetch_separator': /[:;&\/?#]/,
-        'fetch_close': /\)/,
-    });
-    function $hyoo_harp_from_string(uri) {
-        let parent = {};
-        let prev = null;
-        let stack = [parent];
-        let range = null;
-        let values = null;
-        function fail_at(offset) {
-            const uri_marked = uri.substring(0, offset) + '\u035C' + uri.substring(offset);
-            $mol_fail(new Error(`Unexpected token at ${offset} of "${uri_marked}"`));
-        }
-        syntax.parse(uri, {
-            '': (text, chunks, offset) => {
-                if (values) {
-                    text = decodeURIComponent(text);
-                    range = (range && range.length > 1)
-                        ? [range[0], range[1] + text]
-                        : [(range?.[0] ?? '') + text];
-                }
-                else {
-                    let [, order, name] = /^([+-]?)(.*)$/.exec(text);
-                    prev = parent[decodeURIComponent(name)] = {};
-                    if (order)
-                        prev['+'] = order === '+';
-                    stack.push(parent);
-                }
-            },
-            'filter': (filter, chinks, offset) => {
-                if (values) {
-                    if (range) {
-                        if (filter === '!=')
-                            range.push(range.pop() + '!');
-                        values.push(range);
-                        range = null;
-                    }
-                    else {
-                        range = [filter];
-                    }
-                }
-                else if (prev) {
-                    values = prev[filter] = [];
-                }
-                else {
-                    values = [];
-                    parent[''] = values;
-                }
-            },
-            'range_separator': (found, chunks, offset) => {
-                if (!values)
-                    fail_at(offset);
-                range = [range?.[0] ?? '', ''];
-            },
-            'fetch_open': (found, chunks, offset) => {
-                if (range) {
-                    range[range.length - 1] += found;
-                }
-                else {
-                    if (!prev)
-                        fail_at(offset);
-                    parent = prev;
-                    values = null;
-                    prev = null;
-                }
-            },
-            'fetch_separator': (found, chunks, offset) => {
-                if (range) {
-                    values.push(range);
-                    range = null;
-                }
-                parent = stack.pop();
-                values = null;
-                prev = null;
-            },
-            'fetch_close': (found) => {
-                if (range) {
-                    range[range.length - 1] += found;
-                }
-                else {
-                    parent = stack.pop();
-                    values = null;
-                    prev = null;
-                }
-            },
-        });
-        if (range)
-            values.push(range);
-        return stack[0];
-    }
-    $.$hyoo_harp_from_string = $hyoo_harp_from_string;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $hyoo_harp_to_string(query) {
-        return Object.entries(query).map(([field, harp]) => {
-            if (field === '+')
-                return '';
-            if (field === '=')
-                return '';
-            if (field === '!=')
-                return '';
-            if (!harp)
-                return '';
-            const harp2 = harp;
-            const order = harp2['+'] === true ? '+' : harp2['+'] === false ? '-' : '';
-            const filter = harp2['='] ? '=' : harp2['!='] ? '!=' : '';
-            const name = encodeURIComponent(field);
-            let values = (harp2['='] || harp2['!='] || []).map(([min, max]) => {
-                if (max === undefined || min === max)
-                    return encodeURIComponent(String(min)) + '=';
-                min = (min === undefined) ? '' : encodeURIComponent(String(min));
-                max = (max === undefined) ? '' : encodeURIComponent(String(max));
-                return `${min}@${max}=`;
-            }).join('');
-            let fetch = $hyoo_harp_to_string(harp);
-            if (fetch)
-                fetch = `(${fetch})`;
-            return `${order}${name}${filter}${values}${fetch}`;
-        }).filter(Boolean).join(';');
-    }
-    $.$hyoo_harp_to_string = $hyoo_harp_to_string;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    const Int = $mol_data_pipe($mol_data_variant($mol_data_string, $mol_data_integer), Number);
-    function $hyoo_harp_scheme(sub, value = $mol_data_integer) {
-        const inner = $mol_data_optional($mol_data_record(sub));
-        const values = $mol_data_optional($mol_data_array($mol_data_array(value)));
-        const val = $mol_data_record({
-            ...sub,
-            '+': $mol_data_optional($mol_data_boolean),
-            '=': values,
-            '!=': values,
-            '_num': $mol_data_optional($mol_data_record({
-                '=': $mol_data_array($mol_data_array(Int))
-            })),
-            '_len': inner,
-            '_max': inner,
-            '_min': inner,
-            '_sum': inner,
-        });
-        return Object.assign(val, {
-            parse(str) {
-                return val($hyoo_harp_from_string(str));
-            },
-            build(query) {
-                return $hyoo_harp_to_string(query);
-            },
-        });
-    }
-    $.$hyoo_harp_scheme = $hyoo_harp_scheme;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_offline() { }
-    $.$mol_offline = $mol_offline;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    try {
-        $mol_offline();
-    }
-    catch (error) {
-        console.error(error);
-    }
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $giper_baza_file_mime_safe(type) {
-        return ['audio', 'video', 'image', 'font'].includes(type.replace(/\/.*$/, ''))
-            ? type
-            : 'application/octet-stream';
-    }
-    $.$giper_baza_file_mime_safe = $giper_baza_file_mime_safe;
-    $.$giper_baza_file_query = $hyoo_harp_scheme({
-        BAZA: $hyoo_harp_scheme({}),
-        file: $hyoo_harp_scheme({}, $mol_data_string),
-    });
-    class $giper_baza_file extends $giper_baza_dict.with({
-        /** File name */
-        Name: $giper_baza_atom_text,
-        /** File Content-Type */
-        Type: $giper_baza_atom_text,
-        /** File content in chunks - list of binaries */
-        Chunks: $giper_baza_list_bin,
-    }) {
-        /** Persistent URI to file content */
-        uri() {
-            return `?BAZA:file=${this.link()};name=${this.name()}`;
-        }
-        /** File name */
-        name(next) {
-            const ext = {
-                'text/plain': 'txt',
-                'application/json': 'json',
-            }[this.type()] ?? 'bin';
-            return this.Name(next)?.val(next) ?? `${this.link()}.${ext}`;
-        }
-        /** Mime type */
-        type(next) {
-            return this.Type(next)?.val(next) ?? 'application/octet-stream';
-        }
-        /** Blob, File etc. */
-        blob(next) {
-            if (!next)
-                return new $mol_blob(this.chunks(), { type: this.type() });
-            const buffer = new Uint8Array($mol_wire_sync(next).arrayBuffer());
-            this.buffer(buffer);
-            this.type(next.type);
-            if (next instanceof $mol_dom_context.File)
-                this.name(next.name);
-            return next;
-        }
-        /** Solid byte buffer. */
-        buffer(next) {
-            if (next) {
-                const chunks = [];
-                for (let offset = 0; offset < next.byteLength;) {
-                    chunks.push(next.slice(offset, offset += 2 ** 15)); // split by 32 KB
-                }
-                this.chunks(chunks);
-                return next;
-            }
-            else {
-                const chunks = this.chunks();
-                const size = chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
-                const res = new Uint8Array(size);
-                let offset = 0;
-                for (const chunk of chunks) {
-                    res.set(chunk, offset);
-                    offset += chunk.byteLength;
-                }
-                return res;
-            }
-        }
-        chunks(next) {
-            return (this.Chunks(next)?.items(next)?.filter($mol_guard_defined) ?? []);
-        }
-        str(next, type = 'text/plain') {
-            if (next === undefined)
-                return $mol_charset_decode(this.buffer());
-            this.buffer($mol_charset_encode(next));
-            this.type(type);
-            return next;
-        }
-        json(next, type = 'application/json') {
-            if (next === undefined)
-                return JSON.parse(this.str());
-            this.str(JSON.stringify(next), type);
-            return next;
-        }
-    }
-    $.$giper_baza_file = $giper_baza_file;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_nka_product extends $giper_baza_dict.with({
-        Title: $giper_baza_atom_text,
-        Price: $giper_baza_atom_real,
-        Description: $giper_baza_atom_text,
-        Category: $giper_baza_atom_text,
-        Available: $giper_baza_atom_bool,
-        Published: $giper_baza_atom_bool,
-        Photos: $giper_baza_list_link.to(() => $giper_baza_file),
-    }) {
-    }
-    $.$bog_nka_product = $bog_nka_product;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$bog_nka_catalog_ref = '';
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_nka_catalog extends $giper_baza_dict.with({
-        Title: $giper_baza_atom_text,
-        Telegram: $giper_baza_atom_text,
-        Products: $giper_baza_list_link.to(() => $bog_nka_product),
-    }) {
-    }
-    $.$bog_nka_catalog = $bog_nka_catalog;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Image processing. */
-    class $mol_picture extends $mol_object2 {
-        canvas;
-        constructor(canvas) {
-            super();
-            this.canvas = canvas;
-        }
-        get context() {
-            return this.canvas.getContext('2d');
-        }
-        get bitmap() {
-            return this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        }
-        static fit(image, width = Number.POSITIVE_INFINITY, height = width) {
-            if (image instanceof Blob)
-                image = $mol_wire_sync(URL).createObjectURL(image);
-            if (typeof image === 'string')
-                image = $mol_wire_sync(this).load(image);
-            let [w, h] = this.sizes(image);
-            if (w > width) {
-                h *= width / w;
-                w = width;
-            }
-            if (h > height) {
-                w *= height / h;
-                h = height;
-            }
-            return this.make(image, w, h);
-        }
-        static make(image, width, height = width) {
-            const canvas = $mol_dom_context.document.createElement('canvas');
-            Object.assign(canvas, { width, height });
-            const context = canvas.getContext('2d');
-            context.drawImage(image, 0, 0, width, height);
-            return new this(canvas);
-        }
-        static sizes(image) {
-            if (image instanceof HTMLVideoElement)
-                return [
-                    image.videoWidth,
-                    image.videoHeight,
-                ];
-            if (image instanceof SVGImageElement)
-                return [
-                    image.width.baseVal.value,
-                    image.height.baseVal.value,
-                ];
-            return [
-                image.width,
-                image.height,
-            ];
-        }
-        static async load(uri) {
-            const image = new Image;
-            image.src = uri;
-            await new Promise((onload, onerror) => Object.assign(image, { onload, onerror }));
-            return image;
-        }
-        format(type, quality = .9) {
-            return new Promise(done => this.canvas.toBlob(done, type, quality));
-        }
-        url(type = 'image/webp', quality = .9) {
-            return this.canvas.toDataURL(type, quality);
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $mol_picture.prototype, "format", null);
-    __decorate([
-        $mol_action
-    ], $mol_picture.prototype, "url", null);
-    __decorate([
-        $mol_action
-    ], $mol_picture, "fit", null);
-    $.$mol_picture = $mol_picture;
-})($ || ($ = {}));
-
-;
-"use strict";
 var $;
 (function ($) {
     let $mol_rest_code;
@@ -20570,6 +17748,76 @@ var $;
         ($mol_action)
     ], $mol_rest_port, "make", null);
     $.$mol_rest_port = $mol_rest_port;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Reactive Set */
+    class $mol_wire_set extends Set {
+        pub = new $mol_wire_pub;
+        // Accessors
+        has(value) {
+            this.pub.promote();
+            return super.has(value);
+        }
+        entries() {
+            this.pub.promote();
+            return super.entries();
+        }
+        keys() {
+            this.pub.promote();
+            return super.keys();
+        }
+        values() {
+            this.pub.promote();
+            return super.values();
+        }
+        forEach(task, self) {
+            this.pub.promote();
+            super.forEach(task, self);
+        }
+        [Symbol.iterator]() {
+            this.pub.promote();
+            return super[Symbol.iterator]();
+        }
+        get size() {
+            this.pub.promote();
+            return super.size;
+        }
+        // Mutators
+        add(value) {
+            if (super.has(value))
+                return this;
+            super.add(value);
+            this.pub.emit();
+            return this;
+        }
+        delete(value) {
+            const res = super.delete(value);
+            if (res)
+                this.pub.emit();
+            return res;
+        }
+        clear() {
+            if (!super.size)
+                return;
+            super.clear();
+            this.pub.emit();
+        }
+        // Extensions
+        item(val, next) {
+            if (next === undefined)
+                return this.has(val);
+            if (next)
+                this.add(val);
+            else
+                this.delete(val);
+            return next;
+        }
+    }
+    $.$mol_wire_set = $mol_wire_set;
 })($ || ($ = {}));
 
 ;
@@ -21331,6 +18579,2833 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    /** Kind of Unit */
+    let $giper_baza_unit_kind;
+    (function ($giper_baza_unit_kind) {
+        /** Unit of data. */
+        $giper_baza_unit_kind[$giper_baza_unit_kind["sand"] = $giper_baza_slot_kind.sand] = "sand";
+        /** Rights/Keys sharing. */
+        $giper_baza_unit_kind[$giper_baza_unit_kind["gift"] = $giper_baza_slot_kind.gift] = "gift";
+        /** Sign for hash list. */
+        $giper_baza_unit_kind[$giper_baza_unit_kind["seal"] = $giper_baza_slot_kind.seal] = "seal";
+        /** Public key. */
+        $giper_baza_unit_kind[$giper_baza_unit_kind["pass"] = $giper_baza_slot_kind.pass] = "pass";
+    })($giper_baza_unit_kind = $.$giper_baza_unit_kind || ($.$giper_baza_unit_kind = {}));
+    $.$giper_baza_unit_trusted = new WeakSet();
+    function $giper_baza_unit_trusted_grant(unit) {
+        if (unit instanceof $giper_baza_auth_pass)
+            return;
+        $.$giper_baza_unit_trusted.add(unit);
+    }
+    $.$giper_baza_unit_trusted_grant = $giper_baza_unit_trusted_grant;
+    function $giper_baza_unit_trusted_check(unit) {
+        if (unit instanceof $giper_baza_auth_pass)
+            return true;
+        return $.$giper_baza_unit_trusted.has(unit);
+    }
+    $.$giper_baza_unit_trusted_check = $giper_baza_unit_trusted_check;
+    /** Order units: lord / seal / gift / sand */
+    function $giper_baza_unit_sort(units) {
+        const nodes = new Map();
+        const graph = new $mol_graph();
+        for (const unit of units) {
+            if (unit instanceof $giper_baza_auth_pass) {
+                nodes.set(unit.lord().str, unit);
+            }
+            else {
+                if (unit instanceof $giper_baza_unit_sand && !unit.encoded())
+                    continue;
+                const self = unit.hash().str;
+                nodes.set(self, unit);
+            }
+        }
+        for (const unit of units) {
+            if (unit instanceof $giper_baza_auth_pass)
+                continue;
+            unit.choose({
+                gift: gift => {
+                    graph.link(gift, nodes.get(gift.lord().str) ?? null, 1); // gift => lord
+                    graph.link(gift, null, 0); // gift -> every
+                    if (gift.lord().str === gift.mate().str)
+                        return;
+                    graph.link(nodes.get(gift.mate().str) ?? null, gift, 1); // mate => gift
+                },
+                sand: sand => {
+                    graph.link(sand, nodes.get(sand.lord().str) ?? null, 1); // sand => lord
+                    graph.link(sand, null, 1); // sand => every
+                },
+                seal: seal => {
+                    graph.link(seal, nodes.get(seal.lord().str) ?? null, 0); // seal -> lord
+                    graph.link(seal, null, 0); // seal -> every
+                    for (const hash of seal.hash_list()) {
+                        graph.link(nodes.get(hash.str) ?? null, seal, 1); // unit => seal
+                    }
+                }
+            });
+        }
+        graph.acyclic(e => e);
+        return [...graph.sorted].filter(Boolean);
+    }
+    $.$giper_baza_unit_sort = $giper_baza_unit_sort;
+    /** Minimal independent stable part of information. */
+    class $giper_baza_unit_base extends $mol_buffer {
+        /**
+         * Compare Seals on timeline ( right - left )
+         * Priority: time > lord > tick
+         */
+        static compare(left, right) {
+            if (!left && !right)
+                return 0;
+            if (!left)
+                return +1;
+            if (!right)
+                return -1;
+            return (right.time() - left.time())
+                || $giper_baza_link_compare(left.lord(), right.lord())
+                || (right.tick() - left.tick());
+        }
+        static narrow(buf) {
+            const kind = $giper_baza_unit_kind[new $mol_buffer(buf).uint8(0)];
+            const Type = {
+                sand: $giper_baza_unit_sand,
+                gift: $giper_baza_unit_gift,
+                seal: $giper_baza_unit_seal,
+                pass: $giper_baza_auth_pass,
+            }[kind];
+            return new Type(buf);
+        }
+        constructor(buffer, byteOffset = 0, byteLength = buffer.byteLength) {
+            super(buffer, byteOffset, byteLength);
+        }
+        kind(next) {
+            const val = this.uint8(0, next && $giper_baza_unit_kind[next]);
+            const kind = $giper_baza_unit_kind[val];
+            if (kind)
+                return kind;
+            $mol_fail(new Error(`Unknown unit kind (${val})`));
+        }
+        choose(ways) {
+            return ways[this.kind()](this);
+        }
+        path() {
+            throw new Error('Unimplemented');
+        }
+        id6(offset, next) {
+            if (next === undefined) {
+                return $giper_baza_link.from_bin(new Uint8Array(this.buffer, this.byteOffset + offset, 6));
+            }
+            else {
+                const bin = next.toBin();
+                if (bin.byteLength === 0)
+                    return next;
+                if (bin.byteLength !== 6)
+                    $mol_fail(new Error(`Wrong Link size (${next})`));
+                this.asArray().set(bin, this.byteOffset + offset);
+                return next;
+            }
+        }
+        id12(offset, next) {
+            if (next === undefined) {
+                return $giper_baza_link.from_bin(new Uint8Array(this.buffer, this.byteOffset + offset, 12));
+            }
+            else {
+                const bin = next.toBin();
+                if (bin.byteLength === 0)
+                    return next;
+                if (bin.byteLength !== 12)
+                    $mol_fail(new Error(`Wrong Link size (${next})`));
+                this.asArray().set(bin, this.byteOffset + offset);
+                return next;
+            }
+        }
+        /** Seconds from UNIX epoch */
+        time(next) {
+            return this.uint32(4, next);
+        }
+        moment() {
+            return new $mol_time_moment(Number(this.time() * 1000));
+        }
+        /** Step in transaction */
+        tick(next) {
+            return this.uint16(2, next);
+        }
+        /** Monotonic Real+Logic Time */
+        time_tick(next) {
+            if (!next)
+                return this.tick() + this.time() * 2 ** 16;
+            this.tick(next % 2 ** 16);
+            this.time(Math.floor(next / 2 ** 16));
+            return next;
+        }
+        _lord = null;
+        lord(next) {
+            if (next)
+                return this._lord = this.id12(8, next);
+            return this._lord ?? (this._lord = this.id12(8));
+        }
+        /** Unique number for encryption */
+        salt() {
+            return new Uint8Array(this.buffer, this.byteOffset + 2, 16); /* tick(2), time(4), lord(10) */
+        }
+        hash() {
+            return $giper_baza_link.hash_bin(this.asArray());
+        }
+        tier_min() {
+            return $giper_baza_rank_tier.rule;
+        }
+        encoded() {
+            return true;
+        }
+        _land = null;
+        _alive = false;
+        dump() {
+            return {};
+        }
+        [Symbol.for('nodejs.util.inspect.custom')]() {
+            return this.inspect();
+        }
+        inspect() {
+            const hash = $mol_term_color.cyan('#' + this.hash().str);
+            const lord = $mol_term_color.magenta('@' + this.lord().str);
+            const time = $mol_term_color.gray($giper_baza_time_dump(this.time(), this.tick()));
+            return `${lord} ${hash} ${time}`;
+        }
+        toJSON() {
+            return this.toString();
+        }
+        toString() {
+            const hash = '#' + this.hash().str;
+            const lord = '@' + this.lord().str;
+            const time = $giper_baza_time_dump(this.time(), this.tick());
+            return `${lord} ${hash} ${time}`;
+        }
+    }
+    $.$giper_baza_unit_base = $giper_baza_unit_base;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $giper_baza_unit_gift_sort(gifts) {
+        const dict = new Map();
+        const graph = new $mol_graph();
+        for (const gift of gifts) {
+            const key = gift.mate().str;
+            dict.set(key, gift);
+            graph.link(key, gift.lord().str);
+            graph.link(key, '');
+        }
+        graph.acyclic(() => 1);
+        const keys = [...graph.sorted];
+        return keys.map(key => dict.get(key)).filter(Boolean);
+    }
+    $.$giper_baza_unit_gift_sort = $giper_baza_unit_gift_sort;
+    /** Given Rank and Secret */
+    class $giper_baza_unit_gift extends $giper_baza_unit_base {
+        static length() {
+            return 48;
+        }
+        static make() {
+            const sand = this.from(this.length());
+            sand.kind('gift');
+            return sand;
+        }
+        rank(next) {
+            if (next !== undefined)
+                this.uint8(0, $giper_baza_unit_kind.gift);
+            const res = this.uint8(1, next);
+            if (res < $giper_baza_rank_deny || res > $giper_baza_rank_rule) {
+                $mol_fail(new RangeError(`Wrong rank ${res}`));
+            }
+            return res;
+        }
+        tier() {
+            return (this.rank() & $giper_baza_rank_tier.rule);
+        }
+        rate() {
+            return (this.rank() & $giper_baza_rank_rate.just);
+        }
+        mate(next) {
+            return this.id12(20, next);
+        }
+        path() {
+            return `gift:${this.mate().str || '______every______'}`;
+        }
+        _code;
+        code() {
+            return this._code ?? (this._code = new Uint8Array(this.buffer, this.byteOffset + 32, 16));
+        }
+        code_exists() {
+            return this.code().some(b => b);
+        }
+        dump() {
+            return {
+                kind: this.kind(),
+                lord: this.lord(),
+                mate: this.mate(),
+                tier: $giper_baza_rank_tier[this.tier()],
+                rate: this.rate(),
+                time: this.moment().toString('YYYY-MM-DD hh:mm:ss'),
+            };
+        }
+        tier_min() {
+            return $giper_baza_rank_tier.rule;
+        }
+        inspect() {
+            const mate = $mol_term_color.magenta('@' + (this.mate().str || '______every______'));
+            const read = $mol_term_color.green(this.code().some(v => v) ? 'X' : 'O');
+            const rank = $mol_term_color.cyan($giper_baza_rank_tier[this.tier()] + ':' + this.rate().toString(16).toUpperCase());
+            return `${super.inspect()} ${read} ${mate} ${rank}`;
+        }
+        toString() {
+            const mate = '@' + (this.mate().str || '______every______');
+            const read = this.code().some(v => v) ? 'X' : 'O';
+            const rank = $giper_baza_rank_tier[this.tier()] + ':' + this.rate().toString(16).toUpperCase();
+            return `${super.toString()} ${read} ${mate} ${rank}`;
+        }
+        [$mol_dev_format_head]() {
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' 👾', $mol_dev_format_auto(this.lord()), ' 🏅', ' ', $mol_dev_format_shade($giper_baza_time_dump(this.time(), this.tick())), ' #', $mol_dev_format_auto(this.hash()), ' 👾', $mol_dev_format_accent(this.mate().str || '______every______'), this.code().some(v => v) ? ' 🔐' : ' 👀', $giper_baza_rank_tier[this.tier()], ':', this.rate().toString(16).toUpperCase());
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $giper_baza_unit_gift, "make", null);
+    $.$giper_baza_unit_gift = $giper_baza_unit_gift;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$giper_baza_unit_seal_limit = 10;
+    /**  Sign for hash list */
+    class $giper_baza_unit_seal extends $giper_baza_unit_base {
+        static length(size) {
+            return Math.ceil((84 + size * 12) / 8) * 8;
+        }
+        static make(size, wide) {
+            const seal = this.from(this.length(size));
+            seal.kind('seal');
+            seal.meta({ size, wide });
+            return seal;
+        }
+        meta(next) {
+            return this.uint8(1, next && (next.size | (next.wide ? 0b1000_0000 : 0)));
+        }
+        size() {
+            return this.meta() & 0b1111;
+        }
+        wide() {
+            return Boolean(this.meta() & 0b1000_0000);
+        }
+        alive_items = new Set;
+        alive_full() {
+            return this.alive_items.size === $.$giper_baza_unit_seal_limit;
+        }
+        alive_list() {
+            const alive = this.alive_items;
+            return this.hash_list().filter(hash => alive.has(hash.str));
+        }
+        hash_item(index, next) {
+            return this.id12(20 + index * 12, next);
+        }
+        _hash_list;
+        hash_list(next) {
+            if (next) {
+                for (let i = 0; i < next.length; ++i) {
+                    this.hash_item(i, next[i]);
+                }
+                // this.size( next.length )
+                return this._hash_list = next;
+            }
+            else {
+                const list = [];
+                const count = this.size();
+                for (let i = 0; i < count; ++i) {
+                    list.push(this.hash_item(i));
+                }
+                return this._hash_list = list;
+            }
+        }
+        /** Hash for signing. */
+        shot() {
+            return $giper_baza_link.hash_bin(new Uint8Array(this.buffer, this.byteOffset, this.byteLength - 64));
+        }
+        sign(next) {
+            const buf = new Uint8Array(this.buffer, this.byteOffset + this.byteLength - 64, 64);
+            if (next)
+                buf.set(next);
+            return buf;
+        }
+        // @ $mol_memo.method
+        work() {
+            let int = new Uint32Array(this.hash().toBin().buffer)[0];
+            let count = 0;
+            while (int & 1) {
+                int >>>= 1;
+                ++count;
+            }
+            return count;
+        }
+        rate_min() {
+            return $giper_baza_rank_work_rates[this.work()];
+        }
+        tier_min() {
+            return $giper_baza_rank_tier.post;
+        }
+        rank_min() {
+            return this.tier_min() | this.rate_min();
+        }
+        path() {
+            return `seal:${this.lord()}/${this.hash().str}`;
+        }
+        inspect() {
+            const items = this.hash_list().map(hash => $mol_term_color.cyan('#' + hash.str)).join(', ');
+            const kind = $mol_term_color.green('%');
+            return `${super.inspect()} ${kind} ${items}`;
+        }
+        toString() {
+            const items = this.hash_list().map(hash => '#' + hash.str).join(', ');
+            return `${super.toString()} % ${items}`;
+        }
+        [$mol_dev_format_head]() {
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' 👾', $mol_dev_format_auto(this.lord()), ' ✍ ', $mol_dev_format_shade($giper_baza_time_dump(this.time(), this.tick())), ' #', $mol_dev_format_auto(this.hash()), ' ', $mol_dev_format_auto(this.hash_list()));
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_unit_seal.prototype, "sign", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_unit_seal, "make", null);
+    $.$giper_baza_unit_seal = $giper_baza_unit_seal;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Hint how interpret inner Units: term, solo, vals, keys */
+    let $giper_baza_unit_sand_tag;
+    (function ($giper_baza_unit_sand_tag) {
+        /** Itself value. Ignore */
+        $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag["term"] = 0] = "term";
+        /** Value in first sub node. Ignore all after first */
+        $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag["solo"] = 64] = "solo";
+        /** List of values */
+        $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag["vals"] = 128] = "vals";
+        /** List of keys */
+        $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag["keys"] = 192] = "keys";
+    })($giper_baza_unit_sand_tag = $.$giper_baza_unit_sand_tag || ($.$giper_baza_unit_sand_tag = {}));
+    /** Data. Actually it's edge between nodes in graph model. */
+    class $giper_baza_unit_sand extends $giper_baza_unit_base {
+        static size_equator = 63;
+        static size_max = 2 ** 16;
+        _vary = undefined;
+        _open = null;
+        static length(size) {
+            if (size > 2 ** 16)
+                throw new Error(`Size too large (${size})`);
+            return size > $giper_baza_unit_sand.size_equator ? 52 : Math.ceil((38 + size) / 8) * 8;
+        }
+        static length_ball(size) {
+            if (size > 2 ** 16)
+                throw new Error(`Size too large (${size})`);
+            return size > $giper_baza_unit_sand.size_equator ? Math.ceil((size - 4) / 8) * 8 + 4 : 0;
+        }
+        static make(size, tag = 'term') {
+            if (size >= 2 ** 16)
+                throw new Error(`Size too large (${size})`);
+            const sand = this.from(this.length(size));
+            sand.kind('sand');
+            if (size > $giper_baza_unit_sand.size_equator) {
+                sand.uint16(38, size % 2 ** 16);
+                size = 0;
+            }
+            sand.uint8(1, size | $giper_baza_unit_sand_tag[tag]);
+            return sand;
+        }
+        tag() {
+            return $giper_baza_unit_sand_tag[this.uint8(1) & 0b11_00_0000];
+        }
+        big() {
+            return this.size() > $giper_baza_unit_sand.size_equator;
+        }
+        size() {
+            let hint = this.uint8(1) & 0b111_111;
+            return hint || this.uint16(38) || 2 ** 16;
+        }
+        dead() {
+            if (this._vary === null)
+                return true;
+            if (this.size() > 1)
+                return false;
+            if (this.uint8(38) !== 78 /*N*/)
+                return false;
+            return true;
+        }
+        _self;
+        self(next) {
+            if (next === undefined && this._self !== undefined)
+                return this._self;
+            else
+                return this._self = this.id6(20, next);
+        }
+        _head;
+        head(next) {
+            if (next === undefined && this._head !== undefined)
+                return this._head;
+            else
+                return this._head = this.id6(26, next);
+        }
+        _lead;
+        lead(next) {
+            if (next === undefined && this._lead !== undefined)
+                return this._lead;
+            else
+                return this._lead = this.id6(32, next);
+        }
+        path() {
+            return `sand:${this.head().str || '__root__'}/${this.lord()}/${this.self().str || '__meta__'}`;
+        }
+        _shot;
+        shot(next) {
+            if (!this.big())
+                throw new Error('Access to Shot of small Sand is unavailable');
+            if (next)
+                return this._shot = this.id12(40, next);
+            else
+                return this._shot = this._shot ?? this.id12(40);
+        }
+        _data;
+        data(next) {
+            if (this.big())
+                throw new Error('Access to Data of large Sand is unavailable');
+            const data = this._data ?? new Uint8Array(this.buffer, this.byteOffset + 38, this.size());
+            if (next)
+                data.set(next);
+            return data;
+        }
+        _ball;
+        ball(next) {
+            if (next === undefined) {
+                if (this._ball)
+                    return this._ball;
+                if (this.big())
+                    return this._ball;
+                return this._ball = this.data();
+            }
+            else {
+                if (this.big()) {
+                    this.shot($giper_baza_link.hash_bin(next));
+                    return this._ball = next;
+                }
+                else {
+                    return this._ball = this.data(next);
+                }
+            }
+        }
+        encoded() {
+            return !this._open || !!this._ball;
+        }
+        hash() {
+            if (!this.encoded())
+                return $mol_fail(new Error('No Hash for incompleted Sand', { cause: { sand: this } }));
+            return super.hash();
+        }
+        idea_seed() {
+            return $mol_hash_numbers(new Uint8Array(this.buffer, this.byteOffset + 26, 12)); // head + lead
+        }
+        dump() {
+            return {
+                kind: this.kind(),
+                lord: this.lord(),
+                lead: this.lead(),
+                head: this.head(),
+                self: this.self(),
+                tag: this.tag(),
+                size: this.size(),
+                time: this.moment().toString('YYYY-MM-DD hh:mm:ss'),
+            };
+        }
+        tier_min() {
+            return (this.head().str === $giper_baza_land_root.tine.str)
+                ? $giper_baza_rank_tier.pull
+                : $giper_baza_rank_tier.post;
+        }
+        inspect() {
+            const lead = $mol_term_color.blue(this.lead().str || '__knot__');
+            const head = $mol_term_color.blue(this.head().str || '__root__');
+            const self = $mol_term_color.blue(this.self().str || '__meta__');
+            const tag = $mol_term_color.green({
+                term: 'T',
+                solo: 'S',
+                vals: 'V',
+                keys: 'K',
+            }[this.tag()]);
+            const vary = this._vary === undefined ? '' : $mol_term_color.yellow(String(this._vary));
+            return `${super.inspect()} ${tag} ${lead}\\${head}/${self} ${vary}`;
+        }
+        toString() {
+            const lead = this.lead().str || '__knot__';
+            const head = this.head().str || '__root__';
+            const self = this.self().str || '__meta__';
+            const tag = {
+                term: 'T',
+                solo: 'S',
+                vals: 'V',
+                keys: 'K',
+            }[this.tag()];
+            const vary = this._vary === undefined ? '' : String(this._vary);
+            return `${super.toString()} ${tag} ${lead}\\${head}/${self} ${vary}`;
+        }
+        [$mol_dev_format_head]() {
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' 👾', $mol_dev_format_auto(this.lord()), ' 📦 ', $mol_dev_format_shade($giper_baza_time_dump(this.time(), this.tick())), ' #', this.encoded() ? $mol_dev_format_auto(this.hash()) : $mol_dev_format_shade('___incompleted___'), ' ', this.lead().str || '__knot__', $mol_dev_format_shade('\\'), $mol_dev_format_accent(this.head().str || '__root__'), $mol_dev_format_shade('/'), this.self().str || '__meta__', ' ', {
+                term: '💼',
+                solo: '1️⃣',
+                vals: '🎹',
+                keys: '🔑',
+            }[this.tag()], ' ', $mol_dev_format_auto(this._vary));
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $giper_baza_unit_sand, "make", null);
+    $.$giper_baza_unit_sand = $giper_baza_unit_sand;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $giper_baza_mine_temp extends $mol_object {
+        static land(land) {
+            return this.make({
+                land: $mol_const(land)
+            });
+        }
+        land() {
+            return $giper_baza_link.hole;
+        }
+        unit_deletes = 0;
+        unit_inserts = 0;
+        ball_inserts = 0;
+        ball_deletes = 0;
+        units_persisted = new WeakSet();
+        /** Updates Units in storage */
+        units_save(diff) { }
+        /** Loads Units from storage */
+        units_load() {
+            return [];
+        }
+        /** Loads Ball from storage */
+        ball_load(sand) {
+            return null;
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_mine_temp, "land", null);
+    $.$giper_baza_mine_temp = $giper_baza_mine_temp;
+    $.$giper_baza_mine = $giper_baza_mine_temp;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Atomic transaction. */
+    class $giper_baza_mine_fs_yym_act extends $mol_object2 {
+        yym;
+        constructor(yym) {
+            super();
+            this.yym = yym;
+        }
+        transaction;
+        offsets_del = new WeakMap;
+        offsets_ins = new WeakMap;
+        /** Stores data and returns offset in file. */
+        save(...data) {
+            let offset = this.offsets_ins.get(data[0].buffer);
+            if (offset === undefined) {
+                offset = this.yym.offsets().get(data[0].buffer);
+                if (offset)
+                    return offset;
+                let size = data.reduce((sum, buf) => sum + buf.byteLength, 0);
+                size = Math.ceil(size / 8) * 8;
+                offset = this.yym.pool().acquire(size);
+                this.offsets_ins.set(data[0].buffer, offset);
+                this.yym.offsets().set(data[0].buffer, offset);
+            }
+            this.transaction.write({
+                buffer: data,
+                position: offset,
+            });
+            return offset;
+        }
+        /** Marks slice of file as free. */
+        free(data, size = data.byteLength) {
+            size = Math.ceil(size / 8) * 8;
+            let offset = this.offsets_del.get(data.buffer);
+            if (offset === undefined) {
+                offset = this.yym.offsets().get(data.buffer);
+                if (!offset) {
+                    return $mol_fail(new Error('Try to free non saved', { cause: { data, size } }));
+                }
+                this.offsets_del.set(data.buffer, offset);
+                this.yym.pool().release(offset, size);
+                this.yym.offsets().delete(data.buffer);
+            }
+            this.transaction.write({
+                buffer: new Uint8Array(size),
+                position: offset,
+            });
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $giper_baza_mine_fs_yym_act.prototype, "save", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_mine_fs_yym_act.prototype, "free", null);
+    $.$giper_baza_mine_fs_yym_act = $giper_baza_mine_fs_yym_act;
+    /** Yin-Yan Mirrors Storage. */
+    class $giper_baza_mine_fs_yym extends $mol_object2 {
+        sides;
+        /** Memory allocator. */
+        pool(reset) {
+            $mol_wire_solid();
+            return new $mol_memory_pool;
+        }
+        /** Offsets of stored buffers. */
+        offsets(reset) {
+            $mol_wire_solid();
+            return new Map;
+        }
+        constructor(
+        /** Yin & Yan mirrors files. */
+        sides) {
+            super();
+            this.sides = sides;
+        }
+        destructor() {
+            if (!this.sides[1].exists())
+                return;
+            this.sides[1].open('write_only').flush();
+            this.sides[0].exists(false);
+            this.pool(null);
+            this.offsets(null);
+        }
+        /** Prepare mirrors to read. */
+        load_init() {
+            const version = (file) => file.modified()?.valueOf() ?? 0;
+            if (version(this.sides[0]) < version(this.sides[1]))
+                this.sides.reverse();
+        }
+        /** Load whole data. */
+        load() {
+            this.load_init();
+            try {
+                const tx = this.sides[0].open('read_only');
+                const data = tx.read();
+                tx.destructor();
+                this.pool().acquire(Math.ceil(data.byteLength / 8) * 8);
+                return data;
+            }
+            catch (error) {
+                if (error.code === 'ENOENT')
+                    return new Uint8Array();
+                return $mol_fail_hidden(error);
+            }
+        }
+        /** Safe writes to both mirrors. */
+        atomic(task) {
+            this.save_init();
+            const act = new $giper_baza_mine_fs_yym_act(this);
+            const tx1 = act.transaction = this.sides[1].open('create', 'write_only');
+            task(act);
+            tx1.flush();
+            tx1.destructor();
+            this.sides.reverse();
+            const tx2 = act.transaction = this.sides[1].open('create', 'write_only');
+            task(act);
+            tx2.destructor();
+        }
+        /** Prepares mirrors to write. */
+        save_init() {
+            $mol_wire_solid();
+            this.load_init();
+            if (this.sides[1].exists()) {
+                $mol_wire_sync(this.$).$mol_log3_rise({
+                    place: this,
+                    message: 'Reset mirror',
+                    file: this.sides[1].path(),
+                });
+            }
+            this.sides[0].clone(this.sides[1].path());
+        }
+        empty() {
+            this.load_init();
+            return this.pool().empty();
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_mine_fs_yym.prototype, "pool", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_mine_fs_yym.prototype, "offsets", null);
+    __decorate([
+        $mol_mem,
+        $mol_action
+    ], $giper_baza_mine_fs_yym.prototype, "load_init", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_mine_fs_yym.prototype, "save_init", null);
+    $.$giper_baza_mine_fs_yym = $giper_baza_mine_fs_yym;
+    class $giper_baza_mine_fs extends $giper_baza_mine_temp {
+        store() {
+            $mol_wire_solid();
+            const land = this.land();
+            const area = land.area();
+            const root = this.$.$mol_file.relative('.baza');
+            let dir = root.resolve(land.str.slice(0, 2));
+            if (area.str)
+                dir = dir.resolve(area.str.slice(-2));
+            dir.exists(true);
+            return new $giper_baza_mine_fs_yym([
+                dir.resolve(land.str + '.yin.baza'),
+                dir.resolve(land.str + '.yan.baza'),
+            ]);
+        }
+        store_init() {
+            if (!this.store().empty())
+                return;
+            const head = $giper_baza_pack.make([[this.land().str, new $giper_baza_pack_part]]);
+            this.store().atomic(side => side.save(head));
+        }
+        units_save(diff) {
+            this.store_init();
+            this.store().atomic(side => {
+                for (const unit of diff.del) {
+                    if (unit instanceof $giper_baza_unit_sand && unit.big()) {
+                        side.free(unit, unit.byteLength + unit.size());
+                    }
+                    else {
+                        side.free(unit);
+                    }
+                }
+                for (const unit of diff.ins) {
+                    if (unit instanceof $giper_baza_unit_sand && unit.big())
+                        side.save(unit, unit.ball());
+                    else
+                        side.save(unit);
+                }
+            });
+            for (const unit of diff.ins) {
+                this.units_persisted.add(unit);
+            }
+        }
+        units_load() {
+            this.store().pool(null);
+            const buf = this.store().load();
+            if (!buf.length)
+                return [];
+            const pack = $giper_baza_pack.from(buf);
+            const parts = new Map(pack.parts(this.store().offsets(), this.store().pool()));
+            if (parts.size > 1)
+                return $mol_fail(new Error('Wrong lands count', { cause: { count: parts.size } }));
+            for (const [land, part] of parts) {
+                if (land !== this.land().str)
+                    return $mol_fail(new Error('Unexpected land', { cause: { expected: this.land().str, existen: land } }));
+                for (const unit of part.units) {
+                    this.units_persisted.add(unit);
+                    // $giper_baza_unit_trusted_grant( unit )
+                }
+                return part.units;
+            }
+            return [];
+        }
+        destructor() {
+            this.store().destructor();
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_mine_fs.prototype, "store", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_mine_fs.prototype, "store_init", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_mine_fs.prototype, "units_save", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_mine_fs.prototype, "units_load", null);
+    $.$giper_baza_mine_fs = $giper_baza_mine_fs;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$giper_baza_mine = $giper_baza_mine_fs;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Virtual Pawn that represents contained units as high-level data types. */
+    class $giper_baza_pawn extends $mol_object {
+        static tag = 'vals';
+        static meta = null;
+        /** Standalone part of Glob which syncs separately, have own rights, and contains Units */
+        land() {
+            return null;
+        }
+        /** Land local Pawn id */
+        head() {
+            return $giper_baza_link.hole;
+        }
+        /** Link to Land/Lord. */
+        land_link() {
+            return this.land()?.link() ?? this.$.$giper_baza_auth.current().pass().lord();
+        }
+        /** Link to Pawn/Land/Lord. */
+        link() {
+            return new $giper_baza_link('___' + this.head()).resolve(this.land_link());
+        }
+        toJSON() {
+            return this.link().str;
+        }
+        /** Returns another representation of this Pawn. */
+        cast(Pawn) {
+            return this.land().Pawn(Pawn).Head(this.head());
+        }
+        /** Ordered inner alive Pawn. */
+        pawns(Pawn) {
+            const land = this.land();
+            const map = {
+                term: () => land.Pawn(Pawn || $giper_baza_atom),
+                solo: () => land.Pawn(Pawn || $giper_baza_atom),
+                vals: () => land.Pawn(Pawn || $giper_baza_list),
+                keys: () => land.Pawn(Pawn || $giper_baza_dict),
+            };
+            return this.units().map(unit => map[unit.tag()]().Head(unit.self()));
+        }
+        /** All ordered alive Units */
+        units() {
+            return this.units_of($giper_baza_link.hole);
+        }
+        units_of(peer) {
+            const head = this.head();
+            const units = this.land().sand_ordered({ head, peer }).filter(unit => !unit.dead() && unit.self().str !== '');
+            this.land().sands_open(units);
+            return units;
+        }
+        meta(next) {
+            const prev = this.meta_of($giper_baza_link.hole);
+            if (!next)
+                return prev;
+            if (prev?.str === next?.str)
+                return prev;
+            const head = this.head();
+            this.land().post($giper_baza_link.hole, head, $giper_baza_link.hole, next);
+            return next;
+        }
+        meta_of(peer) {
+            const head = this.head();
+            const unit = this.land().sand_ordered({ head, peer }).find(unit => !unit.dead() && unit.self().str === '') ?? null;
+            if (unit)
+                this.land().sands_open([unit]);
+            return unit ? $giper_baza_link_schema.cast(this.land().sand_decode(unit)) : null;
+        }
+        filled() {
+            return this.units().length > 0;
+        }
+        /** Ability to make changes by current peer. */
+        can_change() {
+            return this.land().pass_rank(this.land().auth().pass()) >= $giper_baza_rank_post('late');
+        }
+        /** Time of last changed unit inside Pawn subtree */
+        last_change() {
+            const land = this.land();
+            let last = 0;
+            const visit = (sand) => {
+                if (sand.time() > last)
+                    last = sand.time();
+                if (sand.tag() === 'term')
+                    return;
+                land.Pawn($giper_baza_pawn).Head(sand.self()).units().forEach(visit);
+            };
+            this.units().forEach(visit);
+            return last ? $giper_baza_time_moment(last) : null;
+        }
+        /** All author Passes of Pawn subtree */
+        authors() {
+            const land = this.land();
+            const peers = new Set();
+            const visit = (sand) => {
+                peers.add(land.lord_pass(sand.lord()));
+                if (sand.tag() === 'term')
+                    return;
+                land.Pawn($giper_baza_pawn).Head(sand.self()).units_of(null).forEach(visit);
+            };
+            this.units_of(null).forEach(visit);
+            return [...peers];
+        }
+        ;
+        [$mol_dev_format_head]() {
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', this.head());
+        }
+    }
+    __decorate([
+        $mol_memo.method
+    ], $giper_baza_pawn.prototype, "link", null);
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_pawn.prototype, "cast", null);
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_pawn.prototype, "pawns", null);
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_pawn.prototype, "units_of", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_pawn.prototype, "meta", null);
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_pawn.prototype, "meta_of", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_pawn.prototype, "last_change", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_pawn.prototype, "authors", null);
+    $.$giper_baza_pawn = $giper_baza_pawn;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_reconcile({ prev, from, to, next, equal, drop, insert, update, replace, }) {
+        if (!update)
+            update = (next, prev, lead) => prev;
+        if (!replace)
+            replace = (next, prev, lead) => insert(next, drop(prev, lead));
+        if (to > prev.length)
+            to = prev.length; // $mol_fail( new RangeError( `To(${ to }) greater then length(${ prev.length })` ) )
+        if (from > to)
+            from = to; // $mol_fail( new RangeError( `From(${ to }) greater then to(${ to })` ) )
+        let p = from;
+        let n = 0;
+        let lead = p ? prev[p - 1] : null;
+        while (p < to || n < next.length) {
+            if (p < to && n < next.length && equal(next[n], prev[p])) {
+                lead = update(next[n], prev[p], lead);
+                ++p;
+                ++n;
+            }
+            else if (next.length - n > to - p) {
+                lead = insert(next[n], lead);
+                ++n;
+            }
+            else if (next.length - n < to - p) {
+                lead = drop(prev[p], lead);
+                ++p;
+            }
+            else {
+                lead = replace(next[n], prev[p], lead);
+                ++p;
+                ++n;
+            }
+        }
+    }
+    $.$mol_reconcile = $mol_reconcile;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_schema_boolean extends $mol_schema_any {
+        static guard(value) {
+            if (typeof value === 'boolean')
+                return value;
+            return $mol_fail(new TypeError('Wrong type', { cause: { value, schema: this } }));
+        }
+        static default = false;
+    }
+    $.$mol_schema_boolean = $mol_schema_boolean;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_schema_float extends $mol_schema_any {
+        static guard(value) {
+            if (typeof value === 'number')
+                return value;
+            return $mol_fail(new TypeError('Wrong type', { cause: { value, schema: this } }));
+        }
+        static default = Number.NaN;
+    }
+    $.$mol_schema_float = $mol_schema_float;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_schema_integer extends $mol_schema_float {
+        $mol_schema_integer = true;
+        static guard(value) {
+            const val = super.guard(value);
+            if (!Number.isFinite(val))
+                return $mol_fail(new TypeError('Non finite', { cause: { value, schema: this } }));
+            if (Math.trunc(val) !== val)
+                return $mol_fail(new TypeError('Non integer', { cause: { value, schema: this } }));
+            return val;
+        }
+        static default = 0;
+    }
+    $.$mol_schema_integer = $mol_schema_integer;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_schema_bigint extends $mol_schema_any {
+        static guard(value) {
+            if (typeof value === 'bigint')
+                return value;
+            return $mol_fail(new TypeError('Wrong type', { cause: { value, schema: this } }));
+        }
+        static cast(value) {
+            if (typeof value === 'number')
+                return BigInt($mol_schema_integer.cast(value));
+            return super.cast(value);
+        }
+        static default = 0n;
+    }
+    $.$mol_schema_bigint = $mol_schema_bigint;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_schema_string extends $mol_schema_any {
+        static guard(value) {
+            if (typeof value === 'string')
+                return value;
+            return $mol_fail(new TypeError('Wrong type', { cause: { value, schema: this } }));
+        }
+        static cast(value) {
+            return super.cast(value);
+        }
+        static default = '';
+    }
+    $.$mol_schema_string = $mol_schema_string;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_schema_dict = $mol_memo_key.func(function $mol_schema_dict(Pair) {
+        return class $mol_schema_dict_ extends $mol_schema_any {
+            static Pair = Pair;
+            static toString() {
+                if (this !== $mol_schema_dict_)
+                    return super.toString();
+                return '$mol_schema_dict<' + $mol_key(Pair) + '>';
+            }
+            static guard(value) {
+                if (Object.getPrototypeOf(Object.getPrototypeOf(value))) {
+                    return $mol_fail(new TypeError('Non dictionary', { cause: { value, schema: this } }));
+                }
+                for (const key in value) {
+                    try {
+                        Pair[0].guard(key);
+                    }
+                    catch (error) {
+                        return $mol_fail(new TypeError('Wrong key', { cause: { key, error, value, schema: this } }));
+                    }
+                    try {
+                        Pair[1].guard(value[key]);
+                    }
+                    catch (error) {
+                        return $mol_fail(new TypeError('Wrong val', { cause: { key, error, value, schema: this } }));
+                    }
+                }
+                return value;
+            }
+            static cast(value) {
+                if (Object.getPrototypeOf(Object.getPrototypeOf(value)))
+                    return this.default;
+                const res = {};
+                for (const key in value) {
+                    if (!Pair[0].check(key))
+                        continue;
+                    res[key] = Pair[1].cast(value[key]);
+                }
+                return res;
+            }
+            static default = {};
+        };
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_schema_list = $mol_memo_key.func(function $mol_schema_list(Item) {
+        return class $mol_schema_list_ extends $mol_schema_any {
+            static Item = Item;
+            static toString() {
+                if (this !== $mol_schema_list_)
+                    return super.toString();
+                return '$mol_schema_list<' + $mol_key(Item) + '>';
+            }
+            static guard(value) {
+                if (!Array.isArray(value))
+                    return $mol_fail(new TypeError('Non array', { cause: { value, schema: this } }));
+                for (const [index, item] of super.guard(value).entries()) {
+                    try {
+                        Item.guard(item);
+                    }
+                    catch (error) {
+                        return $mol_fail(new TypeError('Wrong item', { cause: { index, error, value, schema: this } }));
+                    }
+                }
+                return value;
+            }
+            static cast(value) {
+                if (!Array.isArray(value))
+                    return this.default;
+                return value.map(item => Item.cast(item));
+            }
+            static default = [];
+        };
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Reactive convergent list. */
+    class $giper_baza_list extends $giper_baza_pawn {
+        static tag = $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag.vals];
+        /** All Vary in the list. */
+        items_vary(next, tag = 'term') {
+            const units = this.units();
+            if (next === undefined)
+                return units.map(unit => this.land().sand_decode(unit));
+            this.splice(next, 0, units.length, tag);
+            return this.items_vary();
+        }
+        /** Replace sublist by new one with reconciliation. */
+        splice(next, from = this.units().length, to = from, tag = 'term') {
+            const land = this.land();
+            $mol_reconcile({
+                prev: this.units(),
+                from,
+                to,
+                next,
+                equal: (next, prev) => $mol_compare_deep(this.land().sand_decode(prev), next),
+                drop: (prev, lead) => this.land().post(lead?.self() ?? $giper_baza_link.hole, prev.head(), prev.self(), null),
+                insert: (next, lead) => this.land().post(lead?.self() ?? $giper_baza_link.hole, this.head(), land.self_make(), next, tag),
+                replace: (next, prev, lead) => this.land().post(lead?.self() ?? $giper_baza_link.hole, prev.head(), prev.self(), next, prev.tag()),
+            });
+        }
+        /** Unit by Vary. */
+        find(vary) {
+            for (const unit of this.units()) {
+                if ($mol_compare_deep(this.land().sand_decode(unit), vary))
+                    return unit;
+            }
+            return null;
+        }
+        /** Existence of Vary in the list. */
+        has(vary, next, tag = 'term') {
+            if (next === undefined)
+                return Boolean(this.find(vary));
+            if (next)
+                this.add(vary, tag);
+            else
+                this.cut(vary);
+            return next;
+        }
+        /** Add Vary a the beginning if it doesn't exists. */
+        add(vary, tag = 'term') {
+            if (this.has(vary))
+                return;
+            this.land().post($giper_baza_link.hole, this.head(), null, vary, tag);
+        }
+        /** Removes all Vary presence. */
+        cut(vary) {
+            const units = [...this.units()];
+            for (let i = 0; i < units.length; ++i) {
+                if (!$mol_compare_deep(this.land().sand_decode(units[i]), vary))
+                    continue;
+                this.land().post(units[i - 1]?.self() ?? $giper_baza_link.hole, units[i].head(), units[i].self(), null);
+                units.splice(i, 1);
+                --i;
+            }
+        }
+        /** Moves item from one Seat to another. */
+        move(from, to) {
+            this.land().sand_move(this.units()[from], this.head(), to);
+        }
+        /** Remove item by Seat. */
+        wipe(seat) {
+            this.land().sand_wipe(this.units()[seat]);
+        }
+        /** Add vary at the end and use maked Self as Pawn Head. */
+        pawn_make(Pawn, vary, tag = 'term') {
+            this.splice([vary], undefined, undefined, tag);
+            return this.land().Pawn(Pawn).Head(this.units().at(-1).self());
+        }
+        ;
+        [$mol_dev_format_head]() {
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', this.head(), ' ', $mol_dev_format_auto(this.items_vary()));
+        }
+        /** Mergeable list of atomic vary type factory */
+        static of(init) {
+            const Item = $mol_schema_instance(init);
+            class $giper_baza_list_of extends $giper_baza_list {
+                static Item = Item;
+                items(next) {
+                    if (next === undefined)
+                        return this.items_vary().map(item => Item.cast(item));
+                    for (const item of next)
+                        Item.guard(item);
+                    this.items_vary(next);
+                    return this.items();
+                }
+                static toString() {
+                    return this === $giper_baza_list_of ? '$giper_baza_list.of<' + Item + '>' : super.toString();
+                }
+            }
+            __decorate([
+                $mol_mem
+            ], $giper_baza_list_of.prototype, "items", null);
+            return $giper_baza_list_of;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_list.prototype, "items_vary", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_list.prototype, "splice", null);
+    __decorate([
+        $mol_memo_key.method
+    ], $giper_baza_list, "of", null);
+    $.$giper_baza_list = $giper_baza_list;
+    /** Mergeable list of atomic buffers */
+    class $giper_baza_list_bin extends $giper_baza_list.of(Uint8Array) {
+    }
+    $.$giper_baza_list_bin = $giper_baza_list_bin;
+    /** Mergeable list of atomic booleans */
+    class $giper_baza_list_bool extends $giper_baza_list.of($mol_schema_boolean) {
+    }
+    $.$giper_baza_list_bool = $giper_baza_list_bool;
+    /** Mergeable list of atomic big integers */
+    class $giper_baza_list_int extends $giper_baza_list.of($mol_schema_bigint) {
+    }
+    $.$giper_baza_list_int = $giper_baza_list_int;
+    /** Mergeable list of atomic floats */
+    class $giper_baza_list_real extends $giper_baza_list.of($mol_schema_float) {
+    }
+    $.$giper_baza_list_real = $giper_baza_list_real;
+    /** Mergeable list of atomic strings */
+    class $giper_baza_list_str extends $giper_baza_list.of($mol_schema_string) {
+    }
+    $.$giper_baza_list_str = $giper_baza_list_str;
+    /** Mergeable list of atomic time moments */
+    class $giper_baza_list_time extends $giper_baza_list.of($mol_time_moment) {
+    }
+    $.$giper_baza_list_time = $giper_baza_list_time;
+    /** Mergeable list of atomic time durations */
+    class $giper_baza_list_dur extends $giper_baza_list.of($mol_time_duration) {
+    }
+    $.$giper_baza_list_dur = $giper_baza_list_dur;
+    /** Mergeable list of atomic time intervals */
+    class $giper_baza_list_range extends $giper_baza_list.of($mol_time_interval) {
+    }
+    $.$giper_baza_list_range = $giper_baza_list_range;
+    /** Mergeable list of atomic dictionaries */
+    class $giper_baza_list_dict extends $giper_baza_list.of($mol_schema_dict([$mol_schema_string, $mol_schema_any])) {
+    }
+    $.$giper_baza_list_dict = $giper_baza_list_dict;
+    /** Mergeable list of atomic arrays */
+    class $giper_baza_list_list extends $giper_baza_list.of($mol_schema_list($mol_schema_any)) {
+    }
+    $.$giper_baza_list_list = $giper_baza_list_list;
+    /** Mergeable list of atomic DOM elements */
+    class $giper_baza_list_dom extends $giper_baza_list.of($mol_dom.Element ?? Object) {
+    }
+    $.$giper_baza_list_dom = $giper_baza_list_dom;
+    /** Mergeable list of atomic Trees */
+    class $giper_baza_list_tree extends $giper_baza_list.of($mol_tree2) {
+    }
+    $.$giper_baza_list_tree = $giper_baza_list_tree;
+    /** Mergeable list of atomic Links */
+    class $giper_baza_list_link extends $giper_baza_list.of($giper_baza_link) {
+        /** Mergeable List of atomic Links to some Pawn type */
+        static to(Value) {
+            class $giper_baza_list_link_to extends $giper_baza_list_link {
+                Value = $mol_memo.func(Value);
+                static toString() {
+                    return this === $giper_baza_list_link_to ? '$giper_baza_list_link_to[ []=> ' + Value() + ' ]' : super.toString();
+                }
+                /** List of linked Pawns */
+                remote_list(next) {
+                    const glob = this.$.$giper_baza_glob;
+                    const Pawn = Value();
+                    return this.items(next?.map(item => item.link()))
+                        .map(link => glob.Pawn(link, Pawn));
+                }
+                remote_add(item) {
+                    this.add(item.link());
+                }
+                /** Make new Pawn and place it at end. */
+                make(config) {
+                    const Pawn = Value();
+                    let pawn;
+                    if (config === null || typeof config === 'number') {
+                        const self = this.land().self_make(config || undefined);
+                        pawn = this.land().Pawn(Pawn).Head(self);
+                        this.splice([pawn.link()]);
+                    }
+                    else if (config instanceof $giper_baza_land) {
+                        const land = config.area_make();
+                        this.splice([land.link()]);
+                        pawn = land.Pawn(Pawn).Data();
+                    }
+                    else if (config) {
+                        const land = this.$.$giper_baza_glob.land_grab(config);
+                        this.splice([land.link()]);
+                        pawn = land.Pawn(Pawn).Data();
+                    }
+                    else {
+                        return $mol_fail(new Error('Wrong config'));
+                    }
+                    if (Pawn.meta)
+                        pawn.meta(Pawn.meta);
+                    return pawn;
+                }
+            }
+            __decorate([
+                $mol_mem
+            ], $giper_baza_list_link_to.prototype, "remote_list", null);
+            __decorate([
+                $mol_action
+            ], $giper_baza_list_link_to.prototype, "remote_add", null);
+            __decorate([
+                $mol_action
+            ], $giper_baza_list_link_to.prototype, "make", null);
+            return $giper_baza_list_link_to;
+        }
+    }
+    $.$giper_baza_list_link = $giper_baza_list_link;
+    /** @deprecated Use $giper_baza_list_link.to( Target ) */
+    function $giper_baza_list_link_to(Value) {
+        return $giper_baza_list_link.to(Value);
+    }
+    $.$giper_baza_list_link_to = $giper_baza_list_link_to;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Mergeable dictionary Pawn with any keys mapped to any embedded Pawn types */
+    class $giper_baza_dict extends $giper_baza_list {
+        static tag = $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag.keys];
+        /** List of Vary keys. */
+        keys() {
+            return this.items_vary();
+        }
+        /** Inner Pawn by key. */
+        dive(key, Pawn, auto) {
+            if (this.can_change() && auto !== undefined)
+                this.has(key, true, Pawn.tag);
+            const unit = this.find(key);
+            return unit ? this.land().Pawn(Pawn).Head(unit.self()) : null;
+        }
+        static schema = {};
+        /** Mergeable dictionary Pawn with defined keys mapped to different embedded Pawn types */
+        static with(schema, path = '') {
+            const prefix = path ? path + ':' : '';
+            const $giper_baza_dict_with = class $giper_baza_dict_with extends this {
+                // static get schema() { return { ... this.schema, ... schema } }
+                static path = path;
+                static toString() {
+                    if (this !== $giper_baza_dict_with)
+                        return super.toString();
+                    const params = Object.entries(schema).map(([name, type]) => `${name}: ${type}`);
+                    return '$giper_baza_dict.with<{' + params.join(', ') + '}>';
+                }
+            };
+            for (const Field in schema) {
+                Object.defineProperty($giper_baza_dict_with.prototype, Field, {
+                    value: function (auto) {
+                        return this.dive(prefix + Field, schema[Field], auto);
+                    }
+                });
+                // $mol_wire_field( Entity.prototype, Field as any )
+            }
+            return Object.assign($giper_baza_dict_with, { schema: { ...this.schema, ...schema } });
+        }
+        ;
+        [$mol_dev_format_head]() {
+            const keys = $mol_wire_probe(() => this.keys());
+            const pawns = $mol_wire_probe(() => this.pawns(null)) ?? [];
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', this.head(), ' ', $mol_dev_format_auto(keys?.map((key, index) => new Pair(key, pawns[index]))));
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_dict.prototype, "keys", null);
+    $.$giper_baza_dict = $giper_baza_dict;
+    class Pair {
+        key;
+        val;
+        constructor(key, val) {
+            this.key = key;
+            this.val = val;
+        }
+        ;
+        [$mol_dev_format_head]() {
+            return $mol_dev_format_tr({}, $mol_dev_format_td({}, $mol_dev_format_auto(this.key)), $mol_dev_format_td({}, ': '), $mol_dev_format_td({}, $mol_dev_format_auto(this.val)));
+        }
+    }
+    /** Mergeable dictionary with any keys mapped to any embedded Pawn types */
+    function $giper_baza_dict_to(Value) {
+        return class $giper_baza_dict_to extends $giper_baza_dict {
+            Value = Value;
+            key(key, auto) {
+                return this.dive(key, this.Value, auto);
+            }
+            static toString() {
+                return this === $giper_baza_dict_to ? '$giper_baza_dict_to<' + Value + '>' : super.toString();
+            }
+        };
+    }
+    $.$giper_baza_dict_to = $giper_baza_dict_to;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * 48-bit streamable string hash function
+     * Based on cyrb53: https://stackoverflow.com/a/52171480
+     */
+    function $mol_hash_string(str, seed = 0) {
+        let nums = new Array(str.length);
+        for (let i = 0; i < str.length; ++i)
+            nums[i] = str.charCodeAt(i);
+        return $mol_hash_numbers(nums);
+    }
+    $.$mol_hash_string = $mol_hash_string;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Atomic dynamic register */
+    class $giper_baza_atom extends $giper_baza_pawn {
+        static tag = $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag.solo];
+        pick_unit(peer) {
+            return this.units_of(peer).at(0);
+        }
+        vary(next) {
+            return this.vary_of($giper_baza_link.hole, next);
+        }
+        vary_of(peer, next) {
+            let unit_prev = this.pick_unit(peer);
+            let prev = unit_prev ? this.land().sand_decode(unit_prev) : null;
+            if (next === undefined)
+                return prev;
+            if ($mol_compare_deep(prev, next))
+                return next;
+            this.land().post($giper_baza_link.hole, unit_prev?.head() ?? this.head(), unit_prev?.self() ?? null, next);
+            return this.vary_of(peer);
+        }
+        selection(lord, next) {
+            const link = this.link().head().str;
+            const user = this.$.$giper_baza_glob.Land(lord).Data($giper_baza_flex_user);
+            if (next) {
+                user.caret([[link, next[0], 0], [link, next[1], 0]]);
+                return next;
+            }
+            else {
+                this.vary(); // track text to recalc selection on its change
+                const selection = user.caret();
+                if (!selection)
+                    return [0, 0];
+                if (selection[0][0] !== link)
+                    return [0, 0];
+                if (selection[1][0] !== link)
+                    return [0, 0];
+                return [selection[0][1], selection[0][1]];
+            }
+        }
+        ;
+        [$mol_dev_format_head]() {
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', this.head(), ' ', $mol_dev_format_auto(this.vary()));
+        }
+        /** Atom which typed by Schema/Class. */
+        static of(init) {
+            const Schema = $mol_schema_maybe($mol_schema_instance(init));
+            class $giper_baza_atom_of extends $giper_baza_atom {
+                static Schema = Schema;
+                /** Get/Set value of Pawn field */
+                val(next) {
+                    return this.val_of($giper_baza_link.hole, next);
+                }
+                val_of(peer, next) {
+                    if (next !== undefined)
+                        Schema.guard(next);
+                    const res = this.vary_of(peer, next);
+                    return next === undefined ? Schema.cast(res) : this.val_of(peer);
+                }
+                static toString() {
+                    return this === $giper_baza_atom_of ? '$giper_baza_atom.of<' + Schema + '>' : super.toString();
+                }
+            }
+            __decorate([
+                $mol_mem_key
+            ], $giper_baza_atom_of.prototype, "val_of", null);
+            return $giper_baza_atom_of;
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_atom.prototype, "vary_of", null);
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_atom.prototype, "selection", null);
+    __decorate([
+        $mol_memo_key.method
+    ], $giper_baza_atom, "of", null);
+    $.$giper_baza_atom = $giper_baza_atom;
+    /** @deprecated Use $giper_baza_atom */
+    $.$giper_baza_atom_vary = $giper_baza_atom;
+    /** Atomic buffer */
+    class $giper_baza_atom_blob extends $giper_baza_atom.of(Uint8Array) {
+    }
+    $.$giper_baza_atom_blob = $giper_baza_atom_blob;
+    /** Atomic boolean */
+    class $giper_baza_atom_bool extends $giper_baza_atom.of($mol_schema_boolean) {
+    }
+    $.$giper_baza_atom_bool = $giper_baza_atom_bool;
+    /** Atomic big integer */
+    class $giper_baza_atom_bint extends $giper_baza_atom.of($mol_schema_bigint) {
+    }
+    $.$giper_baza_atom_bint = $giper_baza_atom_bint;
+    /** Atomic float number */
+    class $giper_baza_atom_real extends $giper_baza_atom.of($mol_schema_float) {
+    }
+    $.$giper_baza_atom_real = $giper_baza_atom_real;
+    /** Atomic string */
+    class $giper_baza_atom_text extends $giper_baza_atom.of($mol_schema_string) {
+    }
+    $.$giper_baza_atom_text = $giper_baza_atom_text;
+    /** Atomic time moment */
+    class $giper_baza_atom_time extends $giper_baza_atom.of($mol_time_moment) {
+    }
+    $.$giper_baza_atom_time = $giper_baza_atom_time;
+    /** Atomic time duration */
+    class $giper_baza_atom_dura extends $giper_baza_atom.of($mol_time_duration) {
+    }
+    $.$giper_baza_atom_dura = $giper_baza_atom_dura;
+    /** Atomic time interval */
+    class $giper_baza_atom_span extends $giper_baza_atom.of($mol_time_interval) {
+    }
+    $.$giper_baza_atom_span = $giper_baza_atom_span;
+    /** Atomic dictionary */
+    class $giper_baza_atom_dict extends $giper_baza_atom.of($mol_schema_dict([$mol_schema_string, $mol_schema_any])) {
+    }
+    $.$giper_baza_atom_dict = $giper_baza_atom_dict;
+    /** Atomic array */
+    class $giper_baza_atom_list extends $giper_baza_atom.of($mol_schema_list($mol_schema_any)) {
+    }
+    $.$giper_baza_atom_list = $giper_baza_atom_list;
+    /** Atomic DOM element */
+    class $giper_baza_atom_elem extends $giper_baza_atom.of($mol_dom.Element ?? Object) {
+    }
+    $.$giper_baza_atom_elem = $giper_baza_atom_elem;
+    /** Atomic Tree */
+    class $giper_baza_atom_tree extends $giper_baza_atom.of($mol_tree2) {
+    }
+    $.$giper_baza_atom_tree = $giper_baza_atom_tree;
+    /** Atomic Link */
+    class $giper_baza_atom_link extends $giper_baza_atom.of($giper_baza_link) {
+        /** Atomic link to some Pawn type register */
+        static to(Value) {
+            class $giper_baza_atom_link_to extends $giper_baza_atom_link {
+                Value = $mol_memo.func(Value);
+                static toString() {
+                    return this === $giper_baza_atom_link_to ? '$giper_baza_atom_link.to[ []=> ' + Value() + ' ]' : super.toString();
+                }
+                /** Target Pawn */
+                remote(next) {
+                    return this.remote_of($giper_baza_link.hole, next);
+                }
+                remote_of(peer, next) {
+                    const link = this.val_of(peer, next?.link() ?? next);
+                    if (!link)
+                        return null;
+                    return this.$.$giper_baza_glob.Pawn(link, Value());
+                }
+                /** Target Pawn. Creates if not exists. */
+                ensure(config) {
+                    return this.ensure_of($giper_baza_link.hole, config);
+                }
+                ensure_of(peer, config) {
+                    if (!this.val_of(peer)) {
+                        if (config === null)
+                            this.ensure_here(peer);
+                        else if (config instanceof $giper_baza_land)
+                            this.ensure_area(peer, config);
+                        else if (config)
+                            this.ensure_lord(peer, config);
+                        else
+                            return null;
+                    }
+                    return this.remote_of(peer);
+                }
+                ensure_here(peer) {
+                    const Pawn = Value();
+                    const idea = $mol_hash_string(this.link().str);
+                    const head = this.land().self_make(idea);
+                    const pawn = this.land().Pawn(Pawn).Head(head);
+                    if (Pawn.meta)
+                        pawn.meta(Pawn.meta);
+                    this.remote_of(peer, pawn);
+                }
+                ensure_area(peer, land) {
+                    const Pawn = Value();
+                    const idea = $mol_hash_string(this.link().str);
+                    const area = land.area_make(idea);
+                    const pawn = area.Data(Pawn);
+                    if (Pawn.meta)
+                        pawn.meta(Pawn.meta);
+                    this.val_of(peer, pawn.link());
+                }
+                ensure_lord(peer, preset) {
+                    const Pawn = Value();
+                    const land = this.$.$giper_baza_glob.land_grab(preset);
+                    const pawn = land.Data(Pawn);
+                    if (Pawn.meta)
+                        pawn.meta(Pawn.meta);
+                    this.val_of(peer, pawn.link());
+                }
+                /** @deprecated Use ensure( preset ) */
+                remote_ensure(preset) {
+                    return this.ensure(preset);
+                }
+                /** @deprecated Use ensure( null ) */
+                local_ensure() {
+                    return this.ensure(null);
+                }
+            }
+            __decorate([
+                $mol_mem_key
+            ], $giper_baza_atom_link_to.prototype, "remote_of", null);
+            __decorate([
+                $mol_action
+            ], $giper_baza_atom_link_to.prototype, "ensure_here", null);
+            __decorate([
+                $mol_action
+            ], $giper_baza_atom_link_to.prototype, "ensure_area", null);
+            __decorate([
+                $mol_action
+            ], $giper_baza_atom_link_to.prototype, "ensure_lord", null);
+            return $giper_baza_atom_link_to;
+        }
+    }
+    __decorate([
+        $mol_memo_key.method
+    ], $giper_baza_atom_link, "to", null);
+    $.$giper_baza_atom_link = $giper_baza_atom_link;
+    /** @deprecated Use $giper_baza_atom_link.to( Target ) */
+    function $giper_baza_atom_link_to(Value) {
+        return $giper_baza_atom_link.to(Value);
+    }
+    $.$giper_baza_atom_link_to = $giper_baza_atom_link_to;
+})($ || ($ = {}));
+
+;
+"use strict";
+// namespace $ {
+// 	$mol_report_bugsnag = '18acf016ed2a2a4cc4445daa9dd2dd3c'
+// }
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for some of given runtype or throws error.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_variant_demo
+     */
+    function $mol_data_variant(...sub) {
+        return $mol_data_setup((val) => {
+            const errors = [];
+            for (const type of sub) {
+                let hidden = $.$mol_fail_hidden;
+                try {
+                    $.$mol_fail = $.$mol_fail_hidden;
+                    return type(val);
+                }
+                catch (error) {
+                    $.$mol_fail = hidden;
+                    if (error instanceof $mol_data_error) {
+                        errors.push(error);
+                    }
+                    else {
+                        return $mol_fail_hidden(error);
+                    }
+                }
+            }
+            return $mol_fail(new $mol_data_error(`${val} is not any of variants`, {}, ...errors));
+        }, sub);
+    }
+    $.$mol_data_variant = $mol_data_variant;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for string and returns string type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_string_demo
+     */
+    $.$mol_data_string = (val) => {
+        if (typeof val === 'string')
+            return val;
+        return $mol_fail(new $mol_data_error(`${val} is not a string`));
+    };
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for undefined or passing given runtype.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_optional_demo
+     */
+    function $mol_data_optional(sub, fallback) {
+        return $mol_data_setup((val) => {
+            if (val === undefined) {
+                return fallback?.();
+            }
+            return sub(val);
+        }, { sub, fallback });
+    }
+    $.$mol_data_optional = $mol_data_optional;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for record of given fields with by its runtypes and returns expected type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_record_demo
+     */
+    function $mol_data_record(sub) {
+        return $mol_data_setup((val) => {
+            let res = {};
+            for (const field in sub) {
+                try {
+                    res[field] =
+                        sub[field](val[field]);
+                }
+                catch (error) {
+                    if (error instanceof Promise)
+                        return $mol_fail_hidden(error);
+                    error.message = `[${JSON.stringify(field)}] ${error.message}`;
+                    return $mol_fail(error);
+                }
+            }
+            return res;
+        }, sub);
+    }
+    $.$mol_data_record = $mol_data_record;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for array of given runtype and returns expected type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_array_demo
+     */
+    function $mol_data_array(sub) {
+        return $mol_data_setup((val) => {
+            if (!Array.isArray(val))
+                return $mol_fail(new $mol_data_error(`${val} is not an array`));
+            return val.map((item, index) => {
+                try {
+                    return sub(item);
+                }
+                catch (error) {
+                    if (error instanceof Promise)
+                        return $mol_fail_hidden(error);
+                    error.message = `[${index}] ${error.message}`;
+                    return $mol_fail(error);
+                }
+            });
+        }, sub);
+    }
+    $.$mol_data_array = $mol_data_array;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for boolean and returns boolean type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_boolean_demo
+     */
+    $.$mol_data_boolean = (val) => {
+        if (typeof val === 'boolean')
+            return val;
+        return $mol_fail(new $mol_data_error(`${val} is not a boolean`));
+    };
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    const syntax = new $mol_syntax2({
+        'filter': /!?=/,
+        'range_separator': /@/,
+        'fetch_open': /\(/,
+        'fetch_separator': /[:;&\/?#]/,
+        'fetch_close': /\)/,
+    });
+    function $hyoo_harp_from_string(uri) {
+        let parent = {};
+        let prev = null;
+        let stack = [parent];
+        let range = null;
+        let values = null;
+        function fail_at(offset) {
+            const uri_marked = uri.substring(0, offset) + '\u035C' + uri.substring(offset);
+            $mol_fail(new Error(`Unexpected token at ${offset} of "${uri_marked}"`));
+        }
+        syntax.parse(uri, {
+            '': (text, chunks, offset) => {
+                if (values) {
+                    text = decodeURIComponent(text);
+                    range = (range && range.length > 1)
+                        ? [range[0], range[1] + text]
+                        : [(range?.[0] ?? '') + text];
+                }
+                else {
+                    let [, order, name] = /^([+-]?)(.*)$/.exec(text);
+                    prev = parent[decodeURIComponent(name)] = {};
+                    if (order)
+                        prev['+'] = order === '+';
+                    stack.push(parent);
+                }
+            },
+            'filter': (filter, chinks, offset) => {
+                if (values) {
+                    if (range) {
+                        if (filter === '!=')
+                            range.push(range.pop() + '!');
+                        values.push(range);
+                        range = null;
+                    }
+                    else {
+                        range = [filter];
+                    }
+                }
+                else if (prev) {
+                    values = prev[filter] = [];
+                }
+                else {
+                    values = [];
+                    parent[''] = values;
+                }
+            },
+            'range_separator': (found, chunks, offset) => {
+                if (!values)
+                    fail_at(offset);
+                range = [range?.[0] ?? '', ''];
+            },
+            'fetch_open': (found, chunks, offset) => {
+                if (range) {
+                    range[range.length - 1] += found;
+                }
+                else {
+                    if (!prev)
+                        fail_at(offset);
+                    parent = prev;
+                    values = null;
+                    prev = null;
+                }
+            },
+            'fetch_separator': (found, chunks, offset) => {
+                if (range) {
+                    values.push(range);
+                    range = null;
+                }
+                parent = stack.pop();
+                values = null;
+                prev = null;
+            },
+            'fetch_close': (found) => {
+                if (range) {
+                    range[range.length - 1] += found;
+                }
+                else {
+                    parent = stack.pop();
+                    values = null;
+                    prev = null;
+                }
+            },
+        });
+        if (range)
+            values.push(range);
+        return stack[0];
+    }
+    $.$hyoo_harp_from_string = $hyoo_harp_from_string;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $hyoo_harp_to_string(query) {
+        return Object.entries(query).map(([field, harp]) => {
+            if (field === '+')
+                return '';
+            if (field === '=')
+                return '';
+            if (field === '!=')
+                return '';
+            if (!harp)
+                return '';
+            const harp2 = harp;
+            const order = harp2['+'] === true ? '+' : harp2['+'] === false ? '-' : '';
+            const filter = harp2['='] ? '=' : harp2['!='] ? '!=' : '';
+            const name = encodeURIComponent(field);
+            let values = (harp2['='] || harp2['!='] || []).map(([min, max]) => {
+                if (max === undefined || min === max)
+                    return encodeURIComponent(String(min)) + '=';
+                min = (min === undefined) ? '' : encodeURIComponent(String(min));
+                max = (max === undefined) ? '' : encodeURIComponent(String(max));
+                return `${min}@${max}=`;
+            }).join('');
+            let fetch = $hyoo_harp_to_string(harp);
+            if (fetch)
+                fetch = `(${fetch})`;
+            return `${order}${name}${filter}${values}${fetch}`;
+        }).filter(Boolean).join(';');
+    }
+    $.$hyoo_harp_to_string = $hyoo_harp_to_string;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const Int = $mol_data_pipe($mol_data_variant($mol_data_string, $mol_data_integer), Number);
+    function $hyoo_harp_scheme(sub, value = $mol_data_integer) {
+        const inner = $mol_data_optional($mol_data_record(sub));
+        const values = $mol_data_optional($mol_data_array($mol_data_array(value)));
+        const val = $mol_data_record({
+            ...sub,
+            '+': $mol_data_optional($mol_data_boolean),
+            '=': values,
+            '!=': values,
+            '_num': $mol_data_optional($mol_data_record({
+                '=': $mol_data_array($mol_data_array(Int))
+            })),
+            '_len': inner,
+            '_max': inner,
+            '_min': inner,
+            '_sum': inner,
+        });
+        return Object.assign(val, {
+            parse(str) {
+                return val($hyoo_harp_from_string(str));
+            },
+            build(query) {
+                return $hyoo_harp_to_string(query);
+            },
+        });
+    }
+    $.$hyoo_harp_scheme = $hyoo_harp_scheme;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_offline() { }
+    $.$mol_offline = $mol_offline;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    try {
+        $mol_offline();
+    }
+    catch (error) {
+        console.error(error);
+    }
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $giper_baza_file_mime_safe(type) {
+        return ['audio', 'video', 'image', 'font'].includes(type.replace(/\/.*$/, ''))
+            ? type
+            : 'application/octet-stream';
+    }
+    $.$giper_baza_file_mime_safe = $giper_baza_file_mime_safe;
+    $.$giper_baza_file_query = $hyoo_harp_scheme({
+        BAZA: $hyoo_harp_scheme({}),
+        file: $hyoo_harp_scheme({}, $mol_data_string),
+    });
+    class $giper_baza_file extends $giper_baza_dict.with({
+        /** File name */
+        Name: $giper_baza_atom_text,
+        /** File Content-Type */
+        Type: $giper_baza_atom_text,
+        /** File content in chunks - list of binaries */
+        Chunks: $giper_baza_list_bin,
+    }) {
+        /** Persistent URI to file content */
+        uri() {
+            return `?BAZA:file=${this.link()};name=${this.name()}`;
+        }
+        /** File name */
+        name(next) {
+            const ext = {
+                'text/plain': 'txt',
+                'application/json': 'json',
+            }[this.type()] ?? 'bin';
+            return this.Name(next)?.val(next) ?? `${this.link()}.${ext}`;
+        }
+        /** Mime type */
+        type(next) {
+            return this.Type(next)?.val(next) ?? 'application/octet-stream';
+        }
+        /** Blob, File etc. */
+        blob(next) {
+            if (!next)
+                return new $mol_blob(this.chunks(), { type: this.type() });
+            const buffer = new Uint8Array($mol_wire_sync(next).arrayBuffer());
+            this.buffer(buffer);
+            this.type(next.type);
+            if (next instanceof $mol_dom_context.File)
+                this.name(next.name);
+            return next;
+        }
+        /** Solid byte buffer. */
+        buffer(next) {
+            if (next) {
+                const chunks = [];
+                for (let offset = 0; offset < next.byteLength;) {
+                    chunks.push(next.slice(offset, offset += 2 ** 15)); // split by 32 KB
+                }
+                this.chunks(chunks);
+                return next;
+            }
+            else {
+                const chunks = this.chunks();
+                const size = chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
+                const res = new Uint8Array(size);
+                let offset = 0;
+                for (const chunk of chunks) {
+                    res.set(chunk, offset);
+                    offset += chunk.byteLength;
+                }
+                return res;
+            }
+        }
+        chunks(next) {
+            return (this.Chunks(next)?.items(next)?.filter($mol_guard_defined) ?? []);
+        }
+        str(next, type = 'text/plain') {
+            if (next === undefined)
+                return $mol_charset_decode(this.buffer());
+            this.buffer($mol_charset_encode(next));
+            this.type(type);
+            return next;
+        }
+        json(next, type = 'application/json') {
+            if (next === undefined)
+                return JSON.parse(this.str());
+            this.str(JSON.stringify(next), type);
+            return next;
+        }
+    }
+    $.$giper_baza_file = $giper_baza_file;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_nka_product extends $giper_baza_dict.with({
+        Title: $giper_baza_atom_text,
+        Price: $giper_baza_atom_real,
+        Description: $giper_baza_atom_text,
+        Category: $giper_baza_atom_text,
+        Available: $giper_baza_atom_bool,
+        Published: $giper_baza_atom_bool,
+        Photos: $giper_baza_list_link.to(() => $giper_baza_file),
+    }) {
+    }
+    $.$bog_nka_product = $bog_nka_product;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $giper_baza_stat_series extends $giper_baza_atom.of($mol_schema_list($mol_schema_float)) {
+        tick(key, val, count) {
+            let vals = this.values().slice();
+            while (vals.length < count)
+                vals.push(0);
+            vals[key] = val + this.initial();
+            vals = [...vals.slice(key + 1), ...vals.slice(0, key + 1)];
+            for (let i = 1; i < count; ++i)
+                if (vals[i] < vals[i - 1])
+                    vals[i] = vals[i - 1];
+            vals = [...vals.slice(-1 - key), ...vals.slice(0, -1 - key)];
+            this.values(vals);
+        }
+        _initial;
+        initial() {
+            return this._initial
+                ?? (this._initial = this.max());
+        }
+        max() {
+            let max = 0;
+            for (const val of this.values())
+                if (val > max)
+                    max = val;
+            return max;
+        }
+        values(next) {
+            if (next) {
+                let last = 0;
+                next = next.map(v => ([v, last] = [v - last, v])[0]);
+            }
+            let last = 0;
+            return (this.val(next) ?? []).map(v => last += v);
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $giper_baza_stat_series.prototype, "tick", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_stat_series.prototype, "initial", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_stat_series.prototype, "max", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_stat_series.prototype, "values", null);
+    $.$giper_baza_stat_series = $giper_baza_stat_series;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $giper_baza_stat_ranges extends $giper_baza_dict.with({
+        Seconds: $giper_baza_stat_series,
+        Minutes: $giper_baza_stat_series,
+        Hours: $giper_baza_stat_series,
+        Days: $giper_baza_stat_series,
+        Months: $giper_baza_stat_series,
+        // Years: $giper_baza_stat_series,
+    }) {
+        _last_instant = 0;
+        tick_instant(val) {
+            this.tick_integral(this._last_instant += val);
+        }
+        tick_integral(val) {
+            let now = new $mol_time_moment;
+            this.Seconds(null).tick(Math.floor(now.second), val, 60);
+            this.Minutes(null).tick(now.minute, val, 60);
+            this.Hours(null).tick(now.hour, val, 24);
+            this.Days(null).tick(now.day, val, 31);
+            this.Months(null).tick(now.month, val, 12);
+            // this.Years( null )!.tick( now.year!, val )
+        }
+        series() {
+            function pick(Series, length, range) {
+                const values = Series?.values() ?? [0];
+                let series = Array.from({ length }, (_, i) => values[i]);
+                let start = 0;
+                let max = 0;
+                for (let i = 0; i < series.length; ++i) {
+                    if (series[i] < max)
+                        continue;
+                    max = series[i];
+                    start = i + 1;
+                }
+                if (start)
+                    series = [...series.slice(start), ...series.slice(0, start - 1)];
+                let last = series[0];
+                series = series.slice(1).map(val => {
+                    try {
+                        if (last === 0 || val < last)
+                            return 0;
+                        return (val - last) / range;
+                    }
+                    finally {
+                        last = Math.max(val, last);
+                    }
+                });
+                return series;
+            }
+            const months = pick(this.Days(), 12, 60 * 60 * 24 * 31);
+            const days = pick(this.Days(), 31, 60 * 60 * 24);
+            const hours = pick(this.Hours(), 24, 60 * 60);
+            const minutes = pick(this.Minutes(), 60, 60);
+            const seconds = pick(this.Seconds(), 60, 1);
+            return [...months, ...days, ...hours, ...minutes, ...seconds].reverse();
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_stat_ranges.prototype, "series", null);
+    $.$giper_baza_stat_ranges = $giper_baza_stat_ranges;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_report_handler_all = new Set();
+    function handler(event, url, line, col, error) {
+        for (const handler of $.$mol_report_handler_all) {
+            try {
+                handler(event, url, line, col, error);
+            }
+            catch (e) { }
+        }
+    }
+    const handler_promise = (event) => handler('Unhandled Rejection', '', 0, 0, event.reason);
+    const handler_promise_node = (reason) => handler('Unhandled Rejection', '', 0, 0, reason);
+    if ('addEventListener' in globalThis) {
+        globalThis.addEventListener('error', handler);
+        globalThis.addEventListener('unhandledrejection', handler_promise);
+    }
+    if ('process' in globalThis) {
+        process.on('uncaughtExceptionMonitor', handler);
+        // process.on('unhandledRejection', handler_promise_node) // revents process halt
+    }
+    const console_error = console.error;
+    console.error = function console_error_custom(...args) {
+        const format = (val) => typeof val === 'string'
+            ? val.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+            : JSON.stringify(val);
+        const secondary = args.slice(1);
+        const first = typeof args[0] === 'string'
+            ? args[0].replaceAll(/%(?:\.\d+)?[disfcoO]/g, spec => spec === '%c' ? (secondary.shift(), '') : secondary.shift())
+            : args[0];
+        secondary.unshift(first);
+        const result = secondary.map(format).join(' ');
+        handler(result);
+        console_error.apply(console, args);
+    };
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $giper_baza_app_stat extends $giper_baza_dict.with({
+        Uptime: $giper_baza_atom_dura,
+        Masters: $giper_baza_atom.of($mol_schema_list($mol_schema_string)),
+        Slaves: $giper_baza_atom.of($mol_schema_list($mol_schema_string)),
+        /** User time in secs */
+        Cpu_user: $giper_baza_stat_ranges,
+        /** System time in secs */
+        Cpu_system: $giper_baza_stat_ranges,
+        /** Memory in MB */
+        Mem_used: $giper_baza_stat_ranges,
+        /** Memory in MB */
+        Mem_free: $giper_baza_stat_ranges,
+        /** FS used */
+        Fs_used: $giper_baza_stat_ranges,
+        /** FS free */
+        Fs_free: $giper_baza_stat_ranges,
+        /** FS read count */
+        Fs_reads: $giper_baza_stat_ranges,
+        /** FS write count */
+        Fs_writes: $giper_baza_stat_ranges,
+        /** Slave sockets count */
+        Port_slaves: $giper_baza_stat_ranges,
+        /** Masters sockets count */
+        Port_masters: $giper_baza_stat_ranges,
+        /** Alive (in-memory) lands count */
+        Land_alive: $giper_baza_stat_ranges,
+        /** Ghost (non-persist) lands count */
+        Land_ghost: $giper_baza_stat_ranges,
+        /** Unhandled errors */
+        Errors: $giper_baza_stat_ranges,
+    }) {
+        freshness() {
+            const last = this.last_change();
+            if (!last)
+                return null;
+            const range = new $mol_time_interval({
+                start: last,
+                end: new $mol_time_moment(this.$.$mol_state_time.now(1000)),
+            });
+            return range.duration.count('PT1s');
+        }
+        uptime(next) {
+            return this.Uptime(next)?.val(next) ?? new $mol_time_duration(0);
+        }
+        masters(next) {
+            return this.Masters(next)?.val(next) ?? [];
+        }
+        slaves(next) {
+            return this.Slaves(next)?.val(next) ?? [];
+        }
+        init() {
+            this.Errors(null).tick_instant(1); // restarts as errors
+            let handler = () => this.Errors(null).tick_instant(1);
+            $mol_report_handler_all.add(handler);
+            return { destructor: () => $mol_report_handler_all.delete(handler) };
+        }
+        tick() {
+            this.init();
+            if (this.$.$giper_baza_log()) {
+                this.$.$mol_log3_warn({
+                    place: this,
+                    message: 'Stat disabled due logging',
+                    hint: 'Disable $giper_baza_log to start monitoring'
+                });
+                return;
+            }
+            this.$.$mol_state_time.now(1000);
+            const yard = this.$.$giper_baza_glob.yard();
+            this.uptime(new $mol_time_duration({ second: Math.floor(process.uptime()) }).normal);
+            this.masters([...yard.masters()].map(port => port.address() + ' ' + port.origin()));
+            this.slaves([...yard.slaves].map(port => port.address() + ' ' + port.origin()));
+            const res = process.resourceUsage();
+            this.Cpu_user(null).tick_integral(Math.ceil(res.userCPUTime / 1e4)); // %
+            this.Cpu_system(null).tick_integral(Math.ceil(res.systemCPUTime / 1e4)); // %
+            this.Fs_reads(null).tick_integral(res.fsRead); // pct
+            this.Fs_writes(null).tick_integral(res.fsWrite); // pct
+            this.Mem_used(null).tick_instant(Math.ceil((res.maxRSS - res.sharedMemorySize) / 1024)); // MB
+            this.Mem_free(null).tick_instant(Math.floor($node.os.freemem() / 1024 / 1024)); // MB
+            this.Fs_used(null).tick_instant(Math.floor($mol_storage.used() / 1024 / 1024)); // MB
+            this.Fs_free(null).tick_instant(Math.floor($mol_storage.free() / 1024 / 1024)); // MB
+            const masters = yard.masters()?.length ?? 0;
+            this.Port_masters(null).tick_instant(masters); // pct
+            this.Port_slaves(null).tick_instant(yard.slaves.size); // pct
+            const lands_alive = yard.lands_alive();
+            const lands_persist = yard.lands_alive().filter(land => land.persisted());
+            this.Land_alive(null).tick_instant(lands_alive.length); // pct
+            this.Land_ghost(null).tick_instant(lands_alive.length - lands_persist.length); // pct
+            this.Errors(null).tick_instant(0); // pct
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_app_stat.prototype, "freshness", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_app_stat.prototype, "uptime", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_app_stat.prototype, "masters", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_app_stat.prototype, "slaves", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_app_stat.prototype, "init", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_app_stat.prototype, "tick", null);
+    $.$giper_baza_app_stat = $giper_baza_app_stat;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$giper_baza_flex_deck_link = new $giper_baza_link('6NUPZgrR_Itnhu9N1_WPsQDQWa');
+    /** Subj - named entity */
+    class $giper_baza_flex_subj extends $giper_baza_dict.with({
+        Name: $giper_baza_atom_text,
+        Icon: $giper_baza_atom_text,
+        Hint: $giper_baza_atom_text,
+    }, 'Subj') {
+        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_U2e5XejQ`);
+        name(next) {
+            return this.Name(next)?.val(next) ?? this.link().str;
+        }
+        icon(next) {
+            return this.Icon(next)?.val(next) ?? '💫';
+        }
+        hint(next) {
+            return this.Hint(next)?.val(next) ?? '';
+        }
+    }
+    $.$giper_baza_flex_subj = $giper_baza_flex_subj;
+    /** Atomic Link to any Subj */
+    class $giper_baza_flex_subj_link extends $giper_baza_atom_link.to(() => $giper_baza_flex_subj) {
+    }
+    $.$giper_baza_flex_subj_link = $giper_baza_flex_subj_link;
+    /** Meta - schema of entitiy */
+    class $giper_baza_flex_meta extends $giper_baza_flex_subj.with({
+        Pulls: $giper_baza_list_link.to(() => $giper_baza_flex_subj),
+        Props: $giper_baza_list_link.to(() => $giper_baza_flex_prop),
+    }, 'Meta') {
+        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_Atd6Ty7F`);
+        prop_new(key, type, kind, vars, base) {
+            const prop = this.Props(null).make($mol_hash_string(key));
+            prop.path(this.name() + ':' + key);
+            prop.name(key);
+            prop.type(type);
+            if (kind)
+                prop.kind(kind);
+            if (vars)
+                prop.enum(vars);
+            if (base !== undefined)
+                prop.base(base);
+            return prop;
+        }
+        prop_add(prop) {
+            this.Props(prop).add(prop.link());
+        }
+        prop_all() {
+            return [
+                ...this.pull_all().flatMap(meta => meta.prop_all()),
+                ...this.Props()?.remote_list() ?? [],
+            ];
+        }
+        pull_add(meta) {
+            this.Pulls(meta).add(meta.link());
+        }
+        pull_all() {
+            return (this.Pulls()?.remote_list() ?? []).map(subj => subj.cast($giper_baza_flex_meta));
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $giper_baza_flex_meta.prototype, "prop_new", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_flex_meta.prototype, "prop_add", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_flex_meta.prototype, "prop_all", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_flex_meta.prototype, "pull_add", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_flex_meta.prototype, "pull_all", null);
+    $.$giper_baza_flex_meta = $giper_baza_flex_meta;
+    /** Property - attribute of entity */
+    class $giper_baza_flex_prop extends $giper_baza_flex_subj.with({
+        /** Key to store value */
+        Path: $giper_baza_atom_text,
+        /** Type of value */
+        Type: $giper_baza_atom_text,
+        /** Target Meta */
+        Kind: $giper_baza_atom_link.to(() => $giper_baza_flex_meta),
+        /** Variants of values */
+        Enum: $giper_baza_atom_link.to(() => $giper_baza_list),
+        /** Base value */
+        Base: $giper_baza_atom,
+    }, 'Prop') {
+        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_DOnW7Ah9`);
+        path(next) {
+            return this.Path(next)?.val(next) ?? '';
+        }
+        type(next) {
+            return this.Type(next)?.val(next) ?? '';
+        }
+        base(next) {
+            return this.Base(next)?.vary(next) ?? null;
+        }
+        kind(next) {
+            return this.Kind(next)?.remote(next) ?? null;
+        }
+        enum(next) {
+            return this.Enum(next)?.remote(next) ?? null;
+        }
+    }
+    $.$giper_baza_flex_prop = $giper_baza_flex_prop;
+    /** Deck - set of schemes and types */
+    class $giper_baza_flex_deck extends $giper_baza_flex_subj.with({
+        Metas: $giper_baza_list_link.to(() => $giper_baza_flex_meta),
+        Types: $giper_baza_list_str,
+    }, 'Deck') {
+        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_3AvnmQ4q`);
+        meta_new(key, icon, hint) {
+            const meta = this.Metas(null).make($mol_hash_string(key));
+            meta.name(key);
+            meta.icon(icon);
+            meta.hint(hint);
+            return meta;
+        }
+        meta_for(Meta, icon, hint) {
+            const meta = this.meta_new(Meta.path, icon, hint);
+            Meta.meta = meta.link();
+            return meta;
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $giper_baza_flex_deck.prototype, "meta_new", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_flex_deck.prototype, "meta_for", null);
+    $.$giper_baza_flex_deck = $giper_baza_flex_deck;
+    /** Seed - global network config */
+    class $giper_baza_flex_seed extends $giper_baza_flex_subj.with({
+        Deck: $giper_baza_atom_link.to(() => $giper_baza_flex_deck),
+        Peers: $giper_baza_list_link.to(() => $giper_baza_flex_peer),
+    }, 'Seed') {
+        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_nrUK4ZIW`);
+        deck() {
+            return this.Deck(null).ensure(this.land());
+        }
+        peers(next) {
+            return this.Peers(next)?.remote_list(next) ?? [];
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_flex_seed.prototype, "deck", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_flex_seed.prototype, "peers", null);
+    $.$giper_baza_flex_seed = $giper_baza_flex_seed;
+    /** Peer - network peering info */
+    class $giper_baza_flex_peer extends $giper_baza_flex_subj.with({
+        Urls: $giper_baza_list_str,
+        Stat: $giper_baza_atom_link.to(() => $giper_baza_app_stat),
+    }, 'Peer') {
+        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_xEibvNCP`);
+        stat(auto) {
+            return this.Stat(auto)?.ensure(this.land()) ?? null;
+        }
+        urls(next) {
+            return (this.Urls(next)?.items(next) ?? []).filter($mol_guard_defined);
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_flex_peer.prototype, "stat", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_flex_peer.prototype, "urls", null);
+    $.$giper_baza_flex_peer = $giper_baza_flex_peer;
+    /** User - human profile */
+    class $giper_baza_flex_user extends $giper_baza_flex_subj.with({
+        Caret: $giper_baza_atom.of($mol_schema_list($mol_schema_any)),
+    }, 'User') {
+        static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_csm0VtAK`);
+        caret(next) {
+            return this.Caret(next)?.val(next) ?? null;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_flex_user.prototype, "caret", null);
+    $.$giper_baza_flex_user = $giper_baza_flex_user;
+    /** Makes new Seed with Deck */
+    function $giper_baza_flex_init() {
+        const seed_land = this.$.$giper_baza_glob.land_grab();
+        const seed = seed_land.Data($giper_baza_flex_seed);
+        seed.name('Base Seed');
+        const deck = seed.deck();
+        deck.name('Base Deck');
+        deck.Types(null).items_vary(['vary', 'enum', 'bool', 'int', 'real', 'str', 'link', 'time', 'dict', 'text', 'list']);
+        const Meta = deck.meta_for($giper_baza_flex_meta, '✨', 'Meta schema of entities');
+        Meta.meta(Meta.link());
+        const Subj = deck.meta_for($giper_baza_flex_subj, '💎', 'Named entity');
+        const Seed = deck.meta_for($giper_baza_flex_seed, '🌱', 'Seed of network');
+        const Prop = deck.meta_for($giper_baza_flex_prop, '🔖', 'Property schema');
+        const Deck = deck.meta_for($giper_baza_flex_deck, '📚', 'Collection of Metas');
+        const Peer = deck.meta_for($giper_baza_flex_peer, '🔆', 'Peer of network');
+        const User = deck.meta_for($giper_baza_flex_user, '👤', 'Profile of user');
+        seed.meta(Seed.link());
+        deck.meta(Deck.link());
+        Meta.pull_add(Subj);
+        Seed.pull_add(Subj);
+        Prop.pull_add(Subj);
+        Deck.pull_add(Subj);
+        Peer.pull_add(Subj);
+        User.pull_add(Subj);
+        Subj.prop_new('Name', 'str', undefined, undefined, '');
+        Subj.prop_new('Icon', 'str', undefined, undefined, '💫');
+        Subj.prop_new('Hint', 'str', undefined, undefined, '');
+        Meta.prop_new('Pulls', 'list', Meta, deck.Metas());
+        Meta.prop_new('Props', 'list', Prop);
+        Seed.prop_new('Deck', 'link', Deck);
+        Seed.prop_new('Peers', 'list', Peer);
+        Prop.prop_new('Path', 'str');
+        Prop.prop_new('Type', 'enum', undefined, deck.Types(), 'vary');
+        Prop.prop_new('Kind', 'link', Meta, deck.Metas(), Subj.link());
+        Prop.prop_new('Enum', 'link', Subj);
+        Prop.prop_new('Base', 'vary', Subj);
+        Deck.prop_new('Metas', 'list', Meta);
+        Deck.prop_new('Types', 'list');
+        Peer.prop_new('Urls', 'list');
+        Peer.prop_new('Stat', 'link');
+        User.prop_new('Caret', 'list');
+        return seed;
+    }
+    $.$giper_baza_flex_init = $giper_baza_flex_init;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Whole global graph database which contains Lands. */
+    class $giper_baza_glob extends $mol_object {
+        static lands_touched = new $mol_wire_set();
+        /** Glob synchronizer. */
+        static yard() {
+            return new this.$.$giper_baza_yard;
+        }
+        /** Land where Lord is King. Contains only main info */
+        static home(Home) {
+            const home = this.Land(this.$.$giper_baza_auth.current().pass().lord()).Data(Home ?? this.$.$giper_baza_flex_subj);
+            if (Home?.meta && !home.meta())
+                home.meta(Home.meta);
+            return home;
+        }
+        static king_grab(preset = [[null, this.$.$giper_baza_rank_read]]) {
+            const mapping = new Map(preset);
+            const king = this.$.$giper_baza_auth.grab();
+            const colony = $mol_wire_sync(this.$.$giper_baza_land).make({ $: this.$ });
+            colony.auth = $mol_const(king);
+            colony.encrypted((mapping.get(null) ?? this.$.$giper_baza_rank_deny) === this.$.$giper_baza_rank_deny);
+            const self = this.$.$giper_baza_auth.current().pass();
+            colony.give(self, this.$.$giper_baza_rank_rule);
+            for (const [key, rank] of mapping)
+                colony.give(key, rank);
+            this.Land(colony.link()).units_steal(colony);
+            return king;
+        }
+        static land_grab(preset = [[null, this.$.$giper_baza_rank_read]]) {
+            return this.Land(this.king_grab(preset).pass().lord());
+        }
+        /** Standalone part of Glob which syncs separately, have own rights, and contains Units */
+        static Land(link) {
+            if (!link.str)
+                $mol_fail(new Error('Empty Land Link'));
+            this.lands_touched.add(link.str);
+            return this.$.$giper_baza_land.make({
+                link: $mol_const(link),
+            });
+        }
+        /** High level representation of stored data. */
+        static Pawn(link, Pawn) {
+            const land = this.Land(link.land());
+            return land.Pawn(Pawn).Head(link.head());
+        }
+        static Seed() {
+            const link = $giper_baza_flex_deck_link.lord();
+            const seed = this.Pawn(link, $giper_baza_flex_seed);
+            // if( !$mol_wire_sync( seed ).meta() )
+            this.boot();
+            return seed;
+        }
+        static boot() {
+            const file = $mol_file.relative('web.baza');
+            const pack = $mol_wire_sync($giper_baza_pack).from(file.buffer());
+            this.apply_pack(pack);
+        }
+        static apply_pack(pack) {
+            return this.apply_parts(pack.parts());
+        }
+        static apply_parts(parts) {
+            for (const [land_id, part] of parts) {
+                const land = this.Land(new this.$.$giper_baza_link(land_id));
+                land.diff_apply(part.units);
+            }
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_glob, "yard", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_glob, "king_grab", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_glob, "land_grab", null);
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_glob, "Land", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_glob, "Seed", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_glob, "boot", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_glob, "apply_pack", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_glob, "apply_parts", null);
+    $.$giper_baza_glob = $giper_baza_glob;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     const makeURL = $mol_wire_sync((url, base) => new URL(url, base));
     class $mol_rest_resource extends $mol_object {
         REQUEST(msg) {
@@ -22028,6 +22103,107 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    $.$bog_nka_catalog_ref = '';
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_nka_catalog extends $giper_baza_dict.with({
+        Title: $giper_baza_atom_text,
+        Telegram: $giper_baza_atom_text,
+        Products: $giper_baza_list_link.to(() => $bog_nka_product),
+    }) {
+    }
+    $.$bog_nka_catalog = $bog_nka_catalog;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Image processing. */
+    class $mol_picture extends $mol_object2 {
+        canvas;
+        constructor(canvas) {
+            super();
+            this.canvas = canvas;
+        }
+        get context() {
+            return this.canvas.getContext('2d');
+        }
+        get bitmap() {
+            return this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        }
+        static fit(image, width = Number.POSITIVE_INFINITY, height = width) {
+            if (image instanceof Blob)
+                image = $mol_wire_sync(URL).createObjectURL(image);
+            if (typeof image === 'string')
+                image = $mol_wire_sync(this).load(image);
+            let [w, h] = this.sizes(image);
+            if (w > width) {
+                h *= width / w;
+                w = width;
+            }
+            if (h > height) {
+                w *= height / h;
+                h = height;
+            }
+            return this.make(image, w, h);
+        }
+        static make(image, width, height = width) {
+            const canvas = $mol_dom_context.document.createElement('canvas');
+            Object.assign(canvas, { width, height });
+            const context = canvas.getContext('2d');
+            context.drawImage(image, 0, 0, width, height);
+            return new this(canvas);
+        }
+        static sizes(image) {
+            if (image instanceof HTMLVideoElement)
+                return [
+                    image.videoWidth,
+                    image.videoHeight,
+                ];
+            if (image instanceof SVGImageElement)
+                return [
+                    image.width.baseVal.value,
+                    image.height.baseVal.value,
+                ];
+            return [
+                image.width,
+                image.height,
+            ];
+        }
+        static async load(uri) {
+            const image = new Image;
+            image.src = uri;
+            await new Promise((onload, onerror) => Object.assign(image, { onload, onerror }));
+            return image;
+        }
+        format(type, quality = .9) {
+            return new Promise(done => this.canvas.toBlob(done, type, quality));
+        }
+        url(type = 'image/webp', quality = .9) {
+            return this.canvas.toDataURL(type, quality);
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_picture.prototype, "format", null);
+    __decorate([
+        $mol_action
+    ], $mol_picture.prototype, "url", null);
+    __decorate([
+        $mol_action
+    ], $mol_picture, "fit", null);
+    $.$mol_picture = $mol_picture;
+})($ || ($ = {}));
+
+;
+"use strict";
 
 
 ;
@@ -22037,22 +22213,17 @@ var $;
     var $$;
     (function ($$) {
         class $bog_nka_app extends $.$bog_nka_app {
-            catalog_land_cached = null;
-            catalog_land_ref = '';
             catalog_link() {
-                return $bog_nka_catalog_ref || this.$.$mol_state_local.value('bog_nka_catalog_link') || '';
+                return this.$.$mol_state_arg.value('catalog')
+                    || $bog_nka_catalog_ref
+                    || this.$.$mol_state_local.value('bog_nka_catalog_link')
+                    || '';
             }
             catalog() {
                 const link = this.catalog_link();
                 if (!link)
                     return null;
-                if (!this.catalog_land_cached || this.catalog_land_ref !== link) {
-                    this.catalog_land_cached = this.$.$giper_baza_glob.Land(new $giper_baza_link(link));
-                    this.catalog_land_ref = link;
-                }
-                const land = this.catalog_land_cached;
-                land.sync();
-                return land.Data($bog_nka_catalog);
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(link)).Data($bog_nka_catalog);
             }
             contents() {
                 if (!this.catalog_link())
@@ -22083,7 +22254,9 @@ var $;
                 catalog.Title('auto').val('Nyaftul Kitten Art');
                 catalog.Products('auto');
                 land.units_saving();
-                this.$.$mol_state_local.value('bog_nka_catalog_link', land.link().str);
+                const link = land.link().str;
+                this.$.$mol_state_local.value('bog_nka_catalog_link', link);
+                this.$.$mol_state_arg.value('catalog', link);
             }
             product_links() {
                 return this.catalog()?.Products()?.items() ?? [];
@@ -22131,7 +22304,7 @@ var $;
                 const product = this.catalog().Products('auto').make(null);
                 product.Published('auto').val(false);
                 product.Available('auto').val(true);
-                product.land().units_saving();
+                this.delete_pending(false);
                 this.$.$mol_state_arg.value('product', product.link().str);
             }
             product_title(link) {
@@ -22147,6 +22320,11 @@ var $;
             }
             product_stock(link) {
                 return this.product(link).Available()?.val() === false ? 'Нет в наличии' : '';
+            }
+            cover_content(link) {
+                return this.product(link).Available()?.val() === false
+                    ? [this.Cover(link), this.Sold_out(link)]
+                    : [this.Cover(link)];
             }
             detail_title() {
                 return this.product_title(this.product_current());
@@ -22164,7 +22342,7 @@ var $;
                 else if (this.catalog()?.Telegram()?.val())
                     rows.push(this.Buy());
                 if (this.can_edit())
-                    rows.push(this.Editor());
+                    rows.push(this.delete_pending() ? this.Confirm_delete() : this.Editor());
                 return rows;
             }
             buy_uri() {
@@ -22174,12 +22352,15 @@ var $;
                 return `https://t.me/${nick}?text=${text}`;
             }
             photo_rows() {
-                return (this.product(this.product_current()).Photos()?.items() ?? []).map(link => this.Photo(link.str));
+                return (this.product(this.product_current()).Photos()?.items() ?? []).map(link => this.Photo_box(link.str));
+            }
+            photo_content(link) {
+                return this.can_edit()
+                    ? [this.Photo(link), this.Photo_up(link), this.Photo_delete(link)]
+                    : [this.Photo(link)];
             }
             photo_uri(link) {
-                const file = this.$.$giper_baza_glob.Pawn(new $giper_baza_link(link), $giper_baza_file);
-                file.land().sync();
-                return file.uri();
+                return this.$.$giper_baza_glob.Pawn(new $giper_baza_link(link), $giper_baza_file).uri();
             }
             photo_files(next) {
                 if (next?.length && this.can_edit())
@@ -22200,12 +22381,24 @@ var $;
                     if (!blob || blob.size > 2_000_000)
                         continue;
                     const bytes = new Uint8Array($mol_wire_sync(blob).arrayBuffer());
-                    const image = photos.make([[null, $giper_baza_rank_read]]);
+                    const image = photos.make(null);
                     image.buffer(bytes);
                     image.type('image/webp');
                     image.name(file.name.replace(/\.[^.]+$/, '.webp'));
-                    image.land().units_saving();
                 }
+            }
+            photo_up_click(link, event) {
+                if (!event || !this.can_edit())
+                    return;
+                const photos = this.product(this.product_current()).Photos('auto');
+                const index = photos.items().findIndex(item => item.str === link);
+                if (index > 0)
+                    photos.move(index, index - 1);
+            }
+            photo_delete_click(link, event) {
+                if (!event || !this.can_edit())
+                    return;
+                this.product(this.product_current()).Photos('auto').cut(new $giper_baza_link(link));
             }
             edit_title(next) {
                 if (!this.can_edit())
@@ -22240,6 +22433,20 @@ var $;
                     return '';
                 return this.catalog()?.Telegram(next === undefined ? undefined : 'auto')?.val(next) ?? '';
             }
+            coowner_key(next) {
+                return next ?? '';
+            }
+            coowner_enabled() {
+                return this.can_edit() && !!this.coowner_key().trim();
+            }
+            coowner_save_click() {
+                if (!this.coowner_enabled())
+                    return;
+                const pass = $giper_baza_auth_pass.from(this.coowner_key().trim());
+                this.catalog().land().give(pass, $giper_baza_rank_rule);
+                this.catalog().land().units_saving();
+                this.coowner_key('');
+            }
             publish_enabled() {
                 return this.can_edit()
                     && !!this.edit_title().trim()
@@ -22253,25 +22460,36 @@ var $;
                     return;
                 this.product(this.product_current()).Published('auto').val(true);
             }
+            delete_pending(next) {
+                return next ?? false;
+            }
+            delete_click() {
+                if (this.can_edit())
+                    this.delete_pending(true);
+            }
+            delete_cancel_click() {
+                this.delete_pending(false);
+            }
+            delete_confirm_click() {
+                if (!this.can_edit())
+                    return;
+                const link = this.product_current();
+                if (!link)
+                    return;
+                this.catalog().Products('auto').cut(new $giper_baza_link(link));
+                this.delete_pending(false);
+                this.$.$mol_state_arg.value('product', null);
+            }
         }
         __decorate([
             $mol_mem
         ], $bog_nka_app.prototype, "settings_open", null);
         __decorate([
-            $mol_mem_key
-        ], $bog_nka_app.prototype, "product_title", null);
+            $mol_mem
+        ], $bog_nka_app.prototype, "coowner_key", null);
         __decorate([
-            $mol_mem_key
-        ], $bog_nka_app.prototype, "product_price", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_nka_app.prototype, "cover_uri", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_nka_app.prototype, "product_stock", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_nka_app.prototype, "photo_uri", null);
+            $mol_mem
+        ], $bog_nka_app.prototype, "delete_pending", null);
         $$.$bog_nka_app = $bog_nka_app;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
