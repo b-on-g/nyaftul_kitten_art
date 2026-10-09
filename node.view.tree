@@ -598,6 +598,26 @@ $mol_form_field $mol_labeler
 			sub / <= bid \
 	content / <= control null
 
+$mol_icon_upload $mol_icon path \M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z
+
+$mol_button_open $mol_button_minor
+	sub /
+		<= Icon $mol_icon_upload
+		<= Native $mol_button_open_native
+			files? <=> files_handled? <=> files? /File
+			accept <= accept \
+			multiple <= multiple true
+
+$mol_button_open_native $mol_view
+	dom_name \input
+	files? /File
+	attr *
+		type \file
+		accept <= accept \
+		multiple <= multiple true
+	event *
+		change? <=> picked? null
+
 $mol_check_list $mol_view
 	dictionary *
 	Option* $mol_check
@@ -763,26 +783,6 @@ $mol_icon_tick $mol_icon path \M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z
 $mol_check_box $mol_check
 	Icon $mol_icon_tick
 
-$mol_icon_upload $mol_icon path \M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z
-
-$mol_button_open $mol_button_minor
-	sub /
-		<= Icon $mol_icon_upload
-		<= Native $mol_button_open_native
-			files? <=> files_handled? <=> files? /File
-			accept <= accept \
-			multiple <= multiple true
-
-$mol_button_open_native $mol_view
-	dom_name \input
-	files? /File
-	attr *
-		type \file
-		accept <= accept \
-		multiple <= multiple true
-	event *
-		change? <=> picked? null
-
 $mol_status $mol_view
 	status <= title
 	minimal_height 24
@@ -847,10 +847,17 @@ $bog_nka_app $mol_page
 				click? <=> catalog_create_click? null
 	Settings $mol_form
 		body /
+			<= Account_key $mol_text
+				text <= account_key \
 			<= Telegram_field $mol_form_field
 				name \Telegram владелицы
 				Content <= Telegram_input $mol_string
 					value? <=> edit_telegram? \
+			<= Sold_out_field $mol_form_field
+				name \Картинка «нет в наличии»
+				Content <= Sold_out_upload $mol_button_open
+					accept \image/jpeg,image/png,image/webp
+					files? <=> sold_out_files? /File
 			<= Coowner_field $mol_form_field
 				name \Ключ второго администратора
 				Content <= Coowner_input $mol_string
@@ -878,6 +885,9 @@ $bog_nka_app $mol_page
 											<= Cover* $mol_image
 												uri <= cover_uri* \
 												title <= product_title* \
+											<= Sold_out_image* $mol_image
+												uri <= sold_out_uri \
+												title \Нет в наличии
 											<= Sold_out* $mol_text
 												text \Нет в наличии
 									<= product_title* \

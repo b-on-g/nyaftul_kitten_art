@@ -10670,6 +10670,135 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_icon_upload) = class $mol_icon_upload extends ($.$mol_icon) {
+		path(){
+			return "M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_button_open) = class $mol_button_open extends ($.$mol_button_minor) {
+		Icon(){
+			const obj = new this.$.$mol_icon_upload();
+			return obj;
+		}
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		files_handled(next){
+			return (this.files(next));
+		}
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		Native(){
+			const obj = new this.$.$mol_button_open_native();
+			(obj.files) = (next) => ((this.files_handled(next)));
+			(obj.accept) = () => ((this.accept()));
+			(obj.multiple) = () => ((this.multiple()));
+			return obj;
+		}
+		sub(){
+			return [(this.Icon()), (this.Native())];
+		}
+	};
+	($mol_mem(($.$mol_button_open.prototype), "Icon"));
+	($mol_mem(($.$mol_button_open.prototype), "files"));
+	($mol_mem(($.$mol_button_open.prototype), "Native"));
+	($.$mol_button_open_native) = class $mol_button_open_native extends ($.$mol_view) {
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		picked(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "input";
+		}
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		attr(){
+			return {
+				"type": "file", 
+				"accept": (this.accept()), 
+				"multiple": (this.multiple())
+			};
+		}
+		event(){
+			return {"change": (next) => (this.picked(next))};
+		}
+	};
+	($mol_mem(($.$mol_button_open_native.prototype), "picked"));
+	($mol_mem(($.$mol_button_open_native.prototype), "files"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_button_open extends $.$mol_button_open {
+            files_handled(next) {
+                try {
+                    const files = this.files(next);
+                    this.status([null]);
+                    return files;
+                }
+                catch (error) {
+                    // Calling actions from catch section, if throwing promise breaks idempotency
+                    Promise.resolve().then(() => this.status([error]));
+                    $mol_fail_hidden(error);
+                }
+            }
+        }
+        $$.$mol_button_open = $mol_button_open;
+        /**
+         * File open button
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+         */
+        class $mol_button_open_native extends $.$mol_button_open_native {
+            dom_node() {
+                return super.dom_node();
+            }
+            picked() {
+                const files = this.dom_node().files;
+                if (!files || !files.length)
+                    return;
+                this.files([...files]);
+            }
+        }
+        $$.$mol_button_open_native = $mol_button_open_native;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/open/open.view.css", "[mol_button_open_native] {\n\tposition: absolute;\n\tleft: 0;\n\ttop: -100%;\n\twidth: 100%;\n\theight: 200%;\n\tcursor: pointer;\n\topacity: 0;\n}\n");
+})($ || ($ = {}));
+
+;
 	($.$mol_check_list) = class $mol_check_list extends ($.$mol_view) {
 		option_checked(id, next){
 			if(next !== undefined) return next;
@@ -11581,135 +11710,6 @@ var $;
 
 
 ;
-	($.$mol_icon_upload) = class $mol_icon_upload extends ($.$mol_icon) {
-		path(){
-			return "M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_button_open) = class $mol_button_open extends ($.$mol_button_minor) {
-		Icon(){
-			const obj = new this.$.$mol_icon_upload();
-			return obj;
-		}
-		files(next){
-			if(next !== undefined) return next;
-			return [];
-		}
-		files_handled(next){
-			return (this.files(next));
-		}
-		accept(){
-			return "";
-		}
-		multiple(){
-			return true;
-		}
-		Native(){
-			const obj = new this.$.$mol_button_open_native();
-			(obj.files) = (next) => ((this.files_handled(next)));
-			(obj.accept) = () => ((this.accept()));
-			(obj.multiple) = () => ((this.multiple()));
-			return obj;
-		}
-		sub(){
-			return [(this.Icon()), (this.Native())];
-		}
-	};
-	($mol_mem(($.$mol_button_open.prototype), "Icon"));
-	($mol_mem(($.$mol_button_open.prototype), "files"));
-	($mol_mem(($.$mol_button_open.prototype), "Native"));
-	($.$mol_button_open_native) = class $mol_button_open_native extends ($.$mol_view) {
-		accept(){
-			return "";
-		}
-		multiple(){
-			return true;
-		}
-		picked(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		dom_name(){
-			return "input";
-		}
-		files(next){
-			if(next !== undefined) return next;
-			return [];
-		}
-		attr(){
-			return {
-				"type": "file", 
-				"accept": (this.accept()), 
-				"multiple": (this.multiple())
-			};
-		}
-		event(){
-			return {"change": (next) => (this.picked(next))};
-		}
-	};
-	($mol_mem(($.$mol_button_open_native.prototype), "picked"));
-	($mol_mem(($.$mol_button_open_native.prototype), "files"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_button_open extends $.$mol_button_open {
-            files_handled(next) {
-                try {
-                    const files = this.files(next);
-                    this.status([null]);
-                    return files;
-                }
-                catch (error) {
-                    // Calling actions from catch section, if throwing promise breaks idempotency
-                    Promise.resolve().then(() => this.status([error]));
-                    $mol_fail_hidden(error);
-                }
-            }
-        }
-        $$.$mol_button_open = $mol_button_open;
-        /**
-         * File open button
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
-         */
-        class $mol_button_open_native extends $.$mol_button_open_native {
-            dom_node() {
-                return super.dom_node();
-            }
-            picked() {
-                const files = this.dom_node().files;
-                if (!files || !files.length)
-                    return;
-                this.files([...files]);
-            }
-        }
-        $$.$mol_button_open_native = $mol_button_open_native;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/open/open.view.css", "[mol_button_open_native] {\n\tposition: absolute;\n\tleft: 0;\n\ttop: -100%;\n\twidth: 100%;\n\theight: 200%;\n\tcursor: pointer;\n\topacity: 0;\n}\n");
-})($ || ($ = {}));
-
-;
 	($.$mol_status) = class $mol_status extends ($.$mol_view) {
 		message(){
 			return "";
@@ -12021,6 +12021,14 @@ var $;
 			(obj.click) = (next) => ((this.catalog_create_click(next)));
 			return obj;
 		}
+		account_key(){
+			return "";
+		}
+		Account_key(){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.account_key()));
+			return obj;
+		}
 		edit_telegram(next){
 			if(next !== undefined) return next;
 			return "";
@@ -12034,6 +12042,22 @@ var $;
 			const obj = new this.$.$mol_form_field();
 			(obj.name) = () => ("Telegram владелицы");
 			(obj.Content) = () => ((this.Telegram_input()));
+			return obj;
+		}
+		sold_out_files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		Sold_out_upload(){
+			const obj = new this.$.$mol_button_open();
+			(obj.accept) = () => ("image/jpeg,image/png,image/webp");
+			(obj.files) = (next) => ((this.sold_out_files(next)));
+			return obj;
+		}
+		Sold_out_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ("Картинка «нет в наличии»");
+			(obj.Content) = () => ((this.Sold_out_upload()));
 			return obj;
 		}
 		coowner_key(next){
@@ -12093,13 +12117,26 @@ var $;
 			(obj.title) = () => ((this.product_title(id)));
 			return obj;
 		}
+		sold_out_uri(){
+			return "";
+		}
+		Sold_out_image(id){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.sold_out_uri()));
+			(obj.title) = () => ("Нет в наличии");
+			return obj;
+		}
 		Sold_out(id){
 			const obj = new this.$.$mol_text();
 			(obj.text) = () => ("Нет в наличии");
 			return obj;
 		}
 		cover_content(id){
-			return [(this.Cover(id)), (this.Sold_out(id))];
+			return [
+				(this.Cover(id)), 
+				(this.Sold_out_image(id)), 
+				(this.Sold_out(id))
+			];
 		}
 		Cover_box(id){
 			const obj = new this.$.$mol_view();
@@ -12440,7 +12477,12 @@ var $;
 		}
 		Settings(){
 			const obj = new this.$.$mol_form();
-			(obj.body) = () => ([(this.Telegram_field()), (this.Coowner_field())]);
+			(obj.body) = () => ([
+				(this.Account_key()), 
+				(this.Telegram_field()), 
+				(this.Sold_out_field()), 
+				(this.Coowner_field())
+			]);
 			(obj.buttons) = () => ([(this.Coowner_save())]);
 			return obj;
 		}
@@ -12470,9 +12512,13 @@ var $;
 	($mol_mem(($.$bog_nka_app.prototype), "Account"));
 	($mol_mem(($.$bog_nka_app.prototype), "catalog_create_click"));
 	($mol_mem(($.$bog_nka_app.prototype), "Create"));
+	($mol_mem(($.$bog_nka_app.prototype), "Account_key"));
 	($mol_mem(($.$bog_nka_app.prototype), "edit_telegram"));
 	($mol_mem(($.$bog_nka_app.prototype), "Telegram_input"));
 	($mol_mem(($.$bog_nka_app.prototype), "Telegram_field"));
+	($mol_mem(($.$bog_nka_app.prototype), "sold_out_files"));
+	($mol_mem(($.$bog_nka_app.prototype), "Sold_out_upload"));
+	($mol_mem(($.$bog_nka_app.prototype), "Sold_out_field"));
 	($mol_mem(($.$bog_nka_app.prototype), "coowner_key"));
 	($mol_mem(($.$bog_nka_app.prototype), "Coowner_input"));
 	($mol_mem(($.$bog_nka_app.prototype), "Coowner_field"));
@@ -12481,6 +12527,7 @@ var $;
 	($mol_mem(($.$bog_nka_app.prototype), "category"));
 	($mol_mem(($.$bog_nka_app.prototype), "Filter"));
 	($mol_mem_key(($.$bog_nka_app.prototype), "Cover"));
+	($mol_mem_key(($.$bog_nka_app.prototype), "Sold_out_image"));
 	($mol_mem_key(($.$bog_nka_app.prototype), "Sold_out"));
 	($mol_mem_key(($.$bog_nka_app.prototype), "Cover_box"));
 	($mol_mem_key(($.$bog_nka_app.prototype), "Card"));
