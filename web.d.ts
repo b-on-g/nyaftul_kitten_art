@@ -49801,6 +49801,7 @@ declare namespace $.$$ {
         settings_open(next?: boolean): boolean;
         settings_click(): void;
         account_info(): string;
+        account_key(): string;
         catalog_create_click(): void;
         catalog_create(): void;
         product_links(): readonly $giper_baza_link[];
@@ -49819,6 +49820,9 @@ declare namespace $.$$ {
         cover_uri(link: string): string;
         product_stock(link: string): "" | "Нет в наличии";
         cover_content(link: string): ($.$mol_image | $.$mol_text)[];
+        sold_out_uri(): string;
+        sold_out_files(next?: readonly File[]): never[];
+        sold_out_save(file: File): void;
         detail_title(): string;
         detail_price(): string;
         detail_description(): string;

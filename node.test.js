@@ -22282,6 +22282,9 @@ var $;
             account_info() {
                 return `Создать первый каталог сможет текущий аккаунт: ${this.$.$giper_baza_auth.current().pass()}`;
             }
+            account_key() {
+                return `Ваш ключ администратора: ${this.$.$giper_baza_auth.current().pass()}`;
+            }
             catalog_create_click() {
                 $mol_wire_async(this).catalog_create();
             }
@@ -22361,9 +22364,36 @@ var $;
                 return this.product(link).Available()?.val() === false ? 'Нет в наличии' : '';
             }
             cover_content(link) {
-                return this.product(link).Available()?.val() === false
-                    ? [this.Cover(link), this.Sold_out(link)]
-                    : [this.Cover(link)];
+                if (this.product(link).Available()?.val() !== false)
+                    return [this.Cover(link)];
+                return this.sold_out_uri()
+                    ? [this.Cover(link), this.Sold_out_image(link)]
+                    : [this.Cover(link), this.Sold_out(link)];
+            }
+            sold_out_uri() {
+                return this.catalog()?.Sold_out()?.remote()?.uri() ?? '';
+            }
+            sold_out_files(next) {
+                if (next?.length && this.can_edit())
+                    $mol_wire_async(this).sold_out_save(next[0]);
+                return [];
+            }
+            sold_out_save(file) {
+                if (!this.can_edit())
+                    return;
+                if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type))
+                    return;
+                if (file.size > 12_000_000)
+                    return;
+                const picture = $mol_wire_sync(this.$.$mol_picture);
+                const blob = $mol_wire_sync(picture.fit(file, 1600)).format('image/webp', 0.82);
+                if (!blob || blob.size > 2_000_000)
+                    return;
+                const bytes = new Uint8Array($mol_wire_sync(blob).arrayBuffer());
+                const image = this.catalog().Sold_out('auto').ensure(null);
+                image.buffer(bytes);
+                image.type('image/webp');
+                image.name(file.name.replace(/\.[^.]+$/, '.webp'));
             }
             detail_title() {
                 return this.product_title(this.product_current());
