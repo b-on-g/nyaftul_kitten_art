@@ -33116,7 +33116,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_nka_catalog_ref = 'Ds8CZhAg_4ZdFN920';
+    $.$bog_nka_catalog_ref = '';
 })($ || ($ = {}));
 
 ;
