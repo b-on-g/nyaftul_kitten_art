@@ -48241,7 +48241,10 @@ declare namespace $.$$ {
         catalog_land_ref: string;
         catalog_link(): string;
         catalog(): $bog_nka_catalog | null;
-        contents(): $.$mol_list[];
+        contents(): ($.$mol_list | $.$mol_form)[];
+        header_tools(): $mol_button_minor[];
+        settings_open(next?: boolean): boolean;
+        settings_click(): void;
         account_info(): string;
         catalog_create_click(): void;
         catalog_create(): void;

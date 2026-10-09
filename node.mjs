@@ -22057,7 +22057,17 @@ var $;
             contents() {
                 if (!this.catalog_link())
                     return [this.Setup()];
-                return this.product_current() ? [this.Detail()] : [this.Catalog()];
+                const content = this.product_current() ? this.Detail() : this.Catalog();
+                return this.settings_open() && this.can_edit() ? [this.Settings(), content] : [content];
+            }
+            header_tools() {
+                return this.can_edit() ? [this.Settings_button()] : [];
+            }
+            settings_open(next) {
+                return next ?? false;
+            }
+            settings_click() {
+                this.settings_open(!this.settings_open());
             }
             account_info() {
                 return `Создать первый каталог сможет текущий аккаунт: ${this.$.$giper_baza_auth.current().pass()}`;
@@ -22236,7 +22246,6 @@ var $;
                     && !!this.edit_category().trim()
                     && Number.isInteger(this.edit_price())
                     && this.edit_price() >= 0
-                    && !!this.edit_telegram().trim()
                     && !!this.product(this.product_current()).Photos()?.items().length;
             }
             publish_click() {
@@ -22245,6 +22254,9 @@ var $;
                 this.product(this.product_current()).Published('auto').val(true);
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_nka_app.prototype, "settings_open", null);
         __decorate([
             $mol_mem_key
         ], $bog_nka_app.prototype, "product_title", null);
