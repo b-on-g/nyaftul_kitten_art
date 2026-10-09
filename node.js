@@ -22115,6 +22115,7 @@ var $;
     class $bog_nka_catalog extends $giper_baza_dict.with({
         Title: $giper_baza_atom_text,
         Telegram: $giper_baza_atom_text,
+        Sold_out: $giper_baza_atom_link.to(() => $giper_baza_file),
         Products: $giper_baza_list_link.to(() => $bog_nka_product),
     }) {
     }
