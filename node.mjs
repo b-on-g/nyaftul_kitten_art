@@ -23342,7 +23342,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_nka_catalog_ref = '';
+    $.$bog_nka_catalog_ref = 'XICapXMV_VKSGVXb6';
 })($ || ($ = {}));
 
 ;
