@@ -774,55 +774,11 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
-        'Collect deps'() {
-            const pub1 = new $mol_wire_pub;
-            const pub2 = new $mol_wire_pub;
-            const sub = new $mol_wire_pub_sub;
-            const bu1 = sub.track_on();
-            try {
-                pub1.promote();
-                pub2.promote();
-                pub2.promote();
-            }
-            finally {
-                sub.track_cut();
-                sub.track_off(bu1);
-            }
-            pub1.emit();
-            pub2.emit();
-            $mol_assert_like(sub.pub_list, [pub1, pub2, pub2]);
-            const bu2 = sub.track_on();
-            try {
-                pub1.promote();
-                pub1.promote();
-                pub2.promote();
-            }
-            finally {
-                sub.track_cut();
-                sub.track_off(bu2);
-            }
-            pub1.emit();
-            pub2.emit();
-            $mol_assert_like(sub.pub_list, [pub1, pub1, pub2]);
-        },
-        'cyclic detection'($) {
-            const sub1 = new $mol_wire_pub_sub;
-            const sub2 = new $mol_wire_pub_sub;
-            const bu1 = sub1.track_on();
-            try {
-                const bu2 = sub2.track_on();
-                try {
-                    $mol_assert_fail(() => sub1.promote(), 'Circular subscription');
-                }
-                finally {
-                    sub2.track_cut();
-                    sub2.track_off(bu2);
-                }
-            }
-            finally {
-                sub1.track_cut();
-                sub1.track_off(bu1);
-            }
+        'FQN of anon function'($) {
+            const $$ = Object.assign($, { $mol_func_name_test: (() => () => { })() });
+            $mol_assert_equal($$.$mol_func_name_test.name, '');
+            $mol_assert_equal($$.$mol_func_name($$.$mol_func_name_test), '$mol_func_name_test');
+            $mol_assert_equal($$.$mol_func_name_test.name, '$mol_func_name_test');
         },
     });
 })($ || ($ = {}));
@@ -898,11 +854,81 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
-        'FQN of anon function'($) {
-            const $$ = Object.assign($, { $mol_func_name_test: (() => () => { })() });
-            $mol_assert_equal($$.$mol_func_name_test.name, '');
-            $mol_assert_equal($$.$mol_func_name($$.$mol_func_name_test), '$mol_func_name_test');
-            $mol_assert_equal($$.$mol_func_name_test.name, '$mol_func_name_test');
+        'init with overload'() {
+            class X extends $mol_object {
+                foo() {
+                    return 1;
+                }
+            }
+            var x = X.make({
+                foo: () => 2,
+            });
+            $mol_assert_equal(x.foo(), 2);
+        },
+        'Context in instance inherits from class'($) {
+            const custom = $.$mol_ambient({});
+            class X extends $.$mol_object {
+                static $ = custom;
+            }
+            $mol_assert_equal(new X().$, custom);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Collect deps'() {
+            const pub1 = new $mol_wire_pub;
+            const pub2 = new $mol_wire_pub;
+            const sub = new $mol_wire_pub_sub;
+            const bu1 = sub.track_on();
+            try {
+                pub1.promote();
+                pub2.promote();
+                pub2.promote();
+            }
+            finally {
+                sub.track_cut();
+                sub.track_off(bu1);
+            }
+            pub1.emit();
+            pub2.emit();
+            $mol_assert_like(sub.pub_list, [pub1, pub2, pub2]);
+            const bu2 = sub.track_on();
+            try {
+                pub1.promote();
+                pub1.promote();
+                pub2.promote();
+            }
+            finally {
+                sub.track_cut();
+                sub.track_off(bu2);
+            }
+            pub1.emit();
+            pub2.emit();
+            $mol_assert_like(sub.pub_list, [pub1, pub1, pub2]);
+        },
+        'cyclic detection'($) {
+            const sub1 = new $mol_wire_pub_sub;
+            const sub2 = new $mol_wire_pub_sub;
+            const bu1 = sub1.track_on();
+            try {
+                const bu2 = sub2.track_on();
+                try {
+                    $mol_assert_fail(() => sub1.promote(), 'Circular subscription');
+                }
+                finally {
+                    sub2.track_cut();
+                    sub2.track_off(bu2);
+                }
+            }
+            finally {
+                sub1.track_cut();
+                sub1.track_off(bu1);
+            }
         },
     });
 })($ || ($ = {}));
@@ -1045,6 +1071,9 @@ var $;
 
 ;
 "use strict";
+
+;
+"use strict";
 var $;
 (function ($_1) {
     $mol_test_mocks.push($ => {
@@ -1054,6 +1083,15 @@ var $;
         $.$mol_log3_warn = () => { };
         $.$mol_log3_rise = () => { };
         $.$mol_log3_area = () => () => { };
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_after_timeout = $mol_after_mock_timeout;
     });
 })($ || ($ = {}));
 
@@ -1107,44 +1145,6 @@ var $;
             $mol_assert_equal(first, ['john', 'jin']);
             $mol_assert_equal(last, ['jin']);
         },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'init with overload'() {
-            class X extends $mol_object {
-                foo() {
-                    return 1;
-                }
-            }
-            var x = X.make({
-                foo: () => 2,
-            });
-            $mol_assert_equal(x.foo(), 2);
-        },
-        'Context in instance inherits from class'($) {
-            const custom = $.$mol_ambient({});
-            class X extends $.$mol_object {
-                static $ = custom;
-            }
-            $mol_assert_equal(new X().$, custom);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_after_timeout = $mol_after_mock_timeout;
     });
 })($ || ($ = {}));
 
@@ -2145,6 +2145,40 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'local get set delete'() {
+            var key = '$mol_state_local_test:' + Math.random();
+            $mol_assert_equal($mol_state_local.value(key), null);
+            $mol_state_local.value(key, 123);
+            $mol_assert_equal($mol_state_local.value(key), 123);
+            $mol_state_local.value(key, null);
+            $mol_assert_equal($mol_state_local.value(key), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test_mocks.push(context => {
+        class $mol_state_local_mock extends $mol_state_local {
+            static state = {};
+            static value(key, next = this.state[key]) {
+                return this.state[key] = (next || null);
+            }
+        }
+        __decorate([
+            $mol_mem_key
+        ], $mol_state_local_mock, "value", null);
+        context.$mol_state_local = $mol_state_local_mock;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 
 ;
 "use strict";
@@ -3129,40 +3163,6 @@ var $;
                 ['table', '| Cell11 | Cell12\n| Cell21 | Cell22\n', ['| Cell11 | Cell12\n| Cell21 | Cell22\n', ''], 68],
             ]);
         },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'local get set delete'() {
-            var key = '$mol_state_local_test:' + Math.random();
-            $mol_assert_equal($mol_state_local.value(key), null);
-            $mol_state_local.value(key, 123);
-            $mol_assert_equal($mol_state_local.value(key), 123);
-            $mol_state_local.value(key, null);
-            $mol_assert_equal($mol_state_local.value(key), null);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test_mocks.push(context => {
-        class $mol_state_local_mock extends $mol_state_local {
-            static state = {};
-            static value(key, next = this.state[key]) {
-                return this.state[key] = (next || null);
-            }
-        }
-        __decorate([
-            $mol_mem_key
-        ], $mol_state_local_mock, "value", null);
-        context.$mol_state_local = $mol_state_local_mock;
     });
 })($ || ($ = {}));
 
@@ -7427,6 +7427,8 @@ var $;
 (function ($_1) {
     $mol_test({
         async 'create publish buy and delete product'($) {
+            $.$mol_state_arg.dict({});
+            $.$mol_state_local.value('bog_nka_catalog_link', null);
             const app = $bog_nka_app.make({ $ });
             $mol_assert_equal(app.contents()[0], app.Setup());
             await $mol_wire_async(app).catalog_create();
@@ -7472,6 +7474,8 @@ var $;
             $mol_assert_equal(catalog.Products()?.items().some(item => item.str === link), false);
         },
         async 'category filter shows matching products'($) {
+            $.$mol_state_arg.dict({});
+            $.$mol_state_local.value('bog_nka_catalog_link', null);
             const app = $bog_nka_app.make({ $ });
             await $mol_wire_async(app).catalog_create();
             app.product_add_click();
