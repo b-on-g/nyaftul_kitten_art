@@ -1287,7 +1287,7 @@ declare namespace $ {
      * Theme css variables
      * @see https://mol.hyoo.ru/#!section=demos/demo=mol_textarea_demo
      */
-    const $mol_theme: Record<"image" | "line" | "text" | "current" | "focus" | "back" | "hover" | "card" | "special" | "control" | "shade" | "field" | "spirit" | "hue" | "hue_spread", $mol_style_func<"var", unknown>>;
+    const $mol_theme: Record<"image" | "line" | "text" | "field" | "current" | "focus" | "back" | "hover" | "card" | "special" | "control" | "shade" | "spirit" | "hue" | "hue_spread", $mol_style_func<"var", unknown>>;
 }
 
 declare namespace $ {
@@ -5236,6 +5236,580 @@ declare namespace $.$$ {
             'code-tag': RegExp;
             'code-punctuation': RegExp;
         }>;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_ghost extends $mol_view {
+		Sub( ): $mol_view
+	}
+	
+}
+
+//# sourceMappingURL=ghost.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Mixin view logic to DOM node of another component.
+     */
+    class $mol_ghost extends $.$mol_ghost {
+        dom_node_external(next?: Element): Element;
+        dom_node_actual(): Element;
+        dom_tree(): Element;
+        title(): string;
+        minimal_width(): number;
+        minimal_height(): number;
+    }
+}
+
+declare namespace $ {
+
+	export class $mol_follower extends $mol_ghost {
+		transform( ): string
+		Anchor( ): $mol_view
+		align( ): readonly(number)[]
+		offset( ): readonly(number)[]
+		style( ): ({ 
+			'transform': ReturnType< $mol_follower['transform'] >,
+		})  & ReturnType< $mol_ghost['style'] >
+	}
+	
+}
+
+//# sourceMappingURL=follower.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Marker on top of another component with tracking of its position.
+     */
+    class $mol_follower extends $.$mol_follower {
+        pos(): {
+            left: number;
+            top: number;
+        } | null;
+        transform(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_pop_bubble__content_mol_pop_1 = $mol_type_enforce<
+		ReturnType< $mol_pop['bubble_content'] >
+		,
+		ReturnType< $mol_pop_bubble['content'] >
+	>
+	type $mol_pop_bubble__height_max_mol_pop_2 = $mol_type_enforce<
+		ReturnType< $mol_pop['height_max'] >
+		,
+		ReturnType< $mol_pop_bubble['height_max'] >
+	>
+	type $mol_follower__offset_mol_pop_3 = $mol_type_enforce<
+		ReturnType< $mol_pop['bubble_offset'] >
+		,
+		ReturnType< $mol_follower['offset'] >
+	>
+	type $mol_follower__align_mol_pop_4 = $mol_type_enforce<
+		ReturnType< $mol_pop['bubble_align'] >
+		,
+		ReturnType< $mol_follower['align'] >
+	>
+	type $mol_follower__Anchor_mol_pop_5 = $mol_type_enforce<
+		ReturnType< $mol_pop['Anchor'] >
+		,
+		ReturnType< $mol_follower['Anchor'] >
+	>
+	type $mol_follower__Sub_mol_pop_6 = $mol_type_enforce<
+		ReturnType< $mol_pop['Bubble'] >
+		,
+		ReturnType< $mol_follower['Sub'] >
+	>
+	export class $mol_pop extends $mol_view {
+		align( ): string
+		bubble( ): any
+		Anchor( ): any
+		bubble_offset( ): readonly(number)[]
+		bubble_align( ): readonly(number)[]
+		bubble_content( ): readonly($mol_view_content)[]
+		height_max( ): number
+		Bubble( ): $mol_pop_bubble
+		Follower( ): $mol_follower
+		showed( next?: boolean ): boolean
+		align_vert( ): string
+		align_hor( ): string
+		direction( ): string
+		align_enriched( ): ReturnType< $mol_pop['align'] >
+		prefer( ): string
+		auto( ): readonly(any)[]
+		sub( ): readonly(any)[]
+		sub_visible( ): readonly(any)[]
+	}
+	
+	export class $mol_pop_bubble extends $mol_view {
+		content( ): readonly($mol_view_content)[]
+		height_max( ): number
+		sub( ): ReturnType< $mol_pop_bubble['content'] >
+		style( ): ({ 
+			'maxHeight': ReturnType< $mol_pop_bubble['height_max'] >,
+		})  & ReturnType< $mol_view['style'] >
+		attr( ): ({ 
+			'tabindex': number,
+			'popover': string,
+		})  & ReturnType< $mol_view['attr'] >
+	}
+	
+}
+
+//# sourceMappingURL=pop.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * `Bubble` that can be shown anchored to `Anchor` element.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_pop_demo
+     */
+    class $mol_pop extends $.$mol_pop {
+        showed(next?: boolean): boolean;
+        sub_visible(): any[];
+        height_max(): number;
+        align(): string;
+        align_vert(): "suspense" | "top" | "bottom";
+        align_hor(): "suspense" | "left" | "right";
+        direction(): "ltr" | "rtl";
+        align_enriched(): string;
+        bubble_offset(): number[];
+        bubble_align(): number[];
+        bubble(): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_check__minimal_width_mol_pick_1 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_check['minimal_width'] >
+	>
+	type $mol_check__minimal_height_mol_pick_2 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_check['minimal_height'] >
+	>
+	type $mol_check__enabled_mol_pick_3 = $mol_type_enforce<
+		ReturnType< $mol_pick['trigger_enabled'] >
+		,
+		ReturnType< $mol_check['enabled'] >
+	>
+	type $mol_check__checked_mol_pick_4 = $mol_type_enforce<
+		ReturnType< $mol_pick['showed'] >
+		,
+		ReturnType< $mol_check['checked'] >
+	>
+	type $mol_check__clicks_mol_pick_5 = $mol_type_enforce<
+		ReturnType< $mol_pick['clicks'] >
+		,
+		ReturnType< $mol_check['clicks'] >
+	>
+	type $mol_check__sub_mol_pick_6 = $mol_type_enforce<
+		ReturnType< $mol_pick['trigger_content'] >
+		,
+		ReturnType< $mol_check['sub'] >
+	>
+	type $mol_check__hint_mol_pick_7 = $mol_type_enforce<
+		ReturnType< $mol_pick['hint'] >
+		,
+		ReturnType< $mol_check['hint'] >
+	>
+	export class $mol_pick extends $mol_pop {
+		keydown( next?: any ): any
+		trigger_enabled( ): boolean
+		clicks( next?: any ): any
+		trigger_content( ): readonly($mol_view_content)[]
+		hint( ): string
+		Trigger( ): $mol_check
+		event( ): ({ 
+			keydown( next?: ReturnType< $mol_pick['keydown'] > ): ReturnType< $mol_pick['keydown'] >,
+		})  & ReturnType< $mol_pop['event'] >
+		Anchor( ): ReturnType< $mol_pick['Trigger'] >
+	}
+	
+}
+
+//# sourceMappingURL=pick.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Pop-up display and hide by mouse click, also hide by unfocus.
+     * Based on [mol_pop](https://mol.hyoo.ru/#!section=demos/demo=mol_pop_demo) component.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_pick_demo
+     */
+    class $mol_pick extends $.$mol_pick {
+        keydown(event: KeyboardEvent): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_nav extends $mol_plugin {
+		event_key( next?: any ): any
+		cycle( next?: boolean ): boolean
+		mod_ctrl( ): boolean
+		mod_shift( ): boolean
+		mod_alt( ): boolean
+		keys_x( next?: readonly(any)[] ): readonly(any)[]
+		keys_y( next?: readonly(any)[] ): readonly(any)[]
+		current_x( next?: any ): any
+		current_y( next?: any ): any
+		event_up( next?: any ): any
+		event_down( next?: any ): any
+		event_left( next?: any ): any
+		event_right( next?: any ): any
+		event( ): ({ 
+			keydown( next?: ReturnType< $mol_nav['event_key'] > ): ReturnType< $mol_nav['event_key'] >,
+		})  & ReturnType< $mol_plugin['event'] >
+	}
+	
+}
+
+//# sourceMappingURL=nav.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Plugin which can navigate in list of items
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_nav_demo
+     */
+    class $mol_nav extends $.$mol_nav {
+        event_key(event?: KeyboardEvent): undefined;
+        event_up(event?: KeyboardEvent): undefined;
+        event_down(event?: KeyboardEvent): undefined;
+        event_left(event?: KeyboardEvent): undefined;
+        event_right(event?: KeyboardEvent): undefined;
+        index_y(): number | null;
+        index_x(): number | null;
+    }
+}
+
+declare namespace $ {
+
+	type $mol_hotkey__key_mol_search_1 = $mol_type_enforce<
+		({ 
+			escape( next?: ReturnType< $mol_search['clear'] > ): ReturnType< $mol_search['clear'] >,
+		}) 
+		,
+		ReturnType< $mol_hotkey['key'] >
+	>
+	type $mol_nav__keys_y_mol_search_2 = $mol_type_enforce<
+		ReturnType< $mol_search['nav_components'] >
+		,
+		ReturnType< $mol_nav['keys_y'] >
+	>
+	type $mol_nav__current_y_mol_search_3 = $mol_type_enforce<
+		ReturnType< $mol_search['nav_focused'] >
+		,
+		ReturnType< $mol_nav['current_y'] >
+	>
+	type $mol_string__value_mol_search_4 = $mol_type_enforce<
+		ReturnType< $mol_search['query'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__hint_mol_search_5 = $mol_type_enforce<
+		ReturnType< $mol_search['hint'] >
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__submit_mol_search_6 = $mol_type_enforce<
+		ReturnType< $mol_search['submit'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_string__enabled_mol_search_7 = $mol_type_enforce<
+		ReturnType< $mol_search['enabled'] >
+		,
+		ReturnType< $mol_string['enabled'] >
+	>
+	type $mol_string__keyboard_mol_search_8 = $mol_type_enforce<
+		ReturnType< $mol_search['keyboard'] >
+		,
+		ReturnType< $mol_string['keyboard'] >
+	>
+	type $mol_string__enter_mol_search_9 = $mol_type_enforce<
+		ReturnType< $mol_search['enter'] >
+		,
+		ReturnType< $mol_string['enter'] >
+	>
+	type $mol_button_minor__hint_mol_search_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__enabled_mol_search_11 = $mol_type_enforce<
+		ReturnType< $mol_search['enabled'] >
+		,
+		ReturnType< $mol_button_minor['enabled'] >
+	>
+	type $mol_button_minor__click_mol_search_12 = $mol_type_enforce<
+		ReturnType< $mol_search['clear'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_mol_search_13 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_list__rows_mol_search_14 = $mol_type_enforce<
+		ReturnType< $mol_search['menu_items'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_scroll__sub_mol_search_15 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_scroll['sub'] >
+	>
+	type $mol_dimmer__haystack_mol_search_16 = $mol_type_enforce<
+		ReturnType< $mol_search['suggest_label'] >
+		,
+		ReturnType< $mol_dimmer['haystack'] >
+	>
+	type $mol_dimmer__needle_mol_search_17 = $mol_type_enforce<
+		ReturnType< $mol_search['query'] >
+		,
+		ReturnType< $mol_dimmer['needle'] >
+	>
+	type $mol_search_plugins__18 = $mol_type_enforce<
+		ReturnType< $mol_pop['plugins'] >[number]
+		,
+		$mol_plugin
+	>
+	type $mol_view__sub_mol_search_19 = $mol_type_enforce<
+		ReturnType< $mol_search['anchor_content'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_mol_search_20 = $mol_type_enforce<
+		ReturnType< $mol_search['suggest_select'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_mol_search_21 = $mol_type_enforce<
+		ReturnType< $mol_search['suggest_content'] >
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	export class $mol_search extends $mol_pop {
+		clear( next?: any ): any
+		Hotkey( ): $mol_hotkey
+		nav_components( ): readonly($mol_view)[]
+		nav_focused( next?: any ): any
+		Nav( ): $mol_nav
+		suggests_showed( next?: boolean ): boolean
+		query( next?: string ): string
+		hint( ): string
+		submit( next?: any ): any
+		enabled( ): boolean
+		keyboard( ): string
+		enter( ): string
+		bring( ): ReturnType< ReturnType< $mol_search['Query'] >['bring'] >
+		Query( ): $mol_string
+		Clear_icon( ): $mol_icon_close
+		Clear( ): $mol_button_minor
+		anchor_content( ): readonly(any)[]
+		menu_items( ): readonly($mol_view)[]
+		Menu( ): $mol_list
+		Bubble_pane( ): $mol_scroll
+		suggest_select( id: any, next?: any ): any
+		suggest_label( id: any): string
+		Suggest_label( id: any): $mol_dimmer
+		suggest_content( id: any): readonly($mol_view_content)[]
+		suggests( ): readonly(string)[]
+		plugins( ): readonly($mol_plugin)[]
+		showed( next?: ReturnType< $mol_search['suggests_showed'] > ): ReturnType< $mol_search['suggests_showed'] >
+		align_hor( ): string
+		Anchor( ): $mol_view
+		bubble_content( ): readonly($mol_view_content)[]
+		Suggest( id: any): $mol_button_minor
+	}
+	
+}
+
+//# sourceMappingURL=search.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Search input with suggest and clear button.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_search_demo
+     */
+    class $mol_search extends $.$mol_search {
+        anchor_content(): ($mol_button_minor | $.$mol_string)[];
+        suggests_showed(next?: boolean): boolean;
+        suggest_selected(next?: string): void;
+        nav_components(): ($mol_button_minor | $.$mol_string)[];
+        nav_focused(component?: $mol_view): $mol_view | $.$mol_string | null;
+        suggest_label(key: string): string;
+        menu_items(): $mol_button_minor[];
+        suggest_select(id: string, event?: MouseEvent): void;
+        clear(event?: Event): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_icon_dots_vertical extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=vertical.view.tree.d.ts.map
+declare namespace $ {
+    function $mol_match_text<Variant>(query: string, values: (variant: Variant) => readonly string[]): (variant: Variant) => boolean;
+}
+
+declare namespace $ {
+
+	type $mol_dimmer__haystack_mol_select_1 = $mol_type_enforce<
+		ReturnType< $mol_select['option_label'] >
+		,
+		ReturnType< $mol_dimmer['haystack'] >
+	>
+	type $mol_dimmer__needle_mol_select_2 = $mol_type_enforce<
+		ReturnType< $mol_select['filter_pattern'] >
+		,
+		ReturnType< $mol_dimmer['needle'] >
+	>
+	type $mol_nav__keys_y_mol_select_3 = $mol_type_enforce<
+		ReturnType< $mol_select['nav_components'] >
+		,
+		ReturnType< $mol_nav['keys_y'] >
+	>
+	type $mol_nav__current_y_mol_select_4 = $mol_type_enforce<
+		ReturnType< $mol_select['option_focused'] >
+		,
+		ReturnType< $mol_nav['current_y'] >
+	>
+	type $mol_nav__cycle_mol_select_5 = $mol_type_enforce<
+		ReturnType< $mol_select['nav_cycle'] >
+		,
+		ReturnType< $mol_nav['cycle'] >
+	>
+	type $mol_list__rows_mol_select_6 = $mol_type_enforce<
+		ReturnType< $mol_select['menu_content'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_scroll__sub_mol_select_7 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_scroll['sub'] >
+	>
+	type $mol_button_minor__enabled_mol_select_8 = $mol_type_enforce<
+		ReturnType< $mol_select['enabled'] >
+		,
+		ReturnType< $mol_button_minor['enabled'] >
+	>
+	type $mol_button_minor__event_click_mol_select_9 = $mol_type_enforce<
+		ReturnType< $mol_select['event_select'] >
+		,
+		ReturnType< $mol_button_minor['event_click'] >
+	>
+	type $mol_button_minor__hint_mol_select_10 = $mol_type_enforce<
+		ReturnType< $mol_select['option_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__sub_mol_select_11 = $mol_type_enforce<
+		ReturnType< $mol_select['option_content'] >
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_mol_select_12 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_search__query_mol_select_13 = $mol_type_enforce<
+		ReturnType< $mol_select['filter_pattern'] >
+		,
+		ReturnType< $mol_search['query'] >
+	>
+	type $mol_search__hint_mol_select_14 = $mol_type_enforce<
+		ReturnType< $mol_select['filter_hint'] >
+		,
+		ReturnType< $mol_search['hint'] >
+	>
+	type $mol_search__submit_mol_select_15 = $mol_type_enforce<
+		ReturnType< $mol_select['submit'] >
+		,
+		ReturnType< $mol_search['submit'] >
+	>
+	type $mol_search__enabled_mol_select_16 = $mol_type_enforce<
+		ReturnType< $mol_select['enabled'] >
+		,
+		ReturnType< $mol_search['enabled'] >
+	>
+	export class $mol_select extends $mol_pick {
+		enabled( ): boolean
+		event_select( id: any, next?: any ): any
+		option_hint( id: any): any
+		option_label( id: any): string
+		filter_pattern( next?: string ): string
+		Option_label( id: any): $mol_dimmer
+		option_content( id: any): readonly(any)[]
+		no_options_message( ): string
+		nav_components( ): readonly($mol_view)[]
+		option_focused( next?: any ): any
+		nav_cycle( next?: boolean ): boolean
+		Nav( ): $mol_nav
+		menu_content( ): readonly($mol_view)[]
+		Menu( ): $mol_list
+		Bubble_pane( ): $mol_scroll
+		filter_hint( ): string
+		submit( next?: any ): any
+		dictionary( next?: Record<string, any> ): Record<string, any>
+		options( ): readonly(string)[]
+		value( next?: string ): string
+		option_label_default( ): string
+		Option_row( id: any): $mol_button_minor
+		No_options( ): $mol_view
+		plugins( ): readonly(any)[]
+		hint( ): string
+		bubble_content( ): readonly(any)[]
+		Filter( ): $mol_search
+		Trigger_icon( ): $mol_icon_dots_vertical
+		trigger_enabled( ): ReturnType< $mol_select['enabled'] >
+	}
+	
+}
+
+//# sourceMappingURL=select.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Allow user to select value from various options and displays current value.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_select_demo_colors
+     */
+    class $mol_select extends $.$mol_select {
+        filter_pattern(next?: string): string;
+        open(): void;
+        options(): readonly string[];
+        options_filtered(): readonly string[];
+        option_label(id: string): any;
+        option_hint(id: string): string;
+        option_rows(): $mol_button_minor[];
+        option_focused(component?: $mol_view): $mol_view | $.$mol_search | null;
+        event_select(id: string, event?: MouseEvent): void;
+        nav_components(): ($mol_button_minor | $.$mol_search)[];
+        trigger_content(): readonly $mol_view_content[];
+        menu_content(): $mol_view[];
     }
 }
 
@@ -43336,30 +43910,30 @@ declare namespace $ {
 		,
 		ReturnType< $mol_form_field['Content'] >
 	>
-	type $mol_button_open__accept_bog_nka_app_11 = $mol_type_enforce<
+	type $mol_image__uri_bog_nka_app_11 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['sold_out_uri'] >
+		,
+		ReturnType< $mol_image['uri'] >
+	>
+	type $mol_image__title_bog_nka_app_12 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_image['title'] >
+	>
+	type $mol_button_open__accept_bog_nka_app_13 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_open['accept'] >
 	>
-	type $mol_button_open__files_bog_nka_app_12 = $mol_type_enforce<
+	type $mol_button_open__files_bog_nka_app_14 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['sold_out_files'] >
 		,
 		ReturnType< $mol_button_open['files'] >
 	>
-	type $mol_form_field__name_bog_nka_app_13 = $mol_type_enforce<
-		string
+	type $mol_view__sub_bog_nka_app_15 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['sold_out_controls'] >
 		,
-		ReturnType< $mol_form_field['name'] >
-	>
-	type $mol_form_field__Content_bog_nka_app_14 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['Sold_out_upload'] >
-		,
-		ReturnType< $mol_form_field['Content'] >
-	>
-	type $mol_string__value_bog_nka_app_15 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['coowner_key'] >
-		,
-		ReturnType< $mol_string['value'] >
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_form_field__name_bog_nka_app_16 = $mol_type_enforce<
 		string
@@ -43367,138 +43941,138 @@ declare namespace $ {
 		ReturnType< $mol_form_field['name'] >
 	>
 	type $mol_form_field__Content_bog_nka_app_17 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['Sold_out_control'] >
+		,
+		ReturnType< $mol_form_field['Content'] >
+	>
+	type $mol_string__value_bog_nka_app_18 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['coowner_key'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_form_field__name_bog_nka_app_19 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__Content_bog_nka_app_20 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['Coowner_input'] >
 		,
 		ReturnType< $mol_form_field['Content'] >
 	>
-	type $mol_button_major__title_bog_nka_app_18 = $mol_type_enforce<
+	type $mol_button_major__title_bog_nka_app_21 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['title'] >
 	>
-	type $mol_button_major__enabled_bog_nka_app_19 = $mol_type_enforce<
+	type $mol_button_major__enabled_bog_nka_app_22 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['coowner_enabled'] >
 		,
 		ReturnType< $mol_button_major['enabled'] >
 	>
-	type $mol_button_major__click_bog_nka_app_20 = $mol_type_enforce<
+	type $mol_button_major__click_bog_nka_app_23 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['coowner_save_click'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_switch__value_bog_nka_app_21 = $mol_type_enforce<
+	type $mol_switch__value_bog_nka_app_24 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['category'] >
 		,
 		ReturnType< $mol_switch['value'] >
 	>
-	type $mol_switch__options_bog_nka_app_22 = $mol_type_enforce<
+	type $mol_switch__options_bog_nka_app_25 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['category_options'] >
 		,
 		ReturnType< $mol_switch['options'] >
 	>
-	type $mol_image__uri_bog_nka_app_23 = $mol_type_enforce<
+	type $mol_image__uri_bog_nka_app_26 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['cover_uri'] >
 		,
 		ReturnType< $mol_image['uri'] >
 	>
-	type $mol_image__title_bog_nka_app_24 = $mol_type_enforce<
+	type $mol_image__title_bog_nka_app_27 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['product_title'] >
 		,
 		ReturnType< $mol_image['title'] >
 	>
-	type $mol_image__uri_bog_nka_app_25 = $mol_type_enforce<
+	type $mol_image__uri_bog_nka_app_28 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['sold_out_uri'] >
 		,
 		ReturnType< $mol_image['uri'] >
 	>
-	type $mol_image__title_bog_nka_app_26 = $mol_type_enforce<
+	type $mol_image__title_bog_nka_app_29 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_image['title'] >
 	>
-	type $mol_text__text_bog_nka_app_27 = $mol_type_enforce<
+	type $mol_text__text_bog_nka_app_30 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_text['text'] >
 	>
-	type $mol_view__sub_bog_nka_app_28 = $mol_type_enforce<
+	type $mol_view__sub_bog_nka_app_31 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['cover_content'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_card__content_bog_nka_app_29 = $mol_type_enforce<
+	type $mol_card__content_bog_nka_app_32 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_card['content'] >
 	>
-	type $mol_link__arg_bog_nka_app_30 = $mol_type_enforce<
+	type $mol_link__arg_bog_nka_app_33 = $mol_type_enforce<
 		({ 
 			'product': ReturnType< $bog_nka_app['product_key'] >,
 		}) 
 		,
 		ReturnType< $mol_link['arg'] >
 	>
-	type $mol_link__sub_bog_nka_app_31 = $mol_type_enforce<
+	type $mol_link__sub_bog_nka_app_34 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_link['sub'] >
 	>
-	type $mol_button_minor__hint_bog_nka_app_32 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_nka_app_35 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_nka_app_33 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_nka_app_36 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['product_add_click'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_nka_app_34 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_nka_app_37 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_row__sub_bog_nka_app_35 = $mol_type_enforce<
+	type $mol_row__sub_bog_nka_app_38 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['card_rows'] >
 		,
 		ReturnType< $mol_row['sub'] >
 	>
-	type $mol_link__title_bog_nka_app_36 = $mol_type_enforce<
+	type $mol_link__title_bog_nka_app_39 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_link['title'] >
 	>
-	type $mol_link__arg_bog_nka_app_37 = $mol_type_enforce<
+	type $mol_link__arg_bog_nka_app_40 = $mol_type_enforce<
 		({ 
 			'product': any,
 		}) 
 		,
 		ReturnType< $mol_link['arg'] >
 	>
-	type $mol_image__uri_bog_nka_app_38 = $mol_type_enforce<
+	type $mol_image__uri_bog_nka_app_41 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['photo_uri'] >
 		,
 		ReturnType< $mol_image['uri'] >
 	>
-	type $mol_image__title_bog_nka_app_39 = $mol_type_enforce<
+	type $mol_image__title_bog_nka_app_42 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['detail_title'] >
 		,
 		ReturnType< $mol_image['title'] >
-	>
-	type $mol_button_minor__hint_bog_nka_app_40 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_nka_app_41 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['photo_up_click'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_nka_app_42 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
 	>
 	type $mol_button_minor__hint_bog_nka_app_43 = $mol_type_enforce<
 		string
@@ -43506,7 +44080,7 @@ declare namespace $ {
 		ReturnType< $mol_button_minor['hint'] >
 	>
 	type $mol_button_minor__click_bog_nka_app_44 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['photo_delete_click'] >
+		ReturnType< $bog_nka_app['photo_up_click'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
@@ -43515,70 +44089,70 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_nka_app_46 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_nka_app_46 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_nka_app_47 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['photo_delete_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_nka_app_48 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_nka_app_49 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['photo_content'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_row__sub_bog_nka_app_47 = $mol_type_enforce<
+	type $mol_row__sub_bog_nka_app_50 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['photo_rows'] >
 		,
 		ReturnType< $mol_row['sub'] >
 	>
-	type $mol_text__text_bog_nka_app_48 = $mol_type_enforce<
+	type $mol_text__text_bog_nka_app_51 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['detail_title'] >
 		,
 		ReturnType< $mol_text['text'] >
 	>
-	type $mol_text__text_bog_nka_app_49 = $mol_type_enforce<
+	type $mol_text__text_bog_nka_app_52 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['detail_price'] >
 		,
 		ReturnType< $mol_text['text'] >
 	>
-	type $mol_text__text_bog_nka_app_50 = $mol_type_enforce<
+	type $mol_text__text_bog_nka_app_53 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['detail_description'] >
 		,
 		ReturnType< $mol_text['text'] >
 	>
-	type $mol_link__title_bog_nka_app_51 = $mol_type_enforce<
+	type $mol_link__title_bog_nka_app_54 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_link['title'] >
 	>
-	type $mol_link__uri_bog_nka_app_52 = $mol_type_enforce<
+	type $mol_link__uri_bog_nka_app_55 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['buy_uri'] >
 		,
 		ReturnType< $mol_link['uri'] >
 	>
-	type $mol_link__external_bog_nka_app_53 = $mol_type_enforce<
+	type $mol_link__external_bog_nka_app_56 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $mol_link['external'] >
 	>
-	type $mol_text__text_bog_nka_app_54 = $mol_type_enforce<
+	type $mol_text__text_bog_nka_app_57 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_text['text'] >
 	>
-	type $mol_string__value_bog_nka_app_55 = $mol_type_enforce<
+	type $mol_string__value_bog_nka_app_58 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['edit_title'] >
 		,
 		ReturnType< $mol_string['value'] >
-	>
-	type $mol_form_field__name_bog_nka_app_56 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_form_field['name'] >
-	>
-	type $mol_form_field__Content_bog_nka_app_57 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['Title_input'] >
-		,
-		ReturnType< $mol_form_field['Content'] >
-	>
-	type $mol_number__value_bog_nka_app_58 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['edit_price'] >
-		,
-		ReturnType< $mol_number['value'] >
 	>
 	type $mol_form_field__name_bog_nka_app_59 = $mol_type_enforce<
 		string
@@ -43586,14 +44160,14 @@ declare namespace $ {
 		ReturnType< $mol_form_field['name'] >
 	>
 	type $mol_form_field__Content_bog_nka_app_60 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['Price_input'] >
+		ReturnType< $bog_nka_app['Title_input'] >
 		,
 		ReturnType< $mol_form_field['Content'] >
 	>
-	type $mol_textarea__value_bog_nka_app_61 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['edit_description'] >
+	type $mol_number__value_bog_nka_app_61 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['edit_price'] >
 		,
-		ReturnType< $mol_textarea['value'] >
+		ReturnType< $mol_number['value'] >
 	>
 	type $mol_form_field__name_bog_nka_app_62 = $mol_type_enforce<
 		string
@@ -43601,14 +44175,14 @@ declare namespace $ {
 		ReturnType< $mol_form_field['name'] >
 	>
 	type $mol_form_field__Content_bog_nka_app_63 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['Description_input'] >
+		ReturnType< $bog_nka_app['Price_input'] >
 		,
 		ReturnType< $mol_form_field['Content'] >
 	>
-	type $mol_string__value_bog_nka_app_64 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['edit_category'] >
+	type $mol_textarea__value_bog_nka_app_64 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['edit_description'] >
 		,
-		ReturnType< $mol_string['value'] >
+		ReturnType< $mol_textarea['value'] >
 	>
 	type $mol_form_field__name_bog_nka_app_65 = $mol_type_enforce<
 		string
@@ -43616,39 +44190,39 @@ declare namespace $ {
 		ReturnType< $mol_form_field['name'] >
 	>
 	type $mol_form_field__Content_bog_nka_app_66 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['Category_input'] >
+		ReturnType< $bog_nka_app['Description_input'] >
 		,
 		ReturnType< $mol_form_field['Content'] >
 	>
-	type $mol_check_box__checked_bog_nka_app_67 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['edit_available'] >
+	type $mol_select__Filter_bog_nka_app_67 = $mol_type_enforce<
+		any
 		,
-		ReturnType< $mol_check_box['checked'] >
+		ReturnType< $mol_select['Filter'] >
 	>
-	type $mol_form_field__name_bog_nka_app_68 = $mol_type_enforce<
+	type $mol_select__value_bog_nka_app_68 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['edit_category'] >
+		,
+		ReturnType< $mol_select['value'] >
+	>
+	type $mol_select__dictionary_bog_nka_app_69 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['category_edit_options'] >
+		,
+		ReturnType< $mol_select['dictionary'] >
+	>
+	type $mol_form_field__name_bog_nka_app_70 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_form_field['name'] >
 	>
-	type $mol_form_field__Content_bog_nka_app_69 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['Available_input'] >
+	type $mol_form_field__Content_bog_nka_app_71 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['Category_input'] >
 		,
 		ReturnType< $mol_form_field['Content'] >
 	>
-	type $mol_button_open__accept_bog_nka_app_70 = $mol_type_enforce<
-		string
+	type $mol_check_box__checked_bog_nka_app_72 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['edit_available'] >
 		,
-		ReturnType< $mol_button_open['accept'] >
-	>
-	type $mol_button_open__multiple_bog_nka_app_71 = $mol_type_enforce<
-		boolean
-		,
-		ReturnType< $mol_button_open['multiple'] >
-	>
-	type $mol_button_open__files_bog_nka_app_72 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['photo_files'] >
-		,
-		ReturnType< $mol_button_open['files'] >
+		ReturnType< $mol_check_box['checked'] >
 	>
 	type $mol_form_field__name_bog_nka_app_73 = $mol_type_enforce<
 		string
@@ -43656,74 +44230,74 @@ declare namespace $ {
 		ReturnType< $mol_form_field['name'] >
 	>
 	type $mol_form_field__Content_bog_nka_app_74 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['Photos_upload'] >
+		ReturnType< $bog_nka_app['Available_input'] >
 		,
 		ReturnType< $mol_form_field['Content'] >
 	>
-	type $mol_button_major__title_bog_nka_app_75 = $mol_type_enforce<
+	type $mol_button_open__accept_bog_nka_app_75 = $mol_type_enforce<
 		string
 		,
-		ReturnType< $mol_button_major['title'] >
+		ReturnType< $mol_button_open['accept'] >
 	>
-	type $mol_button_major__enabled_bog_nka_app_76 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['publish_enabled'] >
+	type $mol_button_open__multiple_bog_nka_app_76 = $mol_type_enforce<
+		boolean
 		,
-		ReturnType< $mol_button_major['enabled'] >
+		ReturnType< $mol_button_open['multiple'] >
 	>
-	type $mol_button_major__click_bog_nka_app_77 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['publish_click'] >
+	type $mol_button_open__files_bog_nka_app_77 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['photo_files'] >
 		,
-		ReturnType< $mol_button_major['click'] >
+		ReturnType< $mol_button_open['files'] >
 	>
-	type $mol_button_minor__title_bog_nka_app_78 = $mol_type_enforce<
+	type $mol_image__uri_bog_nka_app_78 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['photo_uri'] >
+		,
+		ReturnType< $mol_image['uri'] >
+	>
+	type $mol_image__title_bog_nka_app_79 = $mol_type_enforce<
 		string
 		,
-		ReturnType< $mol_button_minor['title'] >
+		ReturnType< $mol_image['title'] >
 	>
-	type $mol_button_minor__click_bog_nka_app_79 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['delete_click'] >
+	type $mol_view__sub_bog_nka_app_80 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['photo_edit_rows'] >
 		,
-		ReturnType< $mol_button_minor['click'] >
+		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_form__body_bog_nka_app_80 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_form['body'] >
-	>
-	type $mol_form__buttons_bog_nka_app_81 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_form['buttons'] >
-	>
-	type $mol_text__text_bog_nka_app_82 = $mol_type_enforce<
+	type $mol_form_field__name_bog_nka_app_81 = $mol_type_enforce<
 		string
 		,
-		ReturnType< $mol_text['text'] >
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__Content_bog_nka_app_82 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['Photos_control'] >
+		,
+		ReturnType< $mol_form_field['Content'] >
 	>
 	type $mol_button_major__title_bog_nka_app_83 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['title'] >
 	>
-	type $mol_button_major__click_bog_nka_app_84 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['delete_confirm_click'] >
+	type $mol_button_major__enabled_bog_nka_app_84 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['publish_enabled'] >
+		,
+		ReturnType< $mol_button_major['enabled'] >
+	>
+	type $mol_button_major__click_bog_nka_app_85 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['publish_click'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_minor__title_bog_nka_app_85 = $mol_type_enforce<
+	type $mol_button_minor__title_bog_nka_app_86 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['title'] >
 	>
-	type $mol_button_minor__click_bog_nka_app_86 = $mol_type_enforce<
-		ReturnType< $bog_nka_app['delete_cancel_click'] >
+	type $mol_button_minor__click_bog_nka_app_87 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['delete_click'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_list__rows_bog_nka_app_87 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_list['rows'] >
 	>
 	type $mol_form__body_bog_nka_app_88 = $mol_type_enforce<
 		readonly(any)[]
@@ -43735,17 +44309,57 @@ declare namespace $ {
 		,
 		ReturnType< $mol_form['buttons'] >
 	>
-	type $mol_list__rows_bog_nka_app_90 = $mol_type_enforce<
+	type $mol_text__text_bog_nka_app_90 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_text['text'] >
+	>
+	type $mol_button_major__title_bog_nka_app_91 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__click_bog_nka_app_92 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['delete_confirm_click'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_minor__title_bog_nka_app_93 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_nka_app_94 = $mol_type_enforce<
+		ReturnType< $bog_nka_app['delete_cancel_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_list__rows_bog_nka_app_95 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_list__rows_bog_nka_app_91 = $mol_type_enforce<
+	type $mol_form__body_bog_nka_app_96 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_form['body'] >
+	>
+	type $mol_form__buttons_bog_nka_app_97 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_form['buttons'] >
+	>
+	type $mol_list__rows_bog_nka_app_98 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_list__rows_bog_nka_app_99 = $mol_type_enforce<
 		ReturnType< $bog_nka_app['detail_rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_list__rows_bog_nka_app_92 = $mol_type_enforce<
+	type $mol_list__rows_bog_nka_app_100 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_list['rows'] >
@@ -43765,8 +44379,12 @@ declare namespace $ {
 		edit_telegram( next?: string ): string
 		Telegram_input( ): $mol_string
 		Telegram_field( ): $mol_form_field
+		sold_out_uri( ): string
+		Sold_out_preview( ): $mol_image
 		sold_out_files( next?: readonly(File)[] ): readonly(File)[]
 		Sold_out_upload( ): $mol_button_open
+		sold_out_controls( ): readonly(any)[]
+		Sold_out_control( ): $mol_view
 		Sold_out_field( ): $mol_form_field
 		coowner_key( next?: string ): string
 		Coowner_input( ): $mol_string
@@ -43781,7 +44399,6 @@ declare namespace $ {
 		cover_uri( id: any): string
 		product_title( id: any): string
 		Cover( id: any): $mol_image
-		sold_out_uri( ): string
 		Sold_out_image( id: any): $mol_image
 		Sold_out( id: any): $mol_text
 		cover_content( id: any): readonly(any)[]
@@ -43827,13 +44444,17 @@ declare namespace $ {
 		Description_input( ): $mol_textarea
 		Description_field( ): $mol_form_field
 		edit_category( next?: string ): string
-		Category_input( ): $mol_string
+		category_edit_options( ): Record<string, any>
+		Category_input( ): $mol_select
 		Category_field( ): $mol_form_field
 		edit_available( next?: boolean ): boolean
 		Available_input( ): $mol_check_box
 		Available_field( ): $mol_form_field
 		photo_files( next?: readonly(File)[] ): readonly(File)[]
 		Photos_upload( ): $mol_button_open
+		Photo_preview( id: any): $mol_image
+		photo_edit_rows( ): readonly(any)[]
+		Photos_control( ): $mol_view
 		Photos_field( ): $mol_form_field
 		publish_enabled( ): boolean
 		publish_click( next?: any ): any

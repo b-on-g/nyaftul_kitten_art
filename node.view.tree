@@ -778,6 +778,170 @@ $mol_textarea_edit $mol_string
 		^
 		scrollTop 0
 
+$mol_ghost $mol_view
+	Sub $mol_view
+
+$mol_follower $mol_ghost
+	Anchor $mol_view
+	align /number
+		-.5
+		-.5
+	offset /number
+		0
+		0
+	style *
+		^
+		transform <= transform \
+
+$mol_pop $mol_view
+	showed? false
+	align_vert \
+	align_hor \
+	direction \ltr
+	align_enriched <= align \bottom_center
+	prefer \vert
+	auto /
+		<= bubble null
+	sub /
+		<= Anchor null
+	sub_visible /
+		<= Anchor
+		<= Follower $mol_follower
+			offset <= bubble_offset /number
+				0
+				1
+			align <= bubble_align /number
+				0
+				0
+			Anchor <= Anchor
+			Sub <= Bubble $mol_pop_bubble
+				content <= bubble_content /$mol_view_content
+				height_max <= height_max 9999
+
+$mol_pop_bubble $mol_view
+	sub <= content /$mol_view_content
+	style *
+		^
+		maxHeight <= height_max 9999
+	attr *
+		^
+		tabindex 0
+		popover \manual
+
+$mol_pick $mol_pop
+	event *
+		^
+		keydown? <=> keydown? null
+	Anchor <= Trigger $mol_check
+		minimal_width 40
+		minimal_height 40
+		enabled <= trigger_enabled true
+		checked? <=> showed?
+		clicks? <=> clicks? null
+		sub <= trigger_content /$mol_view_content
+			<= title
+		hint <= hint \
+
+$mol_nav $mol_plugin
+	cycle? false
+	-
+	mod_ctrl false
+	mod_shift false
+	mod_alt false
+	-
+	keys_x? /
+	keys_y? /
+	-
+	current_x? null
+	current_y? null
+	-
+	event_up? null
+	event_down? null
+	event_left? null
+	event_right? null
+	event *
+		^
+		keydown? <=> event_key? null
+
+$mol_search $mol_pop
+	query? \
+	suggests /string
+	plugins /$mol_plugin
+		^
+		<= Hotkey $mol_hotkey
+			key * escape? <=> clear? null
+		<= Nav $mol_nav
+			keys_y <= nav_components /$mol_view
+			current_y? <=> nav_focused? null
+	showed? <=> suggests_showed? false
+	align_hor \right
+	Anchor $mol_view
+		sub <= anchor_content /
+			<= Query $mol_string
+				value? <=> query? \
+				hint <= hint @ \Search...
+				submit? <=> submit? null
+				enabled <= enabled true
+				keyboard <= keyboard \search
+				enter <= enter \search
+				bring => bring
+			<= Clear $mol_button_minor
+				hint @ \Clear
+				enabled <= enabled true
+				click? <=> clear? null
+				sub /
+					<= Clear_icon $mol_icon_close
+	bubble_content /$mol_view_content
+		<= Bubble_pane $mol_scroll
+			sub /
+				<= Menu $mol_list
+					rows <= menu_items /$mol_view
+	Suggest* $mol_button_minor
+		click? <=> suggest_select*? null
+		sub <= suggest_content* /$mol_view_content
+			<= Suggest_label* $mol_dimmer
+				haystack <= suggest_label* \
+				needle <= query? \
+
+$mol_icon_dots_vertical $mol_icon path \M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z
+
+$mol_select $mol_pick
+	dictionary? *
+	options /string
+	value? \
+	option_label_default \
+	Option_row* $mol_button_minor
+		enabled <= enabled true
+		event_click? <=> event_select*? null
+		hint <= option_hint* null
+		sub <= option_content* /
+			<= Option_label* $mol_dimmer
+				haystack <= option_label* \
+				needle <= filter_pattern? \
+	No_options $mol_view
+		sub /
+			<= no_options_message @ \No options
+	plugins /
+		^
+		<= Nav $mol_nav
+			keys_y <= nav_components /$mol_view
+			current_y? <=> option_focused? null
+			cycle? <=> nav_cycle? true
+	hint @ \Pick..
+	bubble_content /
+		<= Filter
+		<= Bubble_pane $mol_scroll
+			sub /
+				<= Menu $mol_list
+					rows <= menu_content /$mol_view
+	Filter $mol_search
+		query? <=> filter_pattern? \
+		hint <= filter_hint @ \Filter..
+		submit? <=> submit? null
+		enabled <= enabled true
+	Trigger_icon $mol_icon_dots_vertical
+	trigger_enabled <= enabled
+
 $mol_icon_tick $mol_icon path \M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z
 
 $mol_check_box $mol_check
@@ -850,14 +1014,19 @@ $bog_nka_app $mol_page
 			<= Account_key $mol_text
 				text <= account_key \
 			<= Telegram_field $mol_form_field
-				name \Telegram владелицы
+				name \Telegram для заказов (личный @username, не канал)
 				Content <= Telegram_input $mol_string
 					value? <=> edit_telegram? \
 			<= Sold_out_field $mol_form_field
 				name \Картинка «нет в наличии»
-				Content <= Sold_out_upload $mol_button_open
-					accept \image/jpeg,image/png,image/webp
-					files? <=> sold_out_files? /File
+				Content <= Sold_out_control $mol_view
+					sub <= sold_out_controls /
+						<= Sold_out_preview $mol_image
+							uri <= sold_out_uri \
+							title \Текущая картинка «нет в наличии»
+						<= Sold_out_upload $mol_button_open
+							accept \image/jpeg,image/png,image/webp
+							files? <=> sold_out_files? /File
 			<= Coowner_field $mol_form_field
 				name \Ключ второго администратора
 				Content <= Coowner_input $mol_string
@@ -949,18 +1118,25 @@ $bog_nka_app $mol_page
 							value? <=> edit_description? \
 					<= Category_field $mol_form_field
 						name \Категория
-						Content <= Category_input $mol_string
+						Content <= Category_input $mol_select
+							Filter null
 							value? <=> edit_category? \
+							dictionary <= category_edit_options *
 					<= Available_field $mol_form_field
 						name \В наличии
 						Content <= Available_input $mol_check_box
 							checked? <=> edit_available? true
 					<= Photos_field $mol_form_field
 						name \Фотографии
-						Content <= Photos_upload $mol_button_open
-							accept \image/jpeg,image/png,image/webp
-							multiple true
-							files? <=> photo_files? /File
+						Content <= Photos_control $mol_view
+							sub <= photo_edit_rows /
+								<= Photos_upload $mol_button_open
+									accept \image/jpeg,image/png,image/webp
+									multiple true
+									files? <=> photo_files? /File
+								<= Photo_preview* $mol_image
+									uri <= photo_uri* \
+									title \Загруженная фотография товара
 				buttons /
 					<= Publish $mol_button_major
 						title \Опубликовать
